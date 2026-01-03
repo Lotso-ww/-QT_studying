@@ -15,6 +15,15 @@ public:
     Widget(QWidget *parent = nullptr);
     ~Widget();
 
+signals:
+    void mySignal1();
+    void mySignal2();
+    void mySignal3();
+
+public slots:
+    void mySlot1();
+    void mySlot2();
+    void mySlot3();
 private:
     Ui::Widget *ui;
 };

@@ -15,6 +15,16 @@ public:
     Widget(QWidget *parent = nullptr);
     ~Widget();
 
+    void handleMySignal(const QString& text);
+
+signals:
+    void mySignal(const QString& text);
+
+private slots:
+    void on_pushButton_1_clicked();
+
+    void on_pushButton_2_clicked();
+
 private:
     Ui::Widget *ui;
 };

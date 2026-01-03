@@ -13,3 +13,8 @@ Widget::~Widget()
     delete ui;
 }
 
+
+void Widget::on_pushButton_clicked()
+{
+    this->setWindowTitle("按钮已经按下！");
+}
