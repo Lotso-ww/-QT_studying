@@ -223,6 +223,7 @@ Makefile: ../QWidget_6/QWidget_6.pro ../../../../Qt/Qt5.14.2/5.14.2/mingw73_64/m
 		../../../../Qt/Qt5.14.2/5.14.2/mingw73_64/mkspecs/features/qt_config.prf \
 		../../../../Qt/Qt5.14.2/5.14.2/mingw73_64/mkspecs/win32-g++/qmake.conf \
 		../../../../Qt/Qt5.14.2/5.14.2/mingw73_64/mkspecs/features/spec_post.prf \
+		.qmake.stash \
 		../../../../Qt/Qt5.14.2/5.14.2/mingw73_64/mkspecs/features/exclusive_builds.prf \
 		../../../../Qt/Qt5.14.2/5.14.2/mingw73_64/mkspecs/features/toolchain.prf \
 		../../../../Qt/Qt5.14.2/5.14.2/mingw73_64/mkspecs/features/default_pre.prf \
@@ -251,8 +252,8 @@ Makefile: ../QWidget_6/QWidget_6.pro ../../../../Qt/Qt5.14.2/5.14.2/mingw73_64/m
 		../../../../Qt/Qt5.14.2/5.14.2/mingw73_64/lib/Qt5Gui.prl \
 		../../../../Qt/Qt5.14.2/5.14.2/mingw73_64/lib/Qt5Core.prl \
 		../../../../Qt/Qt5.14.2/5.14.2/mingw73_64/lib/qtmain.prl \
-		.qmake.stash \
-		../../../../Qt/Qt5.14.2/5.14.2/mingw73_64/mkspecs/features/build_pass.prf
+		../../../../Qt/Qt5.14.2/5.14.2/mingw73_64/mkspecs/features/build_pass.prf \
+		../QWidget_6/resource.qrc
 	$(QMAKE) -o Makefile ..\QWidget_6\QWidget_6.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug"
 ../../../../Qt/Qt5.14.2/5.14.2/mingw73_64/mkspecs/features/spec_pre.prf:
 ../../../../Qt/Qt5.14.2/5.14.2/mingw73_64/mkspecs/qdevice.pri:
@@ -407,6 +408,7 @@ Makefile: ../QWidget_6/QWidget_6.pro ../../../../Qt/Qt5.14.2/5.14.2/mingw73_64/m
 ../../../../Qt/Qt5.14.2/5.14.2/mingw73_64/mkspecs/features/qt_config.prf:
 ../../../../Qt/Qt5.14.2/5.14.2/mingw73_64/mkspecs/win32-g++/qmake.conf:
 ../../../../Qt/Qt5.14.2/5.14.2/mingw73_64/mkspecs/features/spec_post.prf:
+.qmake.stash:
 ../../../../Qt/Qt5.14.2/5.14.2/mingw73_64/mkspecs/features/exclusive_builds.prf:
 ../../../../Qt/Qt5.14.2/5.14.2/mingw73_64/mkspecs/features/toolchain.prf:
 ../../../../Qt/Qt5.14.2/5.14.2/mingw73_64/mkspecs/features/default_pre.prf:
@@ -435,8 +437,8 @@ Makefile: ../QWidget_6/QWidget_6.pro ../../../../Qt/Qt5.14.2/5.14.2/mingw73_64/m
 ../../../../Qt/Qt5.14.2/5.14.2/mingw73_64/lib/Qt5Gui.prl:
 ../../../../Qt/Qt5.14.2/5.14.2/mingw73_64/lib/Qt5Core.prl:
 ../../../../Qt/Qt5.14.2/5.14.2/mingw73_64/lib/qtmain.prl:
-.qmake.stash:
 ../../../../Qt/Qt5.14.2/5.14.2/mingw73_64/mkspecs/features/build_pass.prf:
+../QWidget_6/resource.qrc:
 qmake: FORCE
 	@$(QMAKE) -o Makefile ..\QWidget_6\QWidget_6.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug"
 

@@ -8,8 +8,10 @@ Widget::Widget(QWidget *parent)
 {
     ui->setupUi(this);
 
-    QIcon icon("D:/Gitee.code/qt-learning/code/QWidget_6/Lotso.jpg");
+    // QIcon icon("D:/Gitee.code/qt-learning/code/QWidget_6/Lotso.jpg");
     // 相对路径会更好点,但是也无法解决一些问题
+    // qrc来解决
+    QIcon icon(":/Lotso.jpg");
     this->setWindowIcon(icon);
 }
 
