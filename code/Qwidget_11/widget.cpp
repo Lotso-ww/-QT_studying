@@ -4,7 +4,7 @@
 Widget::Widget(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::Widget)
-{
+{//
     ui->setupUi(this);
 
     ui->pushButton_Yes->setToolTip("这是一个Yes按钮!");
