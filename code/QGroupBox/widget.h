@@ -15,15 +15,6 @@ public:
     Widget(QWidget *parent = nullptr);
     ~Widget();
 
-private slots:
-    void on_pushButton_insertRow_clicked();
-
-    void on_pushButton_deleteRow_clicked();
-
-    void on_pushButton_insertColumn_clicked();
-
-    void on_pushButton_deleteColumn_clicked();
-
 private:
     Ui::Widget *ui;
 };
