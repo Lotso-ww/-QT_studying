@@ -39,6 +39,7 @@ public:
         groupBox = new QGroupBox(Widget);
         groupBox->setObjectName(QString::fromUtf8("groupBox"));
         groupBox->setGeometry(QRect(100, 70, 461, 101));
+        groupBox->setCheckable(false);
         comboBox = new QComboBox(groupBox);
         comboBox->addItem(QString());
         comboBox->addItem(QString());
