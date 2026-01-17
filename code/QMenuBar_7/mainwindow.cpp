@@ -7,10 +7,11 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    QMenuBar* menuBar = new QMenuBar();
+    // QMenuBar* menuBar = new QMenuBar();
+    QMenuBar* menuBar = this->menuBar(); // 更标准的写法,防止内存泄露
     this->setMenuBar(menuBar);
     QMenu* menu = new QMenu("菜单");
-    menu->setIcon(QIcon(":/open.png"));
+    // menu->setIcon(QIcon(":/open.png")); // 这个会覆盖文本
     menuBar->addMenu(menu);
 
     QAction* action1 = new QAction("菜单项1");
