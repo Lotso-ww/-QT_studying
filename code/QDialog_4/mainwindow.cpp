@@ -19,5 +19,6 @@ void MainWindow::on_pushButton_clicked()
 {
     Dialog* dialog = new Dialog(this);
     dialog->setAttribute(Qt::WA_DeleteOnClose);
-    dialog->show();
+    // dialog->show(); // 非模态对话框
+    dialog->exec(); // 模态对话框
 }
