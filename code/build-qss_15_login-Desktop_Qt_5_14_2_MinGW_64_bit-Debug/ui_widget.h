@@ -24,7 +24,7 @@ class Ui_Widget
 {
 public:
     QFrame *frame;
-    QWidget *widget;
+    QWidget *layoutWidget;
     QVBoxLayout *verticalLayout;
     QLineEdit *lineEdit;
     QLineEdit *lineEdit_2;
@@ -38,7 +38,7 @@ public:
         Widget->setWindowModality(Qt::NonModal);
         Widget->resize(800, 600);
         Widget->setStyleSheet(QString::fromUtf8("QFrame{\n"
-"	border-image: url(:/Snipaste.png)\n"
+"	border-image: url(:/Snipaste.png)stretch;\n"
 "}\n"
 "\n"
 "QLineEdit{\n"
@@ -69,13 +69,13 @@ public:
         frame->setGeometry(QRect(-10, -10, 811, 621));
         frame->setFrameShape(QFrame::StyledPanel);
         frame->setFrameShadow(QFrame::Raised);
-        widget = new QWidget(frame);
-        widget->setObjectName(QString::fromUtf8("widget"));
-        widget->setGeometry(QRect(280, 160, 231, 211));
-        verticalLayout = new QVBoxLayout(widget);
+        layoutWidget = new QWidget(frame);
+        layoutWidget->setObjectName(QString::fromUtf8("layoutWidget"));
+        layoutWidget->setGeometry(QRect(280, 160, 231, 211));
+        verticalLayout = new QVBoxLayout(layoutWidget);
         verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
         verticalLayout->setContentsMargins(0, 0, 0, 0);
-        lineEdit = new QLineEdit(widget);
+        lineEdit = new QLineEdit(layoutWidget);
         lineEdit->setObjectName(QString::fromUtf8("lineEdit"));
         lineEdit->setMinimumSize(QSize(0, 50));
         lineEdit->setMaximumSize(QSize(16777215, 50));
@@ -83,7 +83,7 @@ public:
 
         verticalLayout->addWidget(lineEdit);
 
-        lineEdit_2 = new QLineEdit(widget);
+        lineEdit_2 = new QLineEdit(layoutWidget);
         lineEdit_2->setObjectName(QString::fromUtf8("lineEdit_2"));
         lineEdit_2->setMinimumSize(QSize(0, 50));
         lineEdit_2->setMaximumSize(QSize(16777215, 50));
@@ -91,12 +91,12 @@ public:
 
         verticalLayout->addWidget(lineEdit_2);
 
-        checkBox = new QCheckBox(widget);
+        checkBox = new QCheckBox(layoutWidget);
         checkBox->setObjectName(QString::fromUtf8("checkBox"));
 
         verticalLayout->addWidget(checkBox);
 
-        pushButton = new QPushButton(widget);
+        pushButton = new QPushButton(layoutWidget);
         pushButton->setObjectName(QString::fromUtf8("pushButton"));
         pushButton->setMinimumSize(QSize(0, 50));
         pushButton->setMaximumSize(QSize(16777215, 50));

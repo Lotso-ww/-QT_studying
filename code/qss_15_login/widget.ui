@@ -18,7 +18,7 @@
   </property>
   <property name="styleSheet">
    <string notr="true">QFrame{
-	border-image: url(:/Snipaste.png)
+	border-image: url(:/Snipaste.png)stretch;
 }
 
 QLineEdit{
@@ -60,7 +60,7 @@ QPushButton:pressed{
    <property name="frameShadow">
     <enum>QFrame::Raised</enum>
    </property>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>280</x>
