@@ -14,7 +14,7 @@
    <string>MainWindow</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">QMenuBar{
+   <string notr="true">/*QMenuBar{
 	background-color: rgb(170, 170, 255);
 	spacing: 5px;
 }
@@ -42,6 +42,60 @@ QMenu::separator{
 	heighht: 2px;
 	background-color: green;
 	margin: 0 5px;
+}*/
+
+/* 菜单栏背景：垂直渐变（浅灰→深灰） */
+QMenuBar {
+    background-color: qlineargradient(
+        x1: 0, y1: 0, x2: 0, y2: 1,
+        stop: 0 lightgray,
+        stop: 1 darkgray
+    );
+    spacing: 3px; /* 菜单项间距 */
+}
+
+/* 菜单项默认样式 */
+QMenuBar::item {
+    padding: 1px 4px; /* 内边距 */
+    background: transparent; /* 透明背景 */
+    border-radius: 4px; /* 圆角 */
+}
+
+/* 菜单项选中（鼠标悬浮/选中） */
+QMenuBar::item:selected {
+    background-color: #a8a8a8;
+}
+
+/* 菜单项按压 */
+QMenuBar::item:pressed {
+    background-color: #888888;
+}
+
+/* 下拉菜单背景+间距 */
+QMenu {
+    background-color: white;
+    margin: 0 2px; /* 菜单边缘间距 */
+    border: 1px solid #ddd; /* 菜单边框 */
+}
+
+/* 下拉菜单项样式 */
+QMenu::item {
+    padding: 2px 25px 2px 20px; /* 内边距：左右预留空间 */
+    border: 3px solid transparent; /* 选中边框预留空间 */
+}
+
+/* 下拉菜单项选中 */
+QMenu::item:selected {
+    border-color: darkblue; /* 选中边框 */
+    background-color: rgba(100, 100, 100, 0.1); /* 半透明背景 */
+}
+
+/* 菜单分隔线 */
+QMenu::separator {
+    height: 2px; /* 分隔线高度 */
+    background-color: lightblue; /* 分隔线颜色 */
+    margin-left: 10px; /* 左间距 */
+    margin-right: 5px; /* 右间距 */
 }</string>
   </property>
   <widget class="QWidget" name="centralwidget"/>
@@ -51,7 +105,7 @@ QMenu::separator{
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>22</height>
+     <height>18</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_2">

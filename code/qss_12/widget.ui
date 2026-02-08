@@ -35,6 +35,46 @@
 }</string>
    </property>
   </widget>
+  <widget class="QLineEdit" name="lineEdit_2">
+   <property name="geometry">
+    <rect>
+     <x>200</x>
+     <y>250</y>
+     <width>251</width>
+     <height>61</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QLineEdit {
+    border-width: 1px;    /* 边框宽度 */
+    border-radius: 10px;  /* 圆角 */
+    border-color: #585858;/* 边框颜色 */
+    border-style: inset;  /* 边框风格 */
+    padding: 0 8px;      /* 内边距：左右8px（文字不贴边） */
+    color: #fff;          /* 文字颜色 */
+    background-color: #405361; /* 背景色（深色） */
+    font-size: 20px;
+}
+
+/* 输入框获取焦点时：边框变色 */
+QLineEdit:focus {
+    border-color: #1ab394; /* 主题色边框 */
+    outline: none;         /* 取消默认焦点边框 */
+}
+
+/* 选中文字样式 */
+QLineEdit::selection {
+    background-color: #1ab394; /* 选中背景色 */
+    color: #fff;              /* 选中文字颜色 */
+}
+
+/* 只读状态 */
+QLineEdit:read-only {
+    background-color: #333;
+    color: #bbb;
+}</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>

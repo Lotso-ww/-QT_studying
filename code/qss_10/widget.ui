@@ -38,6 +38,47 @@ QPushButton:pressed{
     <string>按钮</string>
    </property>
   </widget>
+  <widget class="QPushButton" name="pushButton_2">
+   <property name="geometry">
+    <rect>
+     <x>280</x>
+     <y>260</y>
+     <width>121</width>
+     <height>61</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">/* 按钮基础样式：圆角、灰色背景、边框 */
+QPushButton {
+    font-size: 20px;          /* 文字大小 */
+    border: 2px solid #8f8f91;/* 边框：宽度+颜色 */
+    border-radius: 15px;     /* 圆角（数值越大越圆） */
+    background-color: #dadbde;/* 背景色 */
+    padding: 8px 20px;      /* 内边距：上下8px，左右20px（扩大点击区域） */
+}
+
+/* 鼠标悬停状态：背景色变浅 */
+QPushButton:hover {
+    background-color: #e8e9ed;
+}
+
+/* 鼠标按压状态：背景色变白，边框内陷 */
+QPushButton:pressed {
+    background-color: #f6f7fa;
+    border-style: inset;     /* 边框内陷，模拟按压效果 */
+}
+
+/* 禁用状态：灰色背景+灰色文字 */
+QPushButton:disabled {
+    background-color: #f0f0f0;
+    color: #999;
+    border-color: #ddd;
+}</string>
+   </property>
+   <property name="text">
+    <string>按钮</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>

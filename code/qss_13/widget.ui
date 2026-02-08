@@ -47,6 +47,74 @@ QListWidget::item:selected{
     </property>
    </item>
   </widget>
+  <widget class="QListWidget" name="listWidget_2">
+   <property name="geometry">
+    <rect>
+     <x>150</x>
+     <y>390</y>
+     <width>256</width>
+     <height>192</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">/* 列表项默认样式 */
+QListView::item {
+    height: 30px; /* 列表项高度 */
+    padding-left: 10px; /* 文字左间距 */
+}
+
+/* 鼠标悬停：垂直渐变（浅蓝→浅紫） */
+QListView::item:hover {
+    background: qlineargradient(
+        x1: 0, y1: 0, x2: 0, y2: 1,
+        stop: 0 #FAFBFE,  /* 顶部颜色 */
+        stop: 1 #DCDEF1   /* 底部颜色 */
+    );
+}
+
+/* 选中状态：垂直渐变（深蓝→深紫）+ 边框 */
+QListView::item:selected {
+    border: 1px solid #6a6ea9; /* 选中边框 */
+    background: qlineargradient(
+        x1: 0, y1: 0, x2: 0, y2: 1,
+        stop: 0 #6a6ea9,  /* 顶部颜色 */
+        stop: 1 #888dd9   /* 底部颜色 */
+    );
+    color: #fff; /* 选中文字颜色 */
+}
+
+/* 列表框背景（去除默认白色） */
+QListView {
+    background-color: #f8f8f8;
+    border: none; /* 取消默认边框 */
+}</string>
+   </property>
+   <item>
+    <property name="text">
+     <string>111</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>222</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>333</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>444</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>555</string>
+    </property>
+   </item>
+  </widget>
  </widget>
  <resources/>
  <connections/>
