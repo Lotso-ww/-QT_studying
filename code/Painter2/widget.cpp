@@ -6,7 +6,7 @@ Widget::Widget(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::Widget)
 {
-    ui->setupUi(this);
+    ui->setupUi(this);//
 }
 
 Widget::~Widget()
