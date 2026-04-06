@@ -2,6 +2,7 @@
 #define WIDGET_H
 
 #include <QWidget>
+#include <QSqlDatabase>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class Widget; }
@@ -18,7 +19,12 @@ public:
 private slots:
     void on_connectDB_clicked();
 
+    void on_ctreateTable_clicked();
+
+    void on_closeDB_clicked();
+
 private:
     Ui::Widget *ui;
+    QSqlDatabase sqlite;
 };
 #endif // WIDGET_H
