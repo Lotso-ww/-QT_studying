@@ -1,6 +1,7 @@
 #include "widget.h"
 #include "ui_widget.h"
 
+
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QDebug>
@@ -58,4 +59,63 @@ void Widget::on_ctreateTable_clicked()
 void Widget::on_closeDB_clicked()
 {
     sqlite.close();
+}
+
+void Widget::on_insert_clicked()
+{
+    // QString sql("INSERT INTO student(id,name,age,gpa) values(1, '张三', 18, 3.0)");
+    // QString sql("INSERT INTO student(name,age,gpa) values('张三', 18, 3.0)");
+    // QString sql("INSERT INTO student values(2, '李四', 19, 3.5)");
+//    QString sql("INSERT INTO student(id,name,age,gpa) values(%1, '%2', %3, %4)");
+//    sql = sql.arg(4, 1, 10)
+//             .arg("王五")
+//             .arg(20)
+//             .arg(3.8);
+
+//    QSqlQuery query;
+//    if(!query.exec(sql))
+//    {
+//        qDebug() << "往学生表里插入数据失败: "<< query.lastError().text();
+//        return;
+//    }
+//    qDebug() << "插入成功";
+
+    // 按照名称绑定
+//    QSqlQuery query;
+//    query.prepare("INSERT INTO student(name,age,gpa) values(:name, :age, :gpa)");
+//    query.bindValue(":name", "赵六");
+//    query.bindValue(":age", 21);
+//    query.bindValue(":gpa", 4.0);
+//    if(!query.exec())
+//    {
+//        qDebug() << "往学生表里插入数据失败: "<< query.lastError().text();
+//        return;
+//    }
+    // qDebug() << "插入成功";
+
+    // 按照位置绑定
+//    QSqlQuery query;
+//    query.prepare("INSERT INTO student(name,age,gpa) values(?,?,?)");
+//    query.bindValue(0, "田七");
+//    query.bindValue(1, 22);
+//    query.bindValue(2, 4.2);
+//    if(!query.exec())
+//    {
+//        qDebug() << "往学生表里插入数据失败: "<< query.lastError().text();
+//        return;
+//    }
+//    qDebug() << "插入成功";
+
+    // 按照固定次序来, 不能改变 -- 虽然不会报错但是数据顺序是错的
+    QSqlQuery query;
+    query.prepare("INSERT INTO student(name,age,gpa) values(?,?,?)");
+    query.addBindValue("刘八");
+    query.addBindValue(23);
+    query.addBindValue(5.2);
+    if(!query.exec())
+    {
+        qDebug() << "往学生表里插入数据失败: "<< query.lastError().text();
+        return;
+    }
+    qDebug() << "插入成功";
 }

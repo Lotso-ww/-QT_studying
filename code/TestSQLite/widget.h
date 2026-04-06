@@ -23,6 +23,8 @@ private slots:
 
     void on_closeDB_clicked();
 
+    void on_insert_clicked();
+
 private:
     Ui::Widget *ui;
     QSqlDatabase sqlite;
