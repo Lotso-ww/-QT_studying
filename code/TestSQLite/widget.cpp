@@ -119,3 +119,95 @@ void Widget::on_insert_clicked()
     }
     qDebug() << "插入成功";
 }
+
+void Widget::on_select_clicked()
+{
+    QString sql("SELECT * FROM student");
+    QSqlQuery query;
+    if(!query.exec(sql))
+    {
+        qDebug() << "在学生表里查询数据失败: "<< query.lastError().text();
+        return;
+    }
+
+    // 按照位置查询
+    while(query.next())
+    {
+        qDebug() << query.value(0).toInt()
+                 << query.value(1).toString()
+                 << query.value(2).toInt()
+                 << query.value(3).toDouble();
+    }
+
+//    // 按照列名查询
+//    while(query.next())
+//    {
+//        qDebug() << query.value("id").toInt()
+//                 << query.value("name").toString()
+//                 << query.value("age").toInt()
+//                 << query.value("gpa").toDouble();
+//    }
+}
+
+void Widget::on_update_clicked()
+{
+    QSqlQuery query;
+    query.prepare("UPDATE student SET age=?, gpa=? WHERE name=?");
+    query.bindValue(0, 22);
+    query.bindValue(1, 5);
+    query.bindValue(2, "王五");
+
+    if(!query.exec())
+    {
+        qDebug() << "往学生表里更新数据失败: "<< query.lastError().text();
+        return;
+    }
+
+    query.prepare("SELECT * FROM student WHERE name = :name");
+    query.bindValue(":name", "王五");
+    if(!query.exec())
+    {
+        qDebug() << "在学生表里查询数据失败: "<< query.lastError().text();
+        return;
+    }
+
+    // 按照列名查询
+    while(query.next())
+    {
+        qDebug() << query.value("id").toInt()
+                 << query.value("name").toString()
+                 << query.value("age").toInt()
+                 << query.value("gpa").toDouble();
+    }
+
+}
+
+void Widget::on_delete_2_clicked()
+{
+    // 删除id为3的数据
+    QSqlQuery query;
+    query.prepare("DELETE FROM student WHERE id=?");
+    query.addBindValue(3);
+    if(!query.exec())
+    {
+        qDebug() << "在学生表里删除数据失败: "<< query.lastError().text();
+        return;
+    }
+
+    // 通过查询验证是否正确
+    QString sql("SELECT * FROM student");
+    if(!query.exec(sql))
+    {
+        qDebug() << "在学生表里查询数据失败: "<< query.lastError().text();
+        return;
+    }
+
+    // 按照位置查询
+    while(query.next())
+    {
+        qDebug() << query.value(0).toInt()
+                 << query.value(1).toString()
+                 << query.value(2).toInt()
+                 << query.value(3).toDouble();
+    }
+}
