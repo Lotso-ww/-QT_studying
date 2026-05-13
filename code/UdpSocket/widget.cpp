@@ -13,7 +13,7 @@ Widget::Widget(QWidget *parent)
     socket = new QUdpSocket(this);
 
     // 2. 设置窗标题
-    this->setWindowTitle("回显服务器");
+    this->setWindowTitle("服务器");
 
     // 3. 关联信号槽
     connect(socket, &QUdpSocket::readyRead, this, &Widget::processRequest);
