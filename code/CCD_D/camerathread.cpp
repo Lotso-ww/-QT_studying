@@ -1,125 +1,139 @@
 #include "camerathread.h"
 #include <QDebug>
+#include <QDateTime>
 
-CameraThread::CameraThread(QObject *parent) : QThread(parent), m_isCapturing(false)
+// 构造函数：接管水管 (DataStream) 和控制节点 (NodeMap)
+CameraThread::CameraThread(std::shared_ptr<peak::core::DataStream> dataStream,
+                           std::shared_ptr<peak::core::NodeMap> nodeMap,
+                           QObject *parent)
+    : QThread(parent),
+    m_dataStream(dataStream),
+    m_nodeMapRemoteDevice(nodeMap),
+    m_isCapturing(false)
 {
-    try
-    {
-        // 1. 刷新并获取设备管理器里的设备列表
-        auto& deviceManager = peak::DeviceManager::Instance();
-        deviceManager.Update();
-
-        if (deviceManager.Devices().empty())
-        {
-            qDebug() << "错误: 没有找到任何可用相机！请检查连线。";
-            return;
-        }
-
-        // 2. 打开列表里的第一台相机
-        m_device = deviceManager.Devices().at(0)->OpenDevice(peak::core::DeviceAccessType::Control);
-        qDebug() << "成功连接相机: " << QString::fromStdString(m_device->ModelName());
-
-        // 3. 打开数据流 (DataStream) 准备接收图像
-        m_dataStream = m_device->DataStreams().at(0)->OpenDataStream();
-
-        // 4. 获取相机的图像载荷大小，并向系统申请内存缓冲区 (Buffer)
-        auto nodemapRemoteDevice = m_device->RemoteDevice()->NodeMaps().at(0);
-        int64_t payloadSize = nodemapRemoteDevice->FindNode<peak::core::nodes::IntegerNode>("PayloadSize")->Value();
-        int bufferCount = m_dataStream->NumBuffersAnnouncedMinRequired();
-
-        // 将申请到的内存丢进数据流的队列里供底层轮转使用
-        for (int i = 0; i < bufferCount; ++i) {
-            auto buffer = m_dataStream->AllocAndAnnounceBuffer(payloadSize, nullptr);
-            m_dataStream->QueueBuffer(buffer);
-        }
-
-    }
-    catch (const std::exception& e)
-    {
-        qDebug() << "相机初始化异常:" << e.what();
-    }
 }
 
+// 析构函数：安全退出
 CameraThread::~CameraThread()
 {
-    stopCapture();
-    wait(); // 确保安全退出子线程循环
+    stop();
+    wait(); // 阻塞主线程一瞬间，确保子线程死循环真正停下，防止内存崩溃
 }
 
-void CameraThread::startCapture()
+// 紧急刹车
+void CameraThread::stop()
 {
-    if (m_device && m_dataStream && !m_isCapturing)
+    m_isCapturing = false;
+    if (m_dataStream)
     {
-        m_isCapturing = true;
-
-        // 启动数据流通道
-        m_dataStream->StartAcquisition();
-
-        // 向相机硬件发送"开始采集"指令
-        auto nodemap = m_device->RemoteDevice()->NodeMaps().at(0);
-        nodemap->FindNode<peak::core::nodes::CommandNode>("AcquisitionStart")->Execute();
-        nodemap->FindNode<peak::core::nodes::CommandNode>("AcquisitionStart")->WaitUntilDone();
-
-        start(); // 启动 QThread 专属的 run() 函数，进入死循环
+        m_dataStream->KillWait();
     }
 }
 
-void CameraThread::stopCapture()
-{
-    if (m_isCapturing) {
-        m_isCapturing = false;
 
-        if (m_device && m_dataStream)
-        {
-            // 向硬件发送"停止采集"指令
-            try
-            {
-                auto nodemap = m_device->RemoteDevice()->NodeMaps().at(0);
-                nodemap->FindNode<peak::core::nodes::CommandNode>("AcquisitionStop")->Execute();
-                nodemap->FindNode<peak::core::nodes::CommandNode>("AcquisitionStop")->WaitUntilDone();
-            }
-            catch(...) {}
 
-            // 停止数据流并清空所有未处理的缓冲区
-            m_dataStream->StopAcquisition(peak::core::AcquisitionStopMode::Default);
-            m_dataStream->Flush(peak::core::DataStreamFlushMode::DiscardAll);
-
-            // 注销并释放内存，防止内存泄漏
-            for (const auto& buffer : m_dataStream->AnnouncedBuffers())
-            {
-                m_dataStream->RevokeBuffer(buffer);
-            }
-        }
-    }
-}
-
+// 核心流水线车间
 void CameraThread::run()
 {
-    while (m_isCapturing)
-    {
-        try
-        {
-            // 在子线程中阻塞等待相机传回一张图像 (超时时间设为 1000ms)
-            auto buffer = m_dataStream->WaitForFinishedBuffer(1000);
+    if (!m_dataStream || !m_nodeMapRemoteDevice) {
+        return; // 防御性编程：设备为空则直接退出
+    }
 
-            // ==========================================
-            // 这里已经拿到图像原始内存指针了！
-            // 下一步我们会在这里把裸数据转成 QImage 并发给 UI
-            qDebug() << "成功抓取到一帧图像！";
-            // ==========================================
+    m_isCapturing = true;
+    qint64 lastRenderTime = 0; // 新增：用于记录上一次发图的时间
 
-            // 图像处理完后，必须把 buffer 重新放回队列，供相机下次使用
-            m_dataStream->QueueBuffer(buffer);
+    try {
+        // ==========================================
+        // 1. 准备阶段：分配内存与启动设备
+        // ==========================================
+        auto payloadSize = m_nodeMapRemoteDevice->FindNode<peak::core::nodes::IntegerNode>("PayloadSize")->Value();
 
-        } catch (const peak::core::TimeoutException&)
-        {
-            // 超时属于正常现象（比如触发没给到位），继续下一轮轮询即可
-            continue;
+        // 申请 3 个 Buffer，建立“多重缓冲池”，让画面极致丝滑
+        for(int i = 0; i < 3; ++i) {
+            m_dataStream->AllocAndAnnounceBuffer(static_cast<size_t>(payloadSize), nullptr);
         }
-        catch (const std::exception& e)
-        {
-            emit errorOccurred(QString("抓图异常: %1").arg(e.what()));
-            break;
+
+        // 打开水管，开始曝光
+        m_dataStream->StartAcquisition();
+        m_nodeMapRemoteDevice->FindNode<peak::core::nodes::CommandNode>("AcquisitionStart")->Execute();
+
+        // 将所有准备好的空桶排队塞给相机
+        for (const auto& buf : m_dataStream->AnnouncedBuffers()) {
+            m_dataStream->QueueBuffer(buf);
         }
+
+        // ==========================================
+        // 2. 核心死循环：疯狂抓图，并控制发图频率
+        // ==========================================
+        while (m_isCapturing) {
+            try {
+                // 等待相机装满一个桶，超时设为 1000ms
+                auto buffer = m_dataStream->WaitForFinishedBuffer(1000);
+
+                peak::ipl::Image iplRawImage(
+                    peak::ipl::PixelFormat(static_cast<peak::ipl::PixelFormatName>(buffer->PixelFormat())),
+                    static_cast<uint8_t*>(buffer->BasePtr()),
+                    static_cast<size_t>(buffer->Size()),
+                    static_cast<size_t>(buffer->Width()),
+                    static_cast<size_t>(buffer->Height())
+                    );
+
+                auto iplRGBImage = iplRawImage.ConvertTo(peak::ipl::PixelFormat(peak::ipl::PixelFormatName::RGB8));
+
+                // 【核心修复 1】限流机制：计算距离上一次给界面发图过去了多久
+                qint64 currentTime = QDateTime::currentMSecsSinceEpoch();
+                if (currentTime - lastRenderTime > 33) { // 33ms 约等于 30 FPS，防止撑死主线程信号队列
+                    QImage qImg(static_cast<uchar*>(iplRGBImage.PixelPointer(0, 0)),
+                                static_cast<int>(iplRGBImage.Width()),
+                                static_cast<int>(iplRGBImage.Height()),
+                                QImage::Format_RGB888);
+
+                    // 必须用 copy() 进行深拷贝！然后像炮弹一样发射给主界面
+                    emit imageReady(qImg.copy());
+                    lastRenderTime = currentTime; // 更新发图时间
+                }
+
+                // 【细节】不管有没有发给界面，这个空水桶都必须立刻还给相机循环利用
+                m_dataStream->QueueBuffer(buffer);
+
+            } catch (const peak::core::TimeoutException&) {
+                // 如果等了 1000ms 没图，忽略报错，继续等
+                continue;
+            } catch (const peak::core::AbortedException&) {
+                // 收到 KillWait 的紧急刹车信号，平稳退出循环
+                break;
+            } catch (const std::exception& e) {
+                qDebug() << "抓图循环异常:" << e.what();
+                break;
+            }
+        }
+
+        // ==========================================
+        // 3. 打扫战场：对标官方标准的独立异常隔离护甲
+        // ==========================================
+
+        // 3.1 先让相机的物理节点停止抓图 (关掉开关)
+        try {
+            m_nodeMapRemoteDevice->FindNode<peak::core::nodes::CommandNode>("AcquisitionStop")->Execute();
+        } catch (const std::exception& e) {
+            qDebug() << "AcquisitionStop 异常，但已被安全拦截:" << e.what();
+        }
+
+        // 3.2 再清理数据流通道 (收拾水管和水桶)
+        try {
+            m_dataStream->KillWait(); // 再次确保底层没有残留的等待阻塞
+            m_dataStream->StopAcquisition();
+            m_dataStream->Flush(peak::core::DataStreamFlushMode::DiscardAll);
+
+            // 销毁所有缓冲池内存
+            for (const auto& buf : m_dataStream->AnnouncedBuffers()) {
+                m_dataStream->RevokeBuffer(buf);
+            }
+        } catch (const std::exception& e) {
+            qDebug() << "数据流清理异常，但已被安全拦截:" << e.what();
+        }
+
+    } catch (const std::exception& e) {
+        qDebug() << "子线程致命异常:" << e.what();
     }
 }
