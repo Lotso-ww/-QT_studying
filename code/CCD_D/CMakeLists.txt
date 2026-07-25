@@ -13,6 +13,7 @@ qt_add_executable(CCD_D
     mainwindow.ui
     camerathread.h
     camerathread.cpp
+    qrc.qrc
 
 )
 include_directories(
