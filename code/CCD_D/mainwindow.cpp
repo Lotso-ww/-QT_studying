@@ -17,6 +17,8 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
     , m_cameraThread(nullptr)
+    , m_saveWorker(nullptr)
+    , m_saveThread(nullptr)
     , m_currentIndex(-1)
     , m_playTimer(nullptr)
     , m_playIntervalMs(125)
@@ -81,6 +83,21 @@ MainWindow::MainWindow(QWidget *parent)
             "数据库初始化失败, 抓拍数据将仅保存为文件, 不写数据库。\n路径: " + dbPath);
     }
 
+    // 创建 SaveWorker (落盘+写库独立线程, 不阻塞主线程渲染)
+    // 放在构造函数里, 这样单张抓拍也能用 (不需要先开 live)
+    m_saveWorker = new SaveWorker;
+    m_saveThread = new QThread(this);
+    m_saveWorker->moveToThread(m_saveThread);
+    connect(m_saveWorker, &SaveWorker::imageSaved,        this, &MainWindow::onImageSavedToDb,  Qt::QueuedConnection);
+    connect(m_saveWorker, &SaveWorker::saveFailed,         this, &MainWindow::onSaveFailed,      Qt::QueuedConnection);
+    connect(m_saveWorker, &SaveWorker::saveLimitReached,   this, &MainWindow::onSaveLimitReached, Qt::QueuedConnection);
+    m_saveThread->start();
+    // 在工作线程中创建独立的 DB 连接 (WAL 模式支持主线程读 + worker 线程写并发)
+    QMetaObject::invokeMethod(m_saveWorker, "initDb",
+        Qt::QueuedConnection,
+        Q_ARG(QString, dbPath),
+        Q_ARG(qint64, DbManager::currentSessionId()));
+
     refreshSessionCombo();
     connect(ui->combo_session, QOverload<int>::of(&QComboBox::currentIndexChanged),
             this, &MainWindow::on_combo_session_currentIndexChanged);
@@ -105,6 +122,18 @@ MainWindow::~MainWindow()
         delete m_cameraThread;
         m_cameraThread = nullptr;
     }
+
+    // 1.5 停 SaveWorker 线程: cancelSave → clearQueue(在worker线程) → closeDb(在worker线程) → quit
+    if (m_saveThread) {
+        m_saveWorker->cancelSave();
+        QMetaObject::invokeMethod(m_saveWorker, "clearQueue", Qt::BlockingQueuedConnection);
+        QMetaObject::invokeMethod(m_saveWorker, "closeDb",   Qt::BlockingQueuedConnection);
+        m_saveThread->quit();
+        m_saveThread->wait(3000);
+    }
+    delete m_saveWorker;  m_saveWorker = nullptr;
+    delete m_saveThread;  m_saveThread = nullptr;
+
     if (m_playTimer)
         m_playTimer->stop();
 
@@ -276,34 +305,30 @@ void MainWindow::on_btn_snap_clicked()
     }
 }
 
-// 落盘 + 写库 (ModeSingle=0)
+// 落盘 + 写库 — 全部异步投递给 SaveWorker, 不阻塞主线程渲染
 void MainWindow::saveSnapImage(const QImage &img)
 {
+    if (!m_saveWorker) {
+        qWarning() << "SaveWorker 未初始化, 无法保存";
+        return;
+    }
     QString dir = ensureSaveDir();
     QString path = dir + "/ccd_snap_" + QDateTime::currentDateTime().toString("yyyyMMdd_HHmmss_zzz") + ".png";
-    if (img.save(path))
-    {
-        qint64 logId = DbManager::insertCapture(img, path, ModeSingle);
-        if (logId > 0) {
-            qDebug() << "单张保存+写库成功, path=" << path << " log_id=" << logId;
-            statusBar()->showMessage(QString("单张已保存并写库, ID=%1").arg(logId), 5000);
-        } else {
-            qWarning() << "单张保存成功但写库失败, path=" << path;
-            statusBar()->showMessage("图像已落盘, 但写库失败", 5000);
-        }
-    }
-    else
-    {
-        QMessageBox::warning(this, "保存失败", "图像保存失败:\n" + path);
-    }
+    QMetaObject::invokeMethod(m_saveWorker, "doSaveSingle",
+        Qt::QueuedConnection,
+        Q_ARG(QImage, img),
+        Q_ARG(QString, path));
 }
 
 // 实时渲染
 void MainWindow::displayLiveImage(const QImage &img)
 {
+    // 注意: 用 FastTransformation, 不要用 SmoothTransformation
+    // Smooth 是高质量双线性插值, 每帧调用 CPU 飙满, 实时画面会掉帧
+    // Fast 用邻近采样, 视觉上几乎无差别但快 5~10 倍
     m_lastImage = img.copy();
     ui->label_live_display->setPixmap(QPixmap::fromImage(img).scaled(
-        ui->label_live_display->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
+        ui->label_live_display->size(), Qt::KeepAspectRatio, Qt::FastTransformation));
 }
 
 // live 流: 启动/停止
@@ -317,6 +342,12 @@ void MainWindow::on_btn_live_clicked()
     if (m_cameraThread && m_cameraThread->isRunning()) {
         m_cameraThread->stop();
         m_cameraThread->wait();
+
+        m_saveWorker->cancelSave();
+        QMetaObject::invokeMethod(m_saveWorker, "clearQueue", Qt::QueuedConnection);
+        m_manualStop = true;
+        m_saveActive = false;
+
         delete m_cameraThread;
         m_cameraThread = nullptr;
 
@@ -328,11 +359,10 @@ void MainWindow::on_btn_live_clicked()
     }
 
     try {
+        // SaveWorker 已在构造函数创建, 这里只接信号
         m_cameraThread = new CameraThread(m_dataStream, m_nodeMapRemoteDevice, this);
-        connect(m_cameraThread, &CameraThread::imageReady, this, &MainWindow::displayLiveImage);
-        connect(m_cameraThread, &CameraThread::imageSaved, this, &MainWindow::onImageSavedToDb);
-        connect(m_cameraThread, &CameraThread::saveLimitReached, this, &MainWindow::onSaveLimitReached);
-        connect(m_cameraThread, &CameraThread::saveFailed, this, &MainWindow::onSaveFailed);
+        connect(m_cameraThread, &CameraThread::imageReady,     this, &MainWindow::displayLiveImage,     Qt::QueuedConnection);
+        connect(m_cameraThread, &CameraThread::imageToSave,    m_saveWorker, &SaveWorker::doSave,        Qt::QueuedConnection);
 
         m_cameraThread->start();
 
@@ -350,8 +380,13 @@ void MainWindow::on_btn_live_clicked()
 // 保存达到上限
 void MainWindow::onSaveLimitReached(int savedCount, const QString& saveDir)
 {
-    statusBar()->showMessage(QString("已保存 %1 张到 %2, 自动停止").arg(savedCount).arg(saveDir), 8000);
     ui->btn_save->setText("回调异步");
+    m_saveActive = false;
+    if (m_manualStop) {
+        statusBar()->showMessage(QString("已手动停止, 共保存 %1 张").arg(savedCount), 5000);
+        return;
+    }
+    statusBar()->showMessage(QString("已保存 %1 张到 %2, 自动停止").arg(savedCount).arg(saveDir), 8000);
     QMessageBox::information(this, "保存完成",
         QString("已保存 %1 张图像到:\n%2\n点击\"回调异步\"可再次保存一轮。").arg(savedCount).arg(saveDir));
 }
@@ -362,14 +397,14 @@ void MainWindow::onSaveFailed(const QString& reason)
     statusBar()->showMessage(reason, 3000);
 }
 
-// 异步落盘后主线程写库
-void MainWindow::onImageSavedToDb(const QImage &img, const QString &path)
+// SaveWorker 落盘+写库完成后的回调 (主线程, 只更新状态栏, 不做任何重活)
+void MainWindow::onImageSavedToDb(qint64 logId, const QString &path)
 {
-    qint64 logId = DbManager::insertCapture(img, path, ModeAsync);
     if (logId > 0) {
-        qDebug() << "[异步] 写库成功 log_id=" << logId << "path=" << path;
+        statusBar()->showMessage(QString("已保存并写库, ID=%1").arg(logId), 5000);
     } else {
-        qWarning() << "[异步] 写库失败 log_id=" << logId << "path=" << path;
+        qWarning() << "写库失败 path=" << path;
+        statusBar()->showMessage("图像已落盘, 但写库失败", 5000);
     }
 }
 
@@ -381,8 +416,15 @@ void MainWindow::on_btn_save_clicked()
         return;
     }
 
-    if (m_cameraThread->isSaving()) {
+    // 用主线程自己的标志判断状态, 不能用 m_cameraThread->isSaving()
+    // 因为相机线程可能已经到达上限 m_saveEnabled=false, 但 worker 还在处理队列
+    if (m_saveActive) {
         m_cameraThread->stopSave();
+        m_saveWorker->cancelSave();
+        QMetaObject::invokeMethod(m_saveWorker, "clearQueue", Qt::QueuedConnection);
+        m_manualStop = true;
+        m_saveActive = false;
+
         statusBar()->showMessage(QString("已手动停止, 共保存 %1 张").arg(m_cameraThread->savedCount()), 5000);
         ui->btn_save->setText("回调异步");
         return;
@@ -390,7 +432,10 @@ void MainWindow::on_btn_save_clicked()
 
     int limit = ui->spinBox_saveLimit->value();
     QString dir = ensureSaveDir();
+    m_saveWorker->setupSave(limit, dir);
     m_cameraThread->enableSave(dir, limit);
+    m_manualStop = false;
+    m_saveActive = true;
 
     ui->btn_save->setText("停止保存");
     statusBar()->showMessage(QString("回调异步已开启, 上限 %1 张, 保存到 %2").arg(limit).arg(dir), 5000);

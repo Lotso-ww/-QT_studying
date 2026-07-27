@@ -17,6 +17,8 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
+class SaveWorker;
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -45,7 +47,7 @@ private slots:
     void onPlaybackTimeout();
 
     void displayLiveImage(const QImage &img);
-    void onImageSavedToDb(const QImage &img, const QString &path);  // 异步落盘后写库
+    void onImageSavedToDb(qint64 logId, const QString &path);  // SaveWorker 落盘+写库完成后通知
     void onSaveLimitReached(int savedCount, const QString& saveDir);
     void onSaveFailed(const QString& reason);
 
@@ -55,6 +57,10 @@ private:
     std::shared_ptr<peak::core::DataStream> m_dataStream;
     std::shared_ptr<peak::core::NodeMap>    m_nodeMapRemoteDevice;
     CameraThread* m_cameraThread;
+
+    // 落盘独立线程: 抓帧线程把图丢过来, SaveWorker 在自己线程做 PNG 编码
+    SaveWorker* m_saveWorker;
+    QThread*    m_saveThread;
 
     QImage m_lastImage;
 
@@ -66,6 +72,8 @@ private:
     int          m_playIntervalMs;
     int          m_playStep;
     bool         m_isPlaying;
+    bool         m_manualStop = false;   // true=用户手动点了"停止保存", 抑制 saveLimitReached 弹窗
+    bool         m_saveActive = false;  // true=保存正在进行(从开始到worker完成), 主线程自己的状态
 
     QString ensureSaveDir();
     void saveSnapImage(const QImage &img);
