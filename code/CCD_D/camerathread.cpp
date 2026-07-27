@@ -96,8 +96,12 @@ void CameraThread::run()
                     QString path = m_saveDir +
                         QString("/ccd_live_%1_%2.png").arg(ts).arg(idx, 4, 10, QChar('0'));
 
-                    if (!qImg.save(path))
+                    if (qImg.save(path)) {
+                        // 落盘成功 -> 通知主线程写数据库 (QSqlDatabase 只能在创建它的线程使用)
+                        emit imageSaved(qImg.copy(), path);
+                    } else {
                         emit saveFailed(QString("保存失败: %1").arg(path));
+                    }
 
                     if (m_savedCount >= m_saveLimit) {
                         m_saveEnabled = false;

@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.19)
 project(CCD_D LANGUAGES CXX)
 
-find_package(Qt6 6.5 REQUIRED COMPONENTS Core Widgets)
+find_package(Qt6 6.5 REQUIRED COMPONENTS Core Widgets Sql)
 
 qt_standard_project_setup()
 
@@ -13,8 +13,8 @@ qt_add_executable(CCD_D
     mainwindow.ui
     camerathread.h
     camerathread.cpp
-    qrc.qrc
-
+    dbmanager.h
+    dbmanager.cpp
 )
 include_directories(
     "C:/Program Files/IDS/ids_peak/generic_sdk/api/include"
@@ -27,6 +27,7 @@ target_link_libraries(CCD_D
     PRIVATE
         Qt::Core
         Qt::Widgets
+        Qt::Sql
     "C:/Program Files/IDS/ids_peak/comfort_sdk/api/lib/x86_64/ids_peak_comfort_c.lib"
     "C:/Program Files/IDS/ids_peak/generic_sdk/api/lib/x86_64/ids_peak.lib"
     "C:/Program Files/IDS/ids_peak/generic_sdk/ipl/lib/x86_64/ids_peak_ipl.lib"

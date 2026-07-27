@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "dbmanager.h"
 
 #include <QFileDialog>
 #include <QDir>
@@ -8,6 +9,8 @@
 #include <QDesktopServices>
 #include <QUrl>
 #include <QCoreApplication>
+#include <QFile>
+#include <QAbstractItemView>
 #include <algorithm>
 
 MainWindow::MainWindow(QWidget *parent)
@@ -61,14 +64,36 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->btn_save->setEnabled(false);
 
-    // 提前创建保存目录
     ensureSaveDir();
+
+    // 初始化数据库
+    QString dbPath = ensureSaveDir() + "/capture.db";
+    if (DbManager::init(dbPath)) {
+        statusBar()->showMessage(QString("数据库就绪: %1").arg(QDir::toNativeSeparators(dbPath)), 8000);
+        qDebug() << "数据库就绪:" << QDir::toNativeSeparators(dbPath);
+
+        qint64 sid = DbManager::createSession(
+            QString("启动于 %1").arg(QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss")));
+        if (sid > 0)
+            qDebug() << "本次会话 ID =" << sid;
+    } else {
+        QMessageBox::warning(this, "警告",
+            "数据库初始化失败, 抓拍数据将仅保存为文件, 不写数据库。\n路径: " + dbPath);
+    }
+
+    refreshSessionCombo();
+    connect(ui->combo_session, QOverload<int>::of(&QComboBox::currentIndexChanged),
+            this, &MainWindow::on_combo_session_currentIndexChanged);
+
+    // 让下拉弹出列表(popup)的宽度自适应内容, 即使控件本身很窄, 展开时也能看到完整文字
+    if (ui->combo_session->view()) {
+        ui->combo_session->view()->setMinimumWidth(420);   // 弹出列表固定 420px 宽, 足够显示完整会话信息
+    }
 }
 
 
 MainWindow::~MainWindow()
 {
-    // 1. 先停子线程 (必须在释放 SDK 资源之前完成, 否则子线程还在用 dataStream 就崩了)
     if (m_cameraThread)
     {
         if (m_cameraThread->isRunning())
@@ -79,34 +104,23 @@ MainWindow::~MainWindow()
         delete m_cameraThread;
         m_cameraThread = nullptr;
     }
-
-    // 2. 停定时器
     if (m_playTimer)
         m_playTimer->stop();
 
-    // 3. 释放 SDK 资源 (顺序: dataStream -> nodeMap -> device -> Library)
     try { m_dataStream.reset(); } catch (const std::exception& e) { qDebug() << "dataStream 释放异常:" << e.what(); }
     try { m_nodeMapRemoteDevice.reset(); } catch (const std::exception& e) { qDebug() << "nodeMap 释放异常:" << e.what(); }
     try { m_device.reset(); } catch (const std::exception& e) { qDebug() << "device 释放异常:" << e.what(); }
 
-    try
-    {
-        peak::Library::Close();
-    }
-    catch (const std::exception& e)
-    {
-        qDebug() << "Library::Close 异常:" << e.what();
-    }
+    try { peak::Library::Close(); } catch (const std::exception& e) { qDebug() << "Library::Close 异常:" << e.what(); }
 
+    DbManager::close();
     delete ui;
 }
 
-// 保存目录: exe 所在目录下的 captures/
 QString MainWindow::ensureSaveDir()
 {
     QString dir = QCoreApplication::applicationDirPath() + "/captures";
     QDir().mkpath(dir);
-
     if (ui->label_savePath)
         ui->label_savePath->setText("保存目录: " + QDir::toNativeSeparators(dir));
     return dir;
@@ -120,8 +134,7 @@ void MainWindow::on_btn_connect_clicked()
         auto& deviceManager = peak::DeviceManager::Instance();
         deviceManager.Update();
 
-        if (deviceManager.Devices().empty())
-        {
+        if (deviceManager.Devices().empty()) {
             QMessageBox::warning(this, "连接失败", "未找到可用相机");
             return;
         }
@@ -145,11 +158,10 @@ void MainWindow::on_btn_connect_clicked()
     }
 }
 
-// 曝光时间 (μs)
+// 曝光 (μs)
 void MainWindow::on_doubleSpinBox_editingFinished()
 {
     if (!m_nodeMapRemoteDevice) return;
-
     try
     {
         m_nodeMapRemoteDevice->FindNode<peak::core::nodes::EnumerationNode>("ExposureAuto")->SetCurrentEntry("Off");
@@ -169,7 +181,6 @@ void MainWindow::on_doubleSpinBox_editingFinished()
 void MainWindow::on_doubleSpinBox_2_editingFinished()
 {
     if (!m_nodeMapRemoteDevice) return;
-
     try
     {
         m_nodeMapRemoteDevice->FindNode<peak::core::nodes::EnumerationNode>("GainAuto")->SetCurrentEntry("Off");
@@ -185,9 +196,9 @@ void MainWindow::on_doubleSpinBox_2_editingFinished()
     }
 }
 
-// 单张抓图: 抓一张并立即保存
-//  - live 渲染中: 直接截取当前预览帧 (所见即所得, 不抢 dataStream)
-//  - 非 live:    同步抓一张 (走完整流程)
+// 单张抓图
+//  - live 渲染中: 截取当前预览帧
+//  - 非 live:    同步抓一张
 void MainWindow::on_btn_snap_clicked()
 {
     if (!m_device || !m_dataStream) {
@@ -195,7 +206,6 @@ void MainWindow::on_btn_snap_clicked()
         return;
     }
 
-    // 分支 A: live 渲染中, 直接截取当前预览帧
     if (m_cameraThread && m_cameraThread->isRunning()) {
         if (m_lastImage.isNull()) {
             statusBar()->showMessage("预览尚未就绪, 请稍候", 3000);
@@ -205,11 +215,8 @@ void MainWindow::on_btn_snap_clicked()
         return;
     }
 
-    // 分支 B: 非 live, 同步抓一张
     try {
         auto payloadSize = m_nodeMapRemoteDevice->FindNode<peak::core::nodes::IntegerNode>("PayloadSize")->Value();
-
-        // 清理残留状态 (防 live 停止后干扰)
         try { m_dataStream->StopAcquisition(); } catch (...) {}
         m_dataStream->Flush(peak::core::DataStreamFlushMode::DiscardAll);
         for (const auto& buf : m_dataStream->AnnouncedBuffers())
@@ -224,7 +231,6 @@ void MainWindow::on_btn_snap_clicked()
         m_dataStream->StartAcquisition();
         m_nodeMapRemoteDevice->FindNode<peak::core::nodes::CommandNode>("AcquisitionStart")->Execute();
 
-        // 丢弃前 2 帧让传感器稳定
         for (int i = 0; i < 2; ++i) {
             auto tmp = m_dataStream->WaitForFinishedBuffer(2000);
             m_dataStream->QueueBuffer(tmp);
@@ -265,15 +271,21 @@ void MainWindow::on_btn_snap_clicked()
     }
 }
 
-// 把图像存到 captures/ 目录
+// 落盘 + 写库 (ModeSingle=0)
 void MainWindow::saveSnapImage(const QImage &img)
 {
     QString dir = ensureSaveDir();
     QString path = dir + "/ccd_snap_" + QDateTime::currentDateTime().toString("yyyyMMdd_HHmmss_zzz") + ".png";
     if (img.save(path))
     {
-        qDebug() << "单张已保存:" << path;
-        statusBar()->showMessage(QString("单张已保存: %1").arg(path), 5000);
+        qint64 logId = DbManager::insertCapture(img, path, ModeSingle);
+        if (logId > 0) {
+            qDebug() << "单张保存+写库成功, path=" << path << " log_id=" << logId;
+            statusBar()->showMessage(QString("单张已保存并写库, ID=%1").arg(logId), 5000);
+        } else {
+            qWarning() << "单张保存成功但写库失败, path=" << path;
+            statusBar()->showMessage("图像已落盘, 但写库失败", 5000);
+        }
     }
     else
     {
@@ -297,7 +309,6 @@ void MainWindow::on_btn_live_clicked()
         return;
     }
 
-    // 停止
     if (m_cameraThread && m_cameraThread->isRunning()) {
         m_cameraThread->stop();
         m_cameraThread->wait();
@@ -311,16 +322,15 @@ void MainWindow::on_btn_live_clicked()
         return;
     }
 
-    // 启动
     try {
         m_cameraThread = new CameraThread(m_dataStream, m_nodeMapRemoteDevice, this);
         connect(m_cameraThread, &CameraThread::imageReady, this, &MainWindow::displayLiveImage);
+        connect(m_cameraThread, &CameraThread::imageSaved, this, &MainWindow::onImageSavedToDb);
         connect(m_cameraThread, &CameraThread::saveLimitReached, this, &MainWindow::onSaveLimitReached);
         connect(m_cameraThread, &CameraThread::saveFailed, this, &MainWindow::onSaveFailed);
 
         m_cameraThread->start();
 
-        // live 仅做渲染预览; snap 走截预览帧分支, 不抢 dataStream, 仍可用
         ui->btn_live->setText("停止实时流");
         ui->btn_snap->setEnabled(true);
         ui->btn_save->setEnabled(true);
@@ -332,11 +342,11 @@ void MainWindow::on_btn_live_clicked()
     }
 }
 
-// 保存达到上限 (子线程信号触发)
+// 保存达到上限
 void MainWindow::onSaveLimitReached(int savedCount, const QString& saveDir)
 {
     statusBar()->showMessage(QString("已保存 %1 张到 %2, 自动停止").arg(savedCount).arg(saveDir), 8000);
-    ui->btn_save->setText("回调异步");   // 允许再来一轮
+    ui->btn_save->setText("回调异步");
     QMessageBox::information(this, "保存完成",
         QString("已保存 %1 张图像到:\n%2\n点击\"回调异步\"可再次保存一轮。").arg(savedCount).arg(saveDir));
 }
@@ -347,7 +357,18 @@ void MainWindow::onSaveFailed(const QString& reason)
     statusBar()->showMessage(reason, 3000);
 }
 
-// 回调异步保存: 开/关 (仅在 live 流运行期间可用)
+// 异步落盘后主线程写库
+void MainWindow::onImageSavedToDb(const QImage &img, const QString &path)
+{
+    qint64 logId = DbManager::insertCapture(img, path, ModeAsync);
+    if (logId > 0) {
+        qDebug() << "[异步] 写库成功 log_id=" << logId << "path=" << path;
+    } else {
+        qWarning() << "[异步] 写库失败 log_id=" << logId << "path=" << path;
+    }
+}
+
+// 回调异步保存开关
 void MainWindow::on_btn_save_clicked()
 {
     if (!m_cameraThread || !m_cameraThread->isRunning()) {
@@ -355,7 +376,6 @@ void MainWindow::on_btn_save_clicked()
         return;
     }
 
-    // 正在保存 -> 提前停止
     if (m_cameraThread->isSaving()) {
         m_cameraThread->stopSave();
         statusBar()->showMessage(QString("已手动停止, 共保存 %1 张").arg(m_cameraThread->savedCount()), 5000);
@@ -363,7 +383,6 @@ void MainWindow::on_btn_save_clicked()
         return;
     }
 
-    // 未保存 -> 开启, 持续拍到上限自动停
     int limit = ui->spinBox_saveLimit->value();
     QString dir = ensureSaveDir();
     m_cameraThread->enableSave(dir, limit);
@@ -376,8 +395,7 @@ void MainWindow::on_btn_save_clicked()
 void MainWindow::on_btn_openDir_clicked()
 {
     QString dir = ensureSaveDir();
-    if (!QDir(dir).exists())
-    {
+    if (!QDir(dir).exists()) {
         QMessageBox::warning(this, "提示", "保存目录尚不存在:\n" + dir);
         return;
     }
@@ -386,48 +404,106 @@ void MainWindow::on_btn_openDir_clicked()
 
 // ==================== Tab2: 浏览/播放 ====================
 
+// 刷新会话下拉并加载当前所选
 void MainWindow::on_btn_load_clicked()
 {
-    QString defaultDir = QStandardPaths::writableLocation(QStandardPaths::PicturesLocation);
-    QString dir = QFileDialog::getExistingDirectory(this, "选择图像所在文件夹", defaultDir);
-    if (dir.isEmpty()) return;
+    refreshSessionCombo();
+}
 
-    QStringList filter = {"*.png", "*.jpg", "*.jpeg", "*.bmp", "*.tiff", "*.tif"};
-    QDir d(dir);
-    d.setNameFilters(filter);
-    d.setSorting(QDir::Name);
-    QStringList files = d.entryList(QDir::Files);
-    if (files.isEmpty())
+// 刷新会话下拉框: 第一项=全部图片, 后面=历史会话(倒序), 默认选中本次会话
+void MainWindow::refreshSessionCombo()
+{
+    if (!ui->combo_session) return;
+
+    ui->combo_session->blockSignals(true);
+    ui->combo_session->clear();
+
+    const auto sessions = DbManager::listSessions();
+    const qint64 curSid = DbManager::currentSessionId();
+
+    ui->combo_session->addItem("【全部图片】", qint64(-1));
+
+    int selectRow = 0;
+    for (int i = 0; i < sessions.size(); ++i)
     {
-        QMessageBox::warning(this, "提示", "所选文件夹内没有可识别的图像文件");
-        return;
+        const SessionInfo &s = sessions[i];
+        // 紧凑显示: 会话#5  2026-07-27 09:42  (单:2 异:26)
+        QString label = QString("会话#%1  %2  (单:%3 异:%4)")
+                            .arg(s.id)
+                            .arg(s.startTime.left(16))
+                            .arg(s.singleCount)
+                            .arg(s.asyncCount);
+        ui->combo_session->addItem(label, s.id);
+
+        if (s.id == curSid) selectRow = i + 1;
     }
 
+    // 找不到当前会话时默认选第一个历史会话 (而不是"全部")
+    if (selectRow == 0 && sessions.size() > 0) selectRow = 1;
+
+    ui->combo_session->setCurrentIndex(selectRow);
+    ui->combo_session->blockSignals(false);
+
+    // 给每项设置 tooltip, 下拉框再宽也容纳不下长文本时悬停可看全
+    for (int i = 0; i < ui->combo_session->count(); ++i) {
+        ui->combo_session->setItemData(i, ui->combo_session->itemText(i), Qt::ToolTipRole);
+    }
+
+    loadImagesFromCurrentSelection();
+}
+
+// 按下拉所选 session id 加载图像 (方案B: 只取 id, 展示时按 id 读 BLOB)
+void MainWindow::loadImagesFromCurrentSelection()
+{
+    qint64 sid = ui->combo_session->currentData().toLongLong();
+    QList<ImageRow> rows = DbManager::listImagesBySession(sid);
+
+    m_imageIds.clear();
     m_imagePaths.clear();
-    for (const QString& f : qAsConst(files))
-        m_imagePaths.append(d.absoluteFilePath(f));
+    for (const ImageRow &r : rows) {
+        m_imageIds.append(r.id);
+        m_imagePaths.append(r.path);
+    }
+
+    if (m_imageIds.isEmpty())
+    {
+        ui->label->setText("该会话暂无图片");
+        ui->slider_progress->setEnabled(false);
+        ui->btn_prev->setEnabled(false);
+        ui->btn_next->setEnabled(false);
+        ui->btn_play->setEnabled(false);
+        ui->timer->setText("0 / 0");
+        return;
+    }
 
     m_currentIndex = 0;
     ui->slider_progress->setEnabled(true);
     ui->slider_progress->setMinimum(0);
-    ui->slider_progress->setMaximum(m_imagePaths.size() - 1);
+    ui->slider_progress->setMaximum(m_imageIds.size() - 1);
     ui->slider_progress->setValue(0);
-
-    ui->btn_prev->setEnabled(m_imagePaths.size() > 1);
-    ui->btn_next->setEnabled(m_imagePaths.size() > 1);
-    ui->btn_play->setEnabled(m_imagePaths.size() > 1);
+    ui->btn_prev->setEnabled(m_imageIds.size() > 1);
+    ui->btn_next->setEnabled(m_imageIds.size() > 1);
+    ui->btn_play->setEnabled(m_imageIds.size() > 1);
 
     showImageAt(0);
 }
 
+// 切换会话下拉
+void MainWindow::on_combo_session_currentIndexChanged(int)
+{
+    loadImagesFromCurrentSelection();
+}
+
+// 展示指定下标的图 (方案B: 直接从数据库 BLOB 读)
 void MainWindow::showImageAt(int index)
 {
-    if (index < 0 || index >= m_imagePaths.size()) return;
+    if (index < 0 || index >= m_imageIds.size()) return;
 
-    QImage img(m_imagePaths.at(index));
+    QImage img = DbManager::loadImageById(m_imageIds.at(index));
     if (img.isNull())
     {
-        qWarning() << "无法解码图像:" << m_imagePaths.at(index);
+        qWarning() << "无法从数据库解码图像, image_data.id=" << m_imageIds.at(index);
+        ui->label->setText("图像解码失败 (id=" + QString::number(m_imageIds.at(index)) + ")");
         return;
     }
 
@@ -436,11 +512,15 @@ void MainWindow::showImageAt(int index)
 
     m_currentIndex = index;
     refreshSliderAndTimer();
+
+    if (index < m_imagePaths.size()) {
+        statusBar()->showMessage(QString("当前: %1").arg(m_imagePaths.at(index)), 3000);
+    }
 }
 
 void MainWindow::refreshSliderAndTimer()
 {
-    if (m_imagePaths.isEmpty()) return;
+    if (m_imageIds.isEmpty()) return;
 
     ui->slider_progress->blockSignals(true);
     ui->slider_progress->setValue(m_currentIndex);
@@ -448,34 +528,34 @@ void MainWindow::refreshSliderAndTimer()
 
     ui->timer->setText(QString("%1 / %2")
         .arg(m_currentIndex + 1, 3, 10, QChar('0'))
-        .arg(m_imagePaths.size(), 3, 10, QChar('0')));
+        .arg(m_imageIds.size(), 3, 10, QChar('0')));
 }
 
 void MainWindow::on_btn_prev_clicked()
 {
-    if (m_imagePaths.isEmpty()) return;
+    if (m_imageIds.isEmpty()) return;
     int idx = m_currentIndex - 1;
-    if (idx < 0) idx = m_imagePaths.size() - 1;
+    if (idx < 0) idx = m_imageIds.size() - 1;
     showImageAt(idx);
 }
 
 void MainWindow::on_btn_next_clicked()
 {
-    if (m_imagePaths.isEmpty()) return;
+    if (m_imageIds.isEmpty()) return;
     int idx = m_currentIndex + 1;
-    if (idx >= m_imagePaths.size()) idx = 0;
+    if (idx >= m_imageIds.size()) idx = 0;
     showImageAt(idx);
 }
 
 void MainWindow::on_btn_play_clicked()
 {
-    if (m_imagePaths.isEmpty()) return;
+    if (m_imageIds.isEmpty()) return;
     m_isPlaying ? stopPlayback() : startPlayback();
 }
 
 void MainWindow::startPlayback()
 {
-    if (m_imagePaths.size() <= 1) return;
+    if (m_imageIds.size() <= 1) return;
     m_isPlaying = true;
     ui->btn_play->setText("⏸");
     m_playTimer->start(m_playIntervalMs);
@@ -490,14 +570,14 @@ void MainWindow::stopPlayback()
 
 void MainWindow::onPlaybackTimeout()
 {
-    if (m_imagePaths.isEmpty()) return;
+    if (m_imageIds.isEmpty()) return;
     int idx = m_currentIndex + m_playStep;
-    while (idx >= m_imagePaths.size())
-        idx -= m_imagePaths.size();
+    while (idx >= m_imageIds.size())
+        idx -= m_imageIds.size();
     showImageAt(idx);
 }
 
-// 倍速: 1x 125ms/1帧  | 2x 125ms/2帧 | 3x 90ms/2帧 | 4x 71ms/2帧
+// 倍速: 1x 125ms/1帧 | 2x 125ms/2帧 | 3x 90ms/2帧 | 4x 71ms/2帧
 void MainWindow::on_comboBox_currentIndexChanged(int index)
 {
     struct Cfg { int ms; int step; };

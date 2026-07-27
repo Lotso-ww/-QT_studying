@@ -28,6 +28,8 @@ public:
 
 signals:
     void imageReady(const QImage &img);
+    // 异步保存已落盘成功, 通知主线程写库 (QImage + 落盘路径)
+    void imageSaved(const QImage &img, const QString &path);
     void saveLimitReached(int savedCount, const QString& saveDir);
     void saveFailed(const QString& reason);
 

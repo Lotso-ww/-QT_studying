@@ -7,9 +7,11 @@
 #include <QImage>
 #include <QTimer>
 #include <QStringList>
+#include <QList>
 #include <peak/peak.hpp>
 #include <peak_ipl/peak_ipl.hpp>
 #include "camerathread.h"
+#include "dbmanager.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -37,11 +39,13 @@ private slots:
     void on_btn_prev_clicked();
     void on_btn_next_clicked();
     void on_btn_play_clicked();
+    void on_combo_session_currentIndexChanged(int index);  // 会话切换
     void on_comboBox_currentIndexChanged(int index);  // 0=1x 1=2x 2=3x 3=4x
     void on_slider_progress_sliderMoved(int position);
     void onPlaybackTimeout();
 
     void displayLiveImage(const QImage &img);
+    void onImageSavedToDb(const QImage &img, const QString &path);  // 异步落盘后写库
     void onSaveLimitReached(int savedCount, const QString& saveDir);
     void onSaveFailed(const QString& reason);
 
@@ -55,16 +59,19 @@ private:
     QImage m_lastImage;
 
     // Tab2
-    QStringList m_imagePaths;
-    int         m_currentIndex;
-    QTimer     *m_playTimer;
-    int         m_playIntervalMs;
-    int         m_playStep;
-    bool        m_isPlaying;
+    QList<qint64> m_imageIds;      // 每张图对应的 image_data.id (方案B: 从 BLOB 解出图)
+    QStringList  m_imagePaths;    // 路径(仅显示, 不再用于读图)
+    int          m_currentIndex;
+    QTimer      *m_playTimer;
+    int          m_playIntervalMs;
+    int          m_playStep;
+    bool         m_isPlaying;
 
     QString ensureSaveDir();
-    void saveSnapImage(const QImage &img);   // 存单张到 captures/
+    void saveSnapImage(const QImage &img);
     void showImageAt(int index);
+    void refreshSessionCombo();               // 刷新会话下拉
+    void loadImagesFromCurrentSelection();    // 按下拉所选会话从库读路径
     void refreshSliderAndTimer();
     void stopPlayback();
     void startPlayback();

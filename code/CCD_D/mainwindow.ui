@@ -22,7 +22,7 @@
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
-        <string>Tab 1</string>
+        <string>相机抓拍</string>
        </attribute>
        <widget class="QPushButton" name="btn_connect">
         <property name="geometry">
@@ -224,7 +224,7 @@
       </widget>
       <widget class="QWidget" name="tab_2">
        <attribute name="title">
-        <string>Tab 2</string>
+        <string>图像浏览</string>
        </attribute>
        <widget class="QLabel" name="label">
         <property name="geometry">
@@ -367,20 +367,43 @@
          </item>
         </layout>
        </widget>
-       <widget class="QPushButton" name="btn_load">
-        <property name="geometry">
-         <rect>
-          <x>14</x>
-          <y>22</y>
-          <width>91</width>
-          <height>31</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>加载图像</string>
-        </property>
+<widget class="QPushButton" name="btn_load">
+         <property name="geometry">
+          <rect>
+           <x>14</x>
+           <y>22</y>
+           <width>91</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>刷新会话</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_session">
+         <property name="geometry">
+          <rect>
+           <x>14</x>
+           <y>60</y>
+           <width>91</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>选择会话</string>
+         </property>
+        </widget>
+        <widget class="QComboBox" name="combo_session">
+         <property name="geometry">
+          <rect>
+           <x>14</x>
+           <y>82</y>
+           <width>104</width>
+           <height>31</height>
+          </rect>
+         </property>
+        </widget>
        </widget>
-      </widget>
      </widget>
     </item>
    </layout>
