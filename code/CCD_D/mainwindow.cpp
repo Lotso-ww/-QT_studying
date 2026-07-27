@@ -94,6 +94,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
+    // 1. 先停相机子线程 (它会 emit 信号让主线程写库, 必须在关库前停掉)
     if (m_cameraThread)
     {
         if (m_cameraThread->isRunning())
@@ -107,13 +108,17 @@ MainWindow::~MainWindow()
     if (m_playTimer)
         m_playTimer->stop();
 
-    try { m_dataStream.reset(); } catch (const std::exception& e) { qDebug() << "dataStream 释放异常:" << e.what(); }
-    try { m_nodeMapRemoteDevice.reset(); } catch (const std::exception& e) { qDebug() << "nodeMap 释放异常:" << e.what(); }
-    try { m_device.reset(); } catch (const std::exception& e) { qDebug() << "device 释放异常:" << e.what(); }
-
-    try { peak::Library::Close(); } catch (const std::exception& e) { qDebug() << "Library::Close 异常:" << e.what(); }
-
+    // 2. 关数据库 — 必须在 SDK 清理之前!
+    //    如果 SDK 析构触发 debug assertion / abort(), 上面那些来不及跑,
+    //    但数据库已经关好了, 下次启动就不会 "database is locked"
     DbManager::close();
+
+    // 3. SDK 清理 — 用 catch(...) 兜底所有异常, 避免非 std::exception 类型导致 abort
+    try { m_dataStream.reset(); }       catch (...) { qDebug() << "dataStream 释放异常"; }
+    try { m_nodeMapRemoteDevice.reset(); } catch (...) { qDebug() << "nodeMap 释放异常"; }
+    try { m_device.reset(); }          catch (...) { qDebug() << "device 释放异常"; }
+    try { peak::Library::Close(); }     catch (...) { qDebug() << "Library::Close 异常"; }
+
     delete ui;
 }
 

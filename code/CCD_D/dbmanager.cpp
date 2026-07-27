@@ -15,6 +15,13 @@ bool DbManager::init(const QString &dbPath)
 {
     if (m_inited) return true;
 
+    // 清理可能残留的旧连接 (上次崩溃/异常退出后可能没 removeDatabase)
+    const QString connName = QLatin1String(QSqlDatabase::defaultConnection);
+    if (QSqlDatabase::contains(connName)) {
+        qWarning() << "发现残留数据库连接, 先清理";
+        QSqlDatabase::removeDatabase(connName);
+    }
+
     m_db = QSqlDatabase::addDatabase("QSQLITE");
     m_db.setDatabaseName(dbPath);
 
@@ -24,12 +31,33 @@ bool DbManager::init(const QString &dbPath)
     }
 
     QSqlQuery q(m_db);
+    // 外键约束需每次连接后显式开启
     q.exec("PRAGMA foreign_keys = ON");
+    // busy_timeout: 遇到锁时最多等 5 秒, 而不是立刻报 "database is locked"
+    q.exec("PRAGMA busy_timeout = 5000");
+
+    // 关键: 先做一次 WAL checkpoint, 清理上次崩溃/异常退出残留的 -wal 数据
+    // TRUNCATE 模式会把 WAL 写回主库并清空 -wal/-shm
+    // 如果上次正常关闭, 这行无害; 如果上次崩溃, 这行修复
+    if (!q.exec("PRAGMA wal_checkpoint(TRUNCATE)")) {
+        qWarning() << "WAL checkpoint 失败:" << q.lastError().text()
+                   << " (可能是旧库非WAL模式, 忽略)";
+    }
+
+    // 启用 WAL 模式: 读写不互锁, 减少 "database is locked" 概率
+    if (!q.exec("PRAGMA journal_mode = WAL")) {
+        qWarning() << "设置 WAL 模式失败:" << q.lastError().text()
+                   << " 回退到默认 DELETE 模式";
+    }
+    q.exec("PRAGMA wal_autocheckpoint = 1000");
 
     if (!ensureTables()) {
         qWarning() << "建表失败";
         return false;
     }
+
+    // 建表后再做一次 checkpoint, 确保建表期间产生的 WAL 数据已合并
+    q.exec("PRAGMA wal_checkpoint(TRUNCATE)");
 
     m_inited = true;
     qDebug() << "数据库已就绪:" << dbPath;
@@ -38,10 +66,27 @@ bool DbManager::init(const QString &dbPath)
 
 void DbManager::close()
 {
-    if (m_inited) {
-        m_db.close();
-        m_inited = false;
+    if (!m_inited) return;
+
+    if (m_db.isOpen()) {
+        // 提交任何可能未提交的事务 (commit 对非事务环境无副作用)
+        try { m_db.commit(); } catch (...) {}
+
+        try {
+            QSqlQuery q(m_db);
+            q.exec("PRAGMA wal_checkpoint(TRUNCATE)");
+        } catch (...) {
+            qWarning() << "close 时 wal_checkpoint 异常 (忽略)";
+        }
     }
+
+    // 关键顺序: close → 释放 QSqlDatabase 对象 → removeDatabase
+    // ensure 所有 QSqlQuery 局部变量已析构后再 removeDatabase
+    QString connName = m_db.connectionName();
+    m_db.close();
+    m_db = QSqlDatabase();             // 释放本对象的引用
+    QSqlDatabase::removeDatabase(connName);
+    m_inited = false;
 }
 
 // 建表: 在原两表上加 capture_session, 并给 capture_log 加 session_id 外键
@@ -136,22 +181,50 @@ bool DbManager::ensureTables()
     return true;
 }
 
+// 如果遇到 "database is locked", 尝试切到 DELETE 模式强制合并 WAL, 再切回 WAL
+static bool tryRecoverFromLock(QSqlDatabase &db)
+{
+    qWarning() << "尝试 WAL 恢复...";
+    QSqlQuery q(db);
+    // DELETE 模式会强制 checkpoint 并删除 -wal/-shm
+    bool ok = q.exec("PRAGMA journal_mode = DELETE");
+    if (!ok) {
+        qWarning() << "切 DELETE 模式失败:" << q.lastError().text();
+        return false;
+    }
+    // 切回 WAL
+    q.exec("PRAGMA journal_mode = WAL");
+    q.exec("PRAGMA wal_checkpoint(TRUNCATE)");
+    qDebug() << "WAL 恢复完成";
+    return true;
+}
+
 // 创建新会话 (程序启动时调用一次)
 qint64 DbManager::createSession(const QString &note)
 {
     if (!m_inited) return 0;
 
-    QSqlQuery q(m_db);
-    q.prepare("INSERT INTO capture_session (start_time, note) VALUES (?, ?)");
-    q.addBindValue(QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss.zzz"));
-    q.addBindValue(note);
-    if (!q.exec()) {
-        qWarning() << "创建会话失败:" << q.lastError().text();
-        return 0;
+    for (int attempt = 0; attempt < 2; ++attempt)
+    {
+        QSqlQuery q(m_db);
+        q.prepare("INSERT INTO capture_session (start_time, note) VALUES (?, ?)");
+        q.addBindValue(QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss.zzz"));
+        q.addBindValue(note);
+        if (q.exec()) {
+            m_currentSessionId = q.lastInsertId().toLongLong();
+            qDebug() << "新会话已建立, session_id =" << m_currentSessionId;
+            return m_currentSessionId;
+        }
+        // 第一次失败 → 尝试 WAL 恢复 + 重试
+        const QString err = q.lastError().databaseText();
+        qWarning() << "创建会话失败 (尝试" << (attempt+1) << "/2):" << err;
+        if (err.contains("locked", Qt::CaseInsensitive) && attempt == 0) {
+            tryRecoverFromLock(m_db);
+            continue;   // retry
+        }
+        break;
     }
-    m_currentSessionId = q.lastInsertId().toLongLong();
-    qDebug() << "新会话已建立, session_id =" << m_currentSessionId;
-    return m_currentSessionId;
+    return 0;
 }
 
 qint64 DbManager::currentSessionId()      { return m_currentSessionId; }
