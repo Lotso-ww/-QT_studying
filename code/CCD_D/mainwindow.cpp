@@ -38,7 +38,6 @@ MainWindow::MainWindow(QWidget *parent)
         QMessageBox::critical(this, "错误", "无法初始化相机 SDK");
     }
 
-    // 曝光/增益输入框
     ui->doubleSpinBox->setRange(50.0, 30000.0);
     ui->doubleSpinBox->setSingleStep(100.0);
     ui->doubleSpinBox->setSuffix(" μs");
@@ -49,12 +48,10 @@ MainWindow::MainWindow(QWidget *parent)
     ui->doubleSpinBox_2->setSuffix(" dB");
     ui->doubleSpinBox_2->setValue(0.0);
 
-    // 播放定时器
     m_playTimer = new QTimer(this);
     m_playTimer->setInterval(m_playIntervalMs);
     connect(m_playTimer, &QTimer::timeout, this, &MainWindow::onPlaybackTimeout);
 
-    // Tab2 按钮
     ui->btn_prev->setText("<");
     ui->btn_play->setText("▶");
     ui->btn_next->setText(">");
@@ -68,7 +65,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     ensureSaveDir();
 
-    // 初始化数据库
     QString dbPath = ensureSaveDir() + "/capture.db";
     if (DbManager::init(dbPath)) {
         statusBar()->showMessage(QString("数据库就绪: %1").arg(QDir::toNativeSeparators(dbPath)), 8000);
@@ -83,8 +79,6 @@ MainWindow::MainWindow(QWidget *parent)
             "数据库初始化失败, 抓拍数据将仅保存为文件, 不写数据库。\n路径: " + dbPath);
     }
 
-    // 创建 SaveWorker (落盘+写库独立线程, 不阻塞主线程渲染)
-    // 放在构造函数里, 这样单张抓拍也能用 (不需要先开 live)
     m_saveWorker = new SaveWorker;
     m_saveThread = new QThread(this);
     m_saveWorker->moveToThread(m_saveThread);
@@ -92,7 +86,6 @@ MainWindow::MainWindow(QWidget *parent)
     connect(m_saveWorker, &SaveWorker::saveFailed,         this, &MainWindow::onSaveFailed,      Qt::QueuedConnection);
     connect(m_saveWorker, &SaveWorker::saveLimitReached,   this, &MainWindow::onSaveLimitReached, Qt::QueuedConnection);
     m_saveThread->start();
-    // 在工作线程中创建独立的 DB 连接 (WAL 模式支持主线程读 + worker 线程写并发)
     QMetaObject::invokeMethod(m_saveWorker, "initDb",
         Qt::QueuedConnection,
         Q_ARG(QString, dbPath),
@@ -102,16 +95,15 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->combo_session, QOverload<int>::of(&QComboBox::currentIndexChanged),
             this, &MainWindow::on_combo_session_currentIndexChanged);
 
-    // 让下拉弹出列表(popup)的宽度自适应内容, 即使控件本身很窄, 展开时也能看到完整文字
     if (ui->combo_session->view()) {
-        ui->combo_session->view()->setMinimumWidth(420);   // 弹出列表固定 420px 宽, 足够显示完整会话信息
+        ui->combo_session->view()->setMinimumWidth(420);
     }
 }
 
 
 MainWindow::~MainWindow()
 {
-    // 1. 先停相机子线程 (它会 emit 信号让主线程写库, 必须在关库前停掉)
+    // 1. 停相机子线程
     if (m_cameraThread)
     {
         if (m_cameraThread->isRunning())
@@ -123,7 +115,7 @@ MainWindow::~MainWindow()
         m_cameraThread = nullptr;
     }
 
-    // 1.5 停 SaveWorker 线程: cancelSave → clearQueue(在worker线程) → closeDb(在worker线程) → quit
+    // 2. 停 SaveWorker 线程
     if (m_saveThread) {
         m_saveWorker->cancelSave();
         QMetaObject::invokeMethod(m_saveWorker, "clearQueue", Qt::BlockingQueuedConnection);
@@ -137,12 +129,10 @@ MainWindow::~MainWindow()
     if (m_playTimer)
         m_playTimer->stop();
 
-    // 2. 关数据库 — 必须在 SDK 清理之前!
-    //    如果 SDK 析构触发 debug assertion / abort(), 上面那些来不及跑,
-    //    但数据库已经关好了, 下次启动就不会 "database is locked"
+    // 3. 关数据库 (必须在 SDK 清理之前)
     DbManager::close();
 
-    // 3. SDK 清理 — 用 catch(...) 兜底所有异常, 避免非 std::exception 类型导致 abort
+    // 4. SDK 清理
     try { m_dataStream.reset(); }       catch (...) { qDebug() << "dataStream 释放异常"; }
     try { m_nodeMapRemoteDevice.reset(); } catch (...) { qDebug() << "nodeMap 释放异常"; }
     try { m_device.reset(); }          catch (...) { qDebug() << "device 释放异常"; }
@@ -160,7 +150,6 @@ QString MainWindow::ensureSaveDir()
     return dir;
 }
 
-// 连接相机
 void MainWindow::on_btn_connect_clicked()
 {
     try
@@ -192,7 +181,6 @@ void MainWindow::on_btn_connect_clicked()
     }
 }
 
-// 曝光 (μs)
 void MainWindow::on_doubleSpinBox_editingFinished()
 {
     if (!m_nodeMapRemoteDevice) return;
@@ -211,7 +199,6 @@ void MainWindow::on_doubleSpinBox_editingFinished()
     }
 }
 
-// 增益 (dB)
 void MainWindow::on_doubleSpinBox_2_editingFinished()
 {
     if (!m_nodeMapRemoteDevice) return;
@@ -230,9 +217,6 @@ void MainWindow::on_doubleSpinBox_2_editingFinished()
     }
 }
 
-// 单张抓图
-//  - live 渲染中: 截取当前预览帧
-//  - 非 live:    同步抓一张
 void MainWindow::on_btn_snap_clicked()
 {
     if (!m_device || !m_dataStream) {
@@ -305,7 +289,6 @@ void MainWindow::on_btn_snap_clicked()
     }
 }
 
-// 落盘 + 写库 — 全部异步投递给 SaveWorker, 不阻塞主线程渲染
 void MainWindow::saveSnapImage(const QImage &img)
 {
     if (!m_saveWorker) {
@@ -320,18 +303,14 @@ void MainWindow::saveSnapImage(const QImage &img)
         Q_ARG(QString, path));
 }
 
-// 实时渲染
 void MainWindow::displayLiveImage(const QImage &img)
 {
-    // 注意: 用 FastTransformation, 不要用 SmoothTransformation
-    // Smooth 是高质量双线性插值, 每帧调用 CPU 飙满, 实时画面会掉帧
-    // Fast 用邻近采样, 视觉上几乎无差别但快 5~10 倍
+    // FastTransformation: 邻近采样比 SmoothTransformation 快 5~10 倍, 实时画面不掉帧
     m_lastImage = img.copy();
     ui->label_live_display->setPixmap(QPixmap::fromImage(img).scaled(
         ui->label_live_display->size(), Qt::KeepAspectRatio, Qt::FastTransformation));
 }
 
-// live 流: 启动/停止
 void MainWindow::on_btn_live_clicked()
 {
     if (!m_device || !m_dataStream) {
@@ -359,7 +338,6 @@ void MainWindow::on_btn_live_clicked()
     }
 
     try {
-        // SaveWorker 已在构造函数创建, 这里只接信号
         m_cameraThread = new CameraThread(m_dataStream, m_nodeMapRemoteDevice, this);
         connect(m_cameraThread, &CameraThread::imageReady,     this, &MainWindow::displayLiveImage,     Qt::QueuedConnection);
         connect(m_cameraThread, &CameraThread::imageToSave,    m_saveWorker, &SaveWorker::doSave,        Qt::QueuedConnection);
@@ -377,7 +355,6 @@ void MainWindow::on_btn_live_clicked()
     }
 }
 
-// 保存达到上限
 void MainWindow::onSaveLimitReached(int savedCount, const QString& saveDir)
 {
     ui->btn_save->setText("回调异步");
@@ -397,7 +374,6 @@ void MainWindow::onSaveFailed(const QString& reason)
     statusBar()->showMessage(reason, 3000);
 }
 
-// SaveWorker 落盘+写库完成后的回调 (主线程, 只更新状态栏, 不做任何重活)
 void MainWindow::onImageSavedToDb(qint64 logId, const QString &path)
 {
     if (logId > 0) {
@@ -408,7 +384,6 @@ void MainWindow::onImageSavedToDb(qint64 logId, const QString &path)
     }
 }
 
-// 回调异步保存开关
 void MainWindow::on_btn_save_clicked()
 {
     if (!m_cameraThread || !m_cameraThread->isRunning()) {
@@ -416,8 +391,8 @@ void MainWindow::on_btn_save_clicked()
         return;
     }
 
-    // 用主线程自己的标志判断状态, 不能用 m_cameraThread->isSaving()
-    // 因为相机线程可能已经到达上限 m_saveEnabled=false, 但 worker 还在处理队列
+    // 用 m_saveActive 判断状态, 不能用 m_cameraThread->isSaving()
+    // 因为相机线程到达上限后 m_saveEnabled=false, 但 worker 可能还在处理队列
     if (m_saveActive) {
         m_cameraThread->stopSave();
         m_saveWorker->cancelSave();
@@ -441,7 +416,6 @@ void MainWindow::on_btn_save_clicked()
     statusBar()->showMessage(QString("回调异步已开启, 上限 %1 张, 保存到 %2").arg(limit).arg(dir), 5000);
 }
 
-// 打开保存目录
 void MainWindow::on_btn_openDir_clicked()
 {
     QString dir = ensureSaveDir();
@@ -452,15 +426,12 @@ void MainWindow::on_btn_openDir_clicked()
     QDesktopServices::openUrl(QUrl::fromLocalFile(dir));
 }
 
-// ==================== Tab2: 浏览/播放 ====================
 
-// 刷新会话下拉并加载当前所选
 void MainWindow::on_btn_load_clicked()
 {
     refreshSessionCombo();
 }
 
-// 刷新会话下拉框: 第一项=全部图片, 后面=历史会话(倒序), 默认选中本次会话
 void MainWindow::refreshSessionCombo()
 {
     if (!ui->combo_session) return;
@@ -477,7 +448,7 @@ void MainWindow::refreshSessionCombo()
     for (int i = 0; i < sessions.size(); ++i)
     {
         const SessionInfo &s = sessions[i];
-        // 紧凑显示: 会话#5  2026-07-27 09:42  (单:2 异:26)
+        // 会话#5  2026-07-27 09:42  (单:2 异:26)
         QString label = QString("会话#%1  %2  (单:%3 异:%4)")
                             .arg(s.id)
                             .arg(s.startTime.left(16))
@@ -488,13 +459,11 @@ void MainWindow::refreshSessionCombo()
         if (s.id == curSid) selectRow = i + 1;
     }
 
-    // 找不到当前会话时默认选第一个历史会话 (而不是"全部")
     if (selectRow == 0 && sessions.size() > 0) selectRow = 1;
 
     ui->combo_session->setCurrentIndex(selectRow);
     ui->combo_session->blockSignals(false);
 
-    // 给每项设置 tooltip, 下拉框再宽也容纳不下长文本时悬停可看全
     for (int i = 0; i < ui->combo_session->count(); ++i) {
         ui->combo_session->setItemData(i, ui->combo_session->itemText(i), Qt::ToolTipRole);
     }
@@ -502,7 +471,6 @@ void MainWindow::refreshSessionCombo()
     loadImagesFromCurrentSelection();
 }
 
-// 按下拉所选 session id 加载图像 (方案B: 只取 id, 展示时按 id 读 BLOB)
 void MainWindow::loadImagesFromCurrentSelection()
 {
     qint64 sid = ui->combo_session->currentData().toLongLong();
@@ -538,13 +506,11 @@ void MainWindow::loadImagesFromCurrentSelection()
     showImageAt(0);
 }
 
-// 切换会话下拉
 void MainWindow::on_combo_session_currentIndexChanged(int)
 {
     loadImagesFromCurrentSelection();
 }
 
-// 展示指定下标的图 (方案B: 直接从数据库 BLOB 读)
 void MainWindow::showImageAt(int index)
 {
     if (index < 0 || index >= m_imageIds.size()) return;

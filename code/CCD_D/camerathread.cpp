@@ -12,8 +12,6 @@
 #include <QCoreApplication>
 #include <QEvent>
 
-// ==================== SaveWorker ====================
-
 SaveWorker::SaveWorker(QObject *parent) : QObject(parent) {}
 
 void SaveWorker::setupSave(int limit, const QString &saveDir)
@@ -21,7 +19,7 @@ void SaveWorker::setupSave(int limit, const QString &saveDir)
     m_saveLimit      = limit;
     m_saveDir        = saveDir;
     m_completedCount = 0;
-    m_cancelSave     = false;             // 新一轮保存, 清除取消标志
+    m_cancelSave     = false;
 }
 
 void SaveWorker::cancelSave()
@@ -61,13 +59,12 @@ void SaveWorker::closeDb()
 
 void SaveWorker::clearQueue()
 {
-    // 必须在 worker 线程调用! 清除本线程事件队列里所有待处理的 doSave 调用
     QCoreApplication::removePostedEvents(this, QEvent::MetaCall);
 }
 
 void SaveWorker::doSaveInternal(const QImage &img, const QString &path, int mode)
 {
-    if (m_cancelSave.load()) return;      // 二次检查: 防止在 doSave 入口和此处之间被取消
+    if (m_cancelSave.load()) return;
 
     if (img.isNull()) {
         emit saveFailed("图像为空");
@@ -80,7 +77,6 @@ void SaveWorker::doSaveInternal(const QImage &img, const QString &path, int mode
     buf.open(QIODevice::WriteOnly);
     img.save(&buf, "PNG");
 
-    // 写文件
     QFile file(path);
     if (!file.open(QIODevice::WriteOnly) || file.write(pngBytes) < 0) {
         emit saveFailed(QString("保存失败: %1").arg(path));
@@ -88,14 +84,13 @@ void SaveWorker::doSaveInternal(const QImage &img, const QString &path, int mode
     }
     file.close();
 
-    // 写数据库 (本线程独立连接)
     qint64 logId = insertCapture(path, mode, pngBytes);
     emit imageSaved(logId, path);
 }
 
 void SaveWorker::doSave(const QImage &img, const QString &path)
 {
-    if (m_cancelSave.load()) return;      // 已取消, 跳过
+    if (m_cancelSave.load()) return;
 
     doSaveInternal(img, path, ModeAsync);
 
@@ -108,7 +103,7 @@ void SaveWorker::doSave(const QImage &img, const QString &path)
 
 void SaveWorker::doSaveSingle(const QImage &img, const QString &path)
 {
-    if (m_cancelSave.load()) return;      // 单张也检查取消标志
+    if (m_cancelSave.load()) return;
     doSaveInternal(img, path, ModeSingle);
 }
 
@@ -169,8 +164,6 @@ qint64 SaveWorker::insertCapture(const QString &imagePath, int mode, const QByte
     }
 }
 
-// ==================== CameraThread ====================
-
 CameraThread::CameraThread(std::shared_ptr<peak::core::DataStream> dataStream,
                            std::shared_ptr<peak::core::NodeMap> nodeMap,
                            QObject *parent)
@@ -221,7 +214,7 @@ void CameraThread::run()
     try {
         auto payloadSize = m_nodeMapRemoteDevice->FindNode<peak::core::nodes::IntegerNode>("PayloadSize")->Value();
 
-        // 官方建议 ≥5 个缓冲, 减少 WaitForFinishedBuffer 饥饿
+        // ≥5 个缓冲, 减少 WaitForFinishedBuffer 饥饿
         for (int i = 0; i < 5; ++i)
             m_dataStream->AllocAndAnnounceBuffer(static_cast<size_t>(payloadSize), nullptr);
 
@@ -250,8 +243,7 @@ void CameraThread::run()
                 QImage qImg(static_cast<uchar*>(iplRGB.PixelPointer(0, 0)),
                             w, h, w * 3, QImage::Format_RGB888);
 
-                // 关键: 先 QueueBuffer 还缓冲给 SDK, 再 emit
-                // 这样释放后下一帧的缓冲早就回来了, 不会因为 emit(QueuedConnection) 的临时深拷贝拖延下一帧
+                // 先 QueueBuffer 还缓冲给 SDK, 再 emit (避免深拷贝拖延下一帧)
                 m_dataStream->QueueBuffer(buffer);
 
                 // 渲染限流 ~30FPS
@@ -261,20 +253,16 @@ void CameraThread::run()
                     lastRenderTime = now;
                 }
 
-                // 持续保存到上限 — 不再阻塞! 直接发 signal 给 SaveWorker
                 if (m_saveEnabled && m_savedCount < m_saveLimit) {
                     int idx = m_savedCount.fetch_add(1) + 1;
                     QString ts = QDateTime::currentDateTime().toString("yyyyMMdd_HHmmss_zzz");
                     QString path = m_saveDir +
                         QString("/ccd_live_%1_%2.png").arg(ts).arg(idx, 4, 10, QChar('0'));
 
-                    // 把图丢给 SaveWorker (QueuedConnection), 不阻塞抓帧线程
                     emit imageToSave(qImg.copy(), path);
 
                     if (m_savedCount >= m_saveLimit) {
                         m_saveEnabled = false;
-                        // 不在这里 emit saveLimitReached!
-                        // 由 SaveWorker 在实际落盘完成后触发
                     }
                 }
 
@@ -287,8 +275,6 @@ void CameraThread::run()
                 break;
             }
         }
-
-        // 清理
         try {
             m_nodeMapRemoteDevice->FindNode<peak::core::nodes::CommandNode>("AcquisitionStop")->Execute();
         } catch (const std::exception& e) {

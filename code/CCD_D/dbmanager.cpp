@@ -10,12 +10,11 @@ QSqlDatabase DbManager::m_db;
 bool DbManager::m_inited = false;
 qint64 DbManager::m_currentSessionId = 0;
 
-// 打开/建库
 bool DbManager::init(const QString &dbPath)
 {
     if (m_inited) return true;
 
-    // 清理可能残留的旧连接 (上次崩溃/异常退出后可能没 removeDatabase)
+    // 清理可能残留的旧连接 (上次崩溃/异常退出后)
     const QString connName = QLatin1String(QSqlDatabase::defaultConnection);
     if (QSqlDatabase::contains(connName)) {
         qWarning() << "发现残留数据库连接, 先清理";
@@ -31,20 +30,16 @@ bool DbManager::init(const QString &dbPath)
     }
 
     QSqlQuery q(m_db);
-    // 外键约束需每次连接后显式开启
     q.exec("PRAGMA foreign_keys = ON");
-    // busy_timeout: 遇到锁时最多等 5 秒, 而不是立刻报 "database is locked"
     q.exec("PRAGMA busy_timeout = 5000");
 
-    // 关键: 先做一次 WAL checkpoint, 清理上次崩溃/异常退出残留的 -wal 数据
-    // TRUNCATE 模式会把 WAL 写回主库并清空 -wal/-shm
-    // 如果上次正常关闭, 这行无害; 如果上次崩溃, 这行修复
+    // 清理上次崩溃残留的 -wal 数据
     if (!q.exec("PRAGMA wal_checkpoint(TRUNCATE)")) {
         qWarning() << "WAL checkpoint 失败:" << q.lastError().text()
                    << " (可能是旧库非WAL模式, 忽略)";
     }
 
-    // 启用 WAL 模式: 读写不互锁, 减少 "database is locked" 概率
+    // 启用 WAL 模式: 读写不互锁
     if (!q.exec("PRAGMA journal_mode = WAL")) {
         qWarning() << "设置 WAL 模式失败:" << q.lastError().text()
                    << " 回退到默认 DELETE 模式";
@@ -56,7 +51,6 @@ bool DbManager::init(const QString &dbPath)
         return false;
     }
 
-    // 建表后再做一次 checkpoint, 确保建表期间产生的 WAL 数据已合并
     q.exec("PRAGMA wal_checkpoint(TRUNCATE)");
 
     m_inited = true;
@@ -69,7 +63,6 @@ void DbManager::close()
     if (!m_inited) return;
 
     if (m_db.isOpen()) {
-        // 提交任何可能未提交的事务 (commit 对非事务环境无副作用)
         try { m_db.commit(); } catch (...) {}
 
         try {
@@ -80,8 +73,7 @@ void DbManager::close()
         }
     }
 
-    // 关键顺序: close → 释放 QSqlDatabase 对象 → removeDatabase
-    // ensure 所有 QSqlQuery 局部变量已析构后再 removeDatabase
+    // close → 释放 QSqlDatabase 对象 → removeDatabase
     QString connName = m_db.connectionName();
     m_db.close();
     m_db = QSqlDatabase();             // 释放本对象的引用
@@ -89,10 +81,8 @@ void DbManager::close()
     m_inited = false;
 }
 
-// 建表: 在原两表上加 capture_session, 并给 capture_log 加 session_id 外键
 bool DbManager::ensureTables()
 {
-    // session 表: 一次程序运行 = 一条记录
     const QString sqlSession =
         "CREATE TABLE IF NOT EXISTS capture_session ("
         "  id INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -102,12 +92,10 @@ bool DbManager::ensureTables()
         "  created_at TEXT NOT NULL DEFAULT (datetime('now','localtime'))"
         ")";
 
-    // capture_log: 加 session_id 字段(可能为空, 兼容旧数据)
-    // SQLite 用 ALTER TABLE 加列, 不能加约束, 由程序保证数据完整性
     const QString sqlLog =
         "CREATE TABLE IF NOT EXISTS capture_log ("
         "  id INTEGER PRIMARY KEY AUTOINCREMENT,"
-        "  session_id INTEGER,"                                   // 关联 capture_session.id, 可空
+        "  session_id INTEGER,"                                   // 可空, 关联 capture_session.id
         "  capture_time TEXT NOT NULL,"
         "  capture_mode INTEGER NOT NULL DEFAULT 0,"
         "  capture_index INTEGER NOT NULL DEFAULT 0,"
@@ -125,15 +113,14 @@ bool DbManager::ensureTables()
         "  image_size INTEGER NOT NULL DEFAULT 0,"
         "  capture_mode INTEGER NOT NULL DEFAULT 0,"
         "  capture_time TEXT NOT NULL,"
-        "  session_id INTEGER,"                                   // 冗余字段, 便于直接按会话查图
+        "  session_id INTEGER,"                                   // 冗余, 便于按会话查图
         "  created_at TEXT NOT NULL DEFAULT (datetime('now','localtime')),"
         "  FOREIGN KEY (capture_log_id) REFERENCES capture_log(id) ON DELETE CASCADE"
         ")";
 
-    // 旧库升级: 若 capture_log 已存在但缺 session_id 列, 自动补上
+    // 旧库升级: 缺 session_id 列则自动补上
     QSqlQuery q(m_db);
 
-    // 先建表
     for (const QString &s : {sqlSession, sqlLog, sqlImg}) {
         if (!q.exec(s)) {
             qWarning() << "建表失败:" << q.lastError().text() << "\nSQL:" << s;
@@ -141,7 +128,6 @@ bool DbManager::ensureTables()
         }
     }
 
-    // 检查 capture_log 是否有 session_id 列, 没有就 ALTER ADD
     q.exec("PRAGMA table_info(capture_log)");
     bool hasSessionInLog = false;
     while (q.next()) {
@@ -153,7 +139,6 @@ bool DbManager::ensureTables()
         }
     }
 
-    // 同样检查 image_data
     q.exec("PRAGMA table_info(image_data)");
     bool hasSessionInImg = false;
     while (q.next()) {
@@ -165,7 +150,6 @@ bool DbManager::ensureTables()
         }
     }
 
-    // 索引
     for (const QString &s : {
         "CREATE INDEX IF NOT EXISTS idx_log_session   ON capture_log (session_id)",
         "CREATE INDEX IF NOT EXISTS idx_img_session   ON image_data (session_id)",
@@ -181,25 +165,22 @@ bool DbManager::ensureTables()
     return true;
 }
 
-// 如果遇到 "database is locked", 尝试切到 DELETE 模式强制合并 WAL, 再切回 WAL
+// 遇到 "database is locked" 时: 切 DELETE 模式强制合并 WAL, 再切回 WAL
 static bool tryRecoverFromLock(QSqlDatabase &db)
 {
     qWarning() << "尝试 WAL 恢复...";
     QSqlQuery q(db);
-    // DELETE 模式会强制 checkpoint 并删除 -wal/-shm
     bool ok = q.exec("PRAGMA journal_mode = DELETE");
     if (!ok) {
         qWarning() << "切 DELETE 模式失败:" << q.lastError().text();
         return false;
     }
-    // 切回 WAL
     q.exec("PRAGMA journal_mode = WAL");
     q.exec("PRAGMA wal_checkpoint(TRUNCATE)");
     qDebug() << "WAL 恢复完成";
     return true;
 }
 
-// 创建新会话 (程序启动时调用一次)
 qint64 DbManager::createSession(const QString &note)
 {
     if (!m_inited) return 0;
@@ -220,7 +201,7 @@ qint64 DbManager::createSession(const QString &note)
         qWarning() << "创建会话失败 (尝试" << (attempt+1) << "/2):" << err;
         if (err.contains("locked", Qt::CaseInsensitive) && attempt == 0) {
             tryRecoverFromLock(m_db);
-            continue;   // retry
+            continue;
         }
         break;
     }
@@ -233,7 +214,7 @@ void  DbManager::setCurrentSessionId(qint64 id) { m_currentSessionId = id; }
 int DbManager::nextCaptureIndex(int mode)
 {
     QSqlQuery q(m_db);
-    // 序号按"当前会话 + 模式"算, 这样每次运行都从 1 重新开始, 不再全局累加
+    // 按"当前会话 + 模式"算序号, 每次运行从 1 开始
     q.prepare("SELECT COALESCE(MAX(capture_index), 0) FROM capture_log "
               "WHERE capture_mode = ? AND session_id = ?");
     q.addBindValue(mode);
@@ -254,7 +235,6 @@ QByteArray DbManager::encodePng(const QImage &img)
     return bytes;
 }
 
-// 写入一对 capture_log + image_data, 绑定当前会话
 qint64 DbManager::insertCapture(const QImage &img, const QString &imagePath, int mode)
 {
     if (!m_inited) {
@@ -272,7 +252,7 @@ qint64 DbManager::insertCapture(const QImage &img, const QString &imagePath, int
     m_db.transaction();
     QSqlQuery q(m_db);
 
-    // 1. capture_log (带 session_id)
+    // capture_log
     q.prepare("INSERT INTO capture_log "
               "(session_id, capture_time, capture_mode, capture_index, image_path) "
               "VALUES (?,?,?,?,?)");
@@ -288,7 +268,7 @@ qint64 DbManager::insertCapture(const QImage &img, const QString &imagePath, int
     }
     const qint64 logId = q.lastInsertId().toLongLong();
 
-    // 2. image_data (冗余存 session_id, 便于按会话直接查图)
+    // image_data
     q.prepare("INSERT INTO image_data "
               "(capture_log_id, image_name, image_path, image_data, image_size, "
               " capture_mode, capture_time, session_id) "
@@ -311,15 +291,12 @@ qint64 DbManager::insertCapture(const QImage &img, const QString &imagePath, int
     return logId;
 }
 
-// ========== 查询 API ==========
-
 QList<SessionInfo> DbManager::listSessions()
 {
     QList<SessionInfo> list;
     if (!m_inited) return list;
 
     QSqlQuery q(m_db);
-    // 每个会话下单/异步张数用子查询统计
     q.prepare(
         "SELECT s.id, s.start_time, s.note, "
         "  (SELECT COUNT(*) FROM capture_log l WHERE l.session_id = s.id AND l.capture_mode = 0) AS single_cnt, "
@@ -349,7 +326,6 @@ QList<ImageRow> DbManager::listImagesBySession(qint64 sessionId)
 
     QSqlQuery q(m_db);
     if (sessionId <= 0) {
-        // 全部
         q.prepare("SELECT id, capture_log_id, COALESCE(session_id,0), image_name, image_path, "
                   "       capture_mode, capture_time FROM image_data ORDER BY id ASC");
     } else {
@@ -380,7 +356,6 @@ QList<ImageRow> DbManager::listCurrentSessionImages()
     return listImagesBySession(m_currentSessionId);
 }
 
-// 直接从数据库 BLOB 取出 PNG 字节并解码为 QImage
 QImage DbManager::loadImageById(qint64 imageId)
 {
     QImage img;
