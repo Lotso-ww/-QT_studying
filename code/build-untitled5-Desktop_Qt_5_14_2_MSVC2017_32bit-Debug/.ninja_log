@@ -1,0 +1,11 @@
+# ninja log v5
+1	174	0	CMakeFiles/untitled5_autogen	ce8ec7e5eea3e7f8
+1	174	0	untitled5_autogen/mocs_compilation.cpp	ce8ec7e5eea3e7f8
+1	174	0	untitled5_autogen/include/ui_widget.h	ce8ec7e5eea3e7f8
+1	174	0	D:/Gitee.code/qt-learning/code/build-untitled5-Desktop_Qt_5_14_2_MSVC2017_32bit-Debug/CMakeFiles/untitled5_autogen	ce8ec7e5eea3e7f8
+1	174	0	D:/Gitee.code/qt-learning/code/build-untitled5-Desktop_Qt_5_14_2_MSVC2017_32bit-Debug/untitled5_autogen/mocs_compilation.cpp	ce8ec7e5eea3e7f8
+1	174	0	D:/Gitee.code/qt-learning/code/build-untitled5-Desktop_Qt_5_14_2_MSVC2017_32bit-Debug/untitled5_autogen/include/ui_widget.h	ce8ec7e5eea3e7f8
+174	1102	807012366	CMakeFiles/untitled5.dir/untitled5_autogen/mocs_compilation.cpp.obj	ff172a87eff5be57
+183	1142	807012366	CMakeFiles/untitled5.dir/main.cpp.obj	5a2eae85d278718f
+179	1159	807012366	CMakeFiles/untitled5.dir/widget.cpp.obj	b311f359498a25f9
+1159	2041	807012367	untitled5.exe	d5348c195a3c41cb

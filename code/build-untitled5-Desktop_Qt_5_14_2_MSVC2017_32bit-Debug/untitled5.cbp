@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="untitled5"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="msvc8"/>
+		<Option virtualFolders="CMake Files\;CMake Files\..\;CMake Files\..\..\;CMake Files\..\..\..\;CMake Files\..\..\..\..\;CMake Files\..\..\..\..\QT5\;CMake Files\..\..\..\..\QT5\5.14.2\;CMake Files\..\..\..\..\QT5\5.14.2\msvc2017\;CMake Files\..\..\..\..\QT5\5.14.2\msvc2017\lib\;CMake Files\..\..\..\..\QT5\5.14.2\msvc2017\lib\cmake\;CMake Files\..\..\..\..\QT5\5.14.2\msvc2017\lib\cmake\Qt5\;CMake Files\..\..\..\..\QT5\5.14.2\msvc2017\lib\cmake\Qt5Widgets\;CMake Files\..\..\..\..\QT5\5.14.2\msvc2017\lib\cmake\Qt5Gui\;CMake Files\..\..\..\..\QT5\5.14.2\msvc2017\lib\cmake\Qt5Core\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="D:/Gitee.code/qt-learning/code/build-untitled5-Desktop_Qt_5_14_2_MSVC2017_32bit-Debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="D:/Program Files (x86)/Microsoft Visual Studio/2017/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe -v all"/>
+					<CompileFile command="D:/Program Files (x86)/Microsoft Visual Studio/2017/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe -v &quot;$file&quot;"/>
+					<Clean command="D:/Program Files (x86)/Microsoft Visual Studio/2017/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe -v clean"/>
+					<DistClean command="D:/Program Files (x86)/Microsoft Visual Studio/2017/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe -v clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="untitled5">
+				<Option output="D:/Gitee.code/qt-learning/code/build-untitled5-Desktop_Qt_5_14_2_MSVC2017_32bit-Debug/untitled5.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="D:/Gitee.code/qt-learning/code/build-untitled5-Desktop_Qt_5_14_2_MSVC2017_32bit-Debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="msvc8"/>
+				<Compiler>
+					<Add option="-DQT_WIDGETS_LIB"/>
+					<Add option="-DQT_GUI_LIB"/>
+					<Add option="-DQT_CORE_LIB"/>
+					<Add directory="D:/Gitee.code/qt-learning/code/build-untitled5-Desktop_Qt_5_14_2_MSVC2017_32bit-Debug"/>
+					<Add directory="D:/Gitee.code/qt-learning/code/untitled5"/>
+					<Add directory="D:/Gitee.code/qt-learning/code/build-untitled5-Desktop_Qt_5_14_2_MSVC2017_32bit-Debug/untitled5_autogen/include"/>
+					<Add directory="D:/QT5/5.14.2/msvc2017/include"/>
+					<Add directory="D:/QT5/5.14.2/msvc2017/include/QtWidgets"/>
+					<Add directory="D:/QT5/5.14.2/msvc2017/include/QtGui"/>
+					<Add directory="D:/QT5/5.14.2/msvc2017/include/QtANGLE"/>
+					<Add directory="D:/QT5/5.14.2/msvc2017/include/QtCore"/>
+					<Add directory="D:/QT5/5.14.2/msvc2017/./mkspecs/win32-msvc"/>
+					<Add directory="D:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\ATLMFC\include"/>
+					<Add directory="D:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\include"/>
+					<Add directory="D:\Windows Kits\10\include\10.0.26100.0\ucrt"/>
+					<Add directory="D:\Windows Kits\10\include\10.0.26100.0\shared"/>
+					<Add directory="D:\Windows Kits\10\include\10.0.26100.0\um"/>
+					<Add directory="D:\Windows Kits\10\include\10.0.26100.0\winrt"/>
+					<Add directory="D:\Windows Kits\10\include\10.0.26100.0\cppwinrt"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="D:/Program Files (x86)/Microsoft Visual Studio/2017/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe -v untitled5"/>
+					<CompileFile command="D:/Program Files (x86)/Microsoft Visual Studio/2017/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe -v &quot;$file&quot;"/>
+					<Clean command="D:/Program Files (x86)/Microsoft Visual Studio/2017/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe -v clean"/>
+					<DistClean command="D:/Program Files (x86)/Microsoft Visual Studio/2017/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe -v clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="untitled5/fast">
+				<Option output="D:/Gitee.code/qt-learning/code/build-untitled5-Desktop_Qt_5_14_2_MSVC2017_32bit-Debug/untitled5.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="D:/Gitee.code/qt-learning/code/build-untitled5-Desktop_Qt_5_14_2_MSVC2017_32bit-Debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="msvc8"/>
+				<Compiler>
+					<Add option="-DQT_WIDGETS_LIB"/>
+					<Add option="-DQT_GUI_LIB"/>
+					<Add option="-DQT_CORE_LIB"/>
+					<Add directory="D:/Gitee.code/qt-learning/code/build-untitled5-Desktop_Qt_5_14_2_MSVC2017_32bit-Debug"/>
+					<Add directory="D:/Gitee.code/qt-learning/code/untitled5"/>
+					<Add directory="D:/Gitee.code/qt-learning/code/build-untitled5-Desktop_Qt_5_14_2_MSVC2017_32bit-Debug/untitled5_autogen/include"/>
+					<Add directory="D:/QT5/5.14.2/msvc2017/include"/>
+					<Add directory="D:/QT5/5.14.2/msvc2017/include/QtWidgets"/>
+					<Add directory="D:/QT5/5.14.2/msvc2017/include/QtGui"/>
+					<Add directory="D:/QT5/5.14.2/msvc2017/include/QtANGLE"/>
+					<Add directory="D:/QT5/5.14.2/msvc2017/include/QtCore"/>
+					<Add directory="D:/QT5/5.14.2/msvc2017/./mkspecs/win32-msvc"/>
+					<Add directory="D:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\ATLMFC\include"/>
+					<Add directory="D:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\include"/>
+					<Add directory="D:\Windows Kits\10\include\10.0.26100.0\ucrt"/>
+					<Add directory="D:\Windows Kits\10\include\10.0.26100.0\shared"/>
+					<Add directory="D:\Windows Kits\10\include\10.0.26100.0\um"/>
+					<Add directory="D:\Windows Kits\10\include\10.0.26100.0\winrt"/>
+					<Add directory="D:\Windows Kits\10\include\10.0.26100.0\cppwinrt"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="D:/Program Files (x86)/Microsoft Visual Studio/2017/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe -v untitled5/fast"/>
+					<CompileFile command="D:/Program Files (x86)/Microsoft Visual Studio/2017/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe -v &quot;$file&quot;"/>
+					<Clean command="D:/Program Files (x86)/Microsoft Visual Studio/2017/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe -v clean"/>
+					<DistClean command="D:/Program Files (x86)/Microsoft Visual Studio/2017/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe -v clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="D:/Gitee.code/qt-learning/code/build-untitled5-Desktop_Qt_5_14_2_MSVC2017_32bit-Debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="D:/Program Files (x86)/Microsoft Visual Studio/2017/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe -v edit_cache"/>
+					<CompileFile command="D:/Program Files (x86)/Microsoft Visual Studio/2017/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe -v &quot;$file&quot;"/>
+					<Clean command="D:/Program Files (x86)/Microsoft Visual Studio/2017/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe -v clean"/>
+					<DistClean command="D:/Program Files (x86)/Microsoft Visual Studio/2017/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe -v clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="D:/Gitee.code/qt-learning/code/build-untitled5-Desktop_Qt_5_14_2_MSVC2017_32bit-Debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="D:/Program Files (x86)/Microsoft Visual Studio/2017/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe -v rebuild_cache"/>
+					<CompileFile command="D:/Program Files (x86)/Microsoft Visual Studio/2017/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe -v &quot;$file&quot;"/>
+					<Clean command="D:/Program Files (x86)/Microsoft Visual Studio/2017/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe -v clean"/>
+					<DistClean command="D:/Program Files (x86)/Microsoft Visual Studio/2017/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe -v clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="untitled5_autogen">
+				<Option working_dir="D:/Gitee.code/qt-learning/code/build-untitled5-Desktop_Qt_5_14_2_MSVC2017_32bit-Debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="D:/Program Files (x86)/Microsoft Visual Studio/2017/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe -v untitled5_autogen"/>
+					<CompileFile command="D:/Program Files (x86)/Microsoft Visual Studio/2017/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe -v &quot;$file&quot;"/>
+					<Clean command="D:/Program Files (x86)/Microsoft Visual Studio/2017/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe -v clean"/>
+					<DistClean command="D:/Program Files (x86)/Microsoft Visual Studio/2017/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe -v clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="D:/Gitee.code/qt-learning/code/build-untitled5-Desktop_Qt_5_14_2_MSVC2017_32bit-Debug/untitled5_autogen/include/ui_widget.h">
+			<Option target="untitled5"/>
+		</Unit>
+		<Unit filename="D:/Gitee.code/qt-learning/code/build-untitled5-Desktop_Qt_5_14_2_MSVC2017_32bit-Debug/untitled5_autogen/mocs_compilation.cpp">
+			<Option target="untitled5"/>
+		</Unit>
+		<Unit filename="D:/Gitee.code/qt-learning/code/untitled5/main.cpp">
+			<Option target="untitled5"/>
+		</Unit>
+		<Unit filename="D:/Gitee.code/qt-learning/code/untitled5/widget.cpp">
+			<Option target="untitled5"/>
+		</Unit>
+		<Unit filename="D:/Gitee.code/qt-learning/code/untitled5/widget.h">
+			<Option target="untitled5"/>
+		</Unit>
+		<Unit filename="D:/Gitee.code/qt-learning/code/untitled5/widget.ui">
+			<Option target="untitled5"/>
+		</Unit>
+		<Unit filename="D:/Gitee.code/qt-learning/code/untitled5/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="D:/Gitee.code/qt-learning/code/untitled5/../../../../QT5/5.14.2/msvc2017/lib/cmake/Qt5/Qt5Config.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\QT5\5.14.2\msvc2017\lib\cmake\Qt5\"/>
+		</Unit>
+		<Unit filename="D:/Gitee.code/qt-learning/code/untitled5/../../../../QT5/5.14.2/msvc2017/lib/cmake/Qt5/Qt5ConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\QT5\5.14.2\msvc2017\lib\cmake\Qt5\"/>
+		</Unit>
+		<Unit filename="D:/Gitee.code/qt-learning/code/untitled5/../../../../QT5/5.14.2/msvc2017/lib/cmake/Qt5/Qt5ModuleLocation.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\QT5\5.14.2\msvc2017\lib\cmake\Qt5\"/>
+		</Unit>
+		<Unit filename="D:/Gitee.code/qt-learning/code/untitled5/../../../../QT5/5.14.2/msvc2017/lib/cmake/Qt5Widgets/Qt5WidgetsConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\QT5\5.14.2\msvc2017\lib\cmake\Qt5Widgets\"/>
+		</Unit>
+		<Unit filename="D:/Gitee.code/qt-learning/code/untitled5/../../../../QT5/5.14.2/msvc2017/lib/cmake/Qt5Widgets/Qt5WidgetsConfigExtras.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\QT5\5.14.2\msvc2017\lib\cmake\Qt5Widgets\"/>
+		</Unit>
+		<Unit filename="D:/Gitee.code/qt-learning/code/untitled5/../../../../QT5/5.14.2/msvc2017/lib/cmake/Qt5Widgets/Qt5WidgetsConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\QT5\5.14.2\msvc2017\lib\cmake\Qt5Widgets\"/>
+		</Unit>
+		<Unit filename="D:/Gitee.code/qt-learning/code/untitled5/../../../../QT5/5.14.2/msvc2017/lib/cmake/Qt5Widgets/Qt5WidgetsMacros.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\QT5\5.14.2\msvc2017\lib\cmake\Qt5Widgets\"/>
+		</Unit>
+		<Unit filename="D:/Gitee.code/qt-learning/code/untitled5/../../../../QT5/5.14.2/msvc2017/lib/cmake/Qt5Widgets/Qt5Widgets_QWindowsVistaStylePlugin.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\QT5\5.14.2\msvc2017\lib\cmake\Qt5Widgets\"/>
+		</Unit>
+		<Unit filename="D:/Gitee.code/qt-learning/code/untitled5/../../../../QT5/5.14.2/msvc2017/lib/cmake/Qt5Gui/Qt5GuiConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\QT5\5.14.2\msvc2017\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="D:/Gitee.code/qt-learning/code/untitled5/../../../../QT5/5.14.2/msvc2017/lib/cmake/Qt5Gui/Qt5GuiConfigExtras.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\QT5\5.14.2\msvc2017\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="D:/Gitee.code/qt-learning/code/untitled5/../../../../QT5/5.14.2/msvc2017/lib/cmake/Qt5Gui/Qt5GuiConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\QT5\5.14.2\msvc2017\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="D:/Gitee.code/qt-learning/code/untitled5/../../../../QT5/5.14.2/msvc2017/lib/cmake/Qt5Gui/Qt5Gui_QGifPlugin.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\QT5\5.14.2\msvc2017\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="D:/Gitee.code/qt-learning/code/untitled5/../../../../QT5/5.14.2/msvc2017/lib/cmake/Qt5Gui/Qt5Gui_QICNSPlugin.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\QT5\5.14.2\msvc2017\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="D:/Gitee.code/qt-learning/code/untitled5/../../../../QT5/5.14.2/msvc2017/lib/cmake/Qt5Gui/Qt5Gui_QICOPlugin.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\QT5\5.14.2\msvc2017\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="D:/Gitee.code/qt-learning/code/untitled5/../../../../QT5/5.14.2/msvc2017/lib/cmake/Qt5Gui/Qt5Gui_QJpegPlugin.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\QT5\5.14.2\msvc2017\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="D:/Gitee.code/qt-learning/code/untitled5/../../../../QT5/5.14.2/msvc2017/lib/cmake/Qt5Gui/Qt5Gui_QMinimalIntegrationPlugin.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\QT5\5.14.2\msvc2017\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="D:/Gitee.code/qt-learning/code/untitled5/../../../../QT5/5.14.2/msvc2017/lib/cmake/Qt5Gui/Qt5Gui_QOffscreenIntegrationPlugin.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\QT5\5.14.2\msvc2017\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="D:/Gitee.code/qt-learning/code/untitled5/../../../../QT5/5.14.2/msvc2017/lib/cmake/Qt5Gui/Qt5Gui_QSvgIconPlugin.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\QT5\5.14.2\msvc2017\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="D:/Gitee.code/qt-learning/code/untitled5/../../../../QT5/5.14.2/msvc2017/lib/cmake/Qt5Gui/Qt5Gui_QSvgPlugin.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\QT5\5.14.2\msvc2017\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="D:/Gitee.code/qt-learning/code/untitled5/../../../../QT5/5.14.2/msvc2017/lib/cmake/Qt5Gui/Qt5Gui_QTgaPlugin.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\QT5\5.14.2\msvc2017\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="D:/Gitee.code/qt-learning/code/untitled5/../../../../QT5/5.14.2/msvc2017/lib/cmake/Qt5Gui/Qt5Gui_QTiffPlugin.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\QT5\5.14.2\msvc2017\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="D:/Gitee.code/qt-learning/code/untitled5/../../../../QT5/5.14.2/msvc2017/lib/cmake/Qt5Gui/Qt5Gui_QTuioTouchPlugin.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\QT5\5.14.2\msvc2017\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="D:/Gitee.code/qt-learning/code/untitled5/../../../../QT5/5.14.2/msvc2017/lib/cmake/Qt5Gui/Qt5Gui_QWbmpPlugin.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\QT5\5.14.2\msvc2017\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="D:/Gitee.code/qt-learning/code/untitled5/../../../../QT5/5.14.2/msvc2017/lib/cmake/Qt5Gui/Qt5Gui_QWebpPlugin.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\QT5\5.14.2\msvc2017\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="D:/Gitee.code/qt-learning/code/untitled5/../../../../QT5/5.14.2/msvc2017/lib/cmake/Qt5Gui/Qt5Gui_QWindowsDirect2DIntegrationPlugin.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\QT5\5.14.2\msvc2017\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="D:/Gitee.code/qt-learning/code/untitled5/../../../../QT5/5.14.2/msvc2017/lib/cmake/Qt5Gui/Qt5Gui_QWindowsIntegrationPlugin.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\QT5\5.14.2\msvc2017\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="D:/Gitee.code/qt-learning/code/untitled5/../../../../QT5/5.14.2/msvc2017/lib/cmake/Qt5Gui/Qt5Gui_QXdgDesktopPortalThemePlugin.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\QT5\5.14.2\msvc2017\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="D:/Gitee.code/qt-learning/code/untitled5/../../../../QT5/5.14.2/msvc2017/lib/cmake/Qt5Core/Qt5CoreConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\QT5\5.14.2\msvc2017\lib\cmake\Qt5Core\"/>
+		</Unit>
+		<Unit filename="D:/Gitee.code/qt-learning/code/untitled5/../../../../QT5/5.14.2/msvc2017/lib/cmake/Qt5Core/Qt5CoreConfigExtras.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\QT5\5.14.2\msvc2017\lib\cmake\Qt5Core\"/>
+		</Unit>
+		<Unit filename="D:/Gitee.code/qt-learning/code/untitled5/../../../../QT5/5.14.2/msvc2017/lib/cmake/Qt5Core/Qt5CoreConfigExtrasMkspecDir.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\QT5\5.14.2\msvc2017\lib\cmake\Qt5Core\"/>
+		</Unit>
+		<Unit filename="D:/Gitee.code/qt-learning/code/untitled5/../../../../QT5/5.14.2/msvc2017/lib/cmake/Qt5Core/Qt5CoreConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\QT5\5.14.2\msvc2017\lib\cmake\Qt5Core\"/>
+		</Unit>
+		<Unit filename="D:/Gitee.code/qt-learning/code/untitled5/../../../../QT5/5.14.2/msvc2017/lib/cmake/Qt5Core/Qt5CoreMacros.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\QT5\5.14.2\msvc2017\lib\cmake\Qt5Core\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>
