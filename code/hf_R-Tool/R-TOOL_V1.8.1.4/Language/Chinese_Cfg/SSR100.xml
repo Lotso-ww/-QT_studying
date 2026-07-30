@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Cfg Version="1.0">
+  <BlockCfg Size="14">
+    <Address From="0" To="2"/>
+  </BlockCfg>
+
+  <PropTreeCfg>
+    <TreeItem Type="PropTreeItem" Des="主机通信接口">
+      <TreeItem Type="PropTreeItem" Des="网络通信">
+        <TreeItem Type="PropTreeItemIPAddr" Des="IP地址" StartBitPos="0.0.0" EndBitPos="0.3.7"/>
+        <TreeItem Type="PropTreeItemIPAddr" Des="子网掩码" StartBitPos="0.4.0" EndBitPos="0.7.7"/>
+        <TreeItem Type="PropTreeItemIPAddr" Des="网关地址" StartBitPos="0.8.0" EndBitPos="0.11.7"/>
+        <TreeItem Type="PropTreeItemEdit"  Des="端口号" ValueFormat="ValueFormatNumber" MaxValue="0xFFFF" StartBitPos="0.12.0" EndBitPos="0.13.7"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemEdit"  Des="总线地址" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="1.4.0" EndBitPos="1.4.7"/>
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="射频功率大小">
+      <TreeItem Type="PropTreeItemCombo" Des="射频功率大小" StartBitPos="1.0.0" EndBitPos="1.0.7">
+        <List Des="1W" Value="1"/>
+        <List Des="2W" Value="2"/>
+        <List Des="3W" Value="3"/>
+        <List Des="4W" Value="4"/>
+        <List Des="5W" Value="5"/>
+        <List Des="6W" Value="6"/>
+        <List Des="7W" Value="7"/>
+        <List Des="8W" Value="8"/>
+      </TreeItem>
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="空中接口参数">
+      <TreeItem Type="PropTreeItemCombo" Des="调制深度" StartBitPos="1.1.0" EndBitPos="1.1.7">
+        <List Des="10%" Value="0x00"/>
+        <List Des="100%" Value="0x01"/>
+      </TreeItem>
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="防冲突参数">
+      <TreeItem Type="PropTreeItemCombo" Des="时隙" StartBitPos="1.2.0" EndBitPos="1.2.7">
+        <List Des="1个时隙" Value="1"/>
+        <List Des="16个时隙" Value="16"/>
+      </TreeItem>
+     <TreeItem Type="PropTreeItemEdit"  Des="多标签防冲突最长时间(×100ms)" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="1.3.0" EndBitPos="1.3.7"/>
+    </TreeItem>
+
+  </PropTreeCfg>
+</Cfg>

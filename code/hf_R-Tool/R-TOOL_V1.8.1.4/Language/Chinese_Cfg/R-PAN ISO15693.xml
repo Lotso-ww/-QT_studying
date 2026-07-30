@@ -1,0 +1,164 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Cfg Version="1.0">
+  <BlockCfg Size="14">
+    <Address From="1" To="21"/>
+  </BlockCfg>
+
+  <PropTreeCfg>
+    <TreeItem Type="PropTreeItem" Des="网络接口">
+      <TreeItem Type="PropTreeItemCheckBox" Des="Wifi" StartBitPos="6.1.0" EndBitPos="6.1.7" CheckValue="0x01" UnCheckValue="0x00"/>
+      <TreeItem Type="PropTreeItemCombo" Des="Wifi工作模式" StartBitPos="6.3.0" EndBitPos="6.3.7">
+        <List Des="STA" Value="0x00"/>
+        <List Des="AP" Value="0x01"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemCheckBox" Des="DHCP" StartBitPos="6.2.0" EndBitPos="6.2.7" CheckValue="0x01" UnCheckValue="0x00"/>
+      <TreeItem Type="PropTreeItemEdit"  Des="名称" ValueFormat="ValueFormatText" StartBitPos="1.0.0" EndBitPos="2.5.7"/>
+      <TreeItem Type="PropTreeItemEdit"  Des="密码" ValueFormat="ValueFormatText" Password="True"  StartBitPos="3.0.0" EndBitPos="4.5.7"/>
+      <TreeItem Type="PropTreeItemIPAddr" Des="静态IP地址" StartBitPos="5.0.0" EndBitPos="5.3.7"/>
+      <TreeItem Type="PropTreeItemIPAddr" Des="静态子网掩码" StartBitPos="5.4.0" EndBitPos="5.7.7"/>
+      <TreeItem Type="PropTreeItemIPAddr" Des="静态网关" StartBitPos="5.8.0" EndBitPos="5.11.7"/>
+      <TreeItem Type="PropTreeItemEdit"  Des="端口号" ValueFormat="ValueFormatNumber" MaxValue="0xFFFF" StartBitPos="5.12.0" EndBitPos="5.13.7"/>
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="蓝牙开关">
+      <TreeItem Type="PropTreeItemCheckBox" Des="蓝牙2.1" StartBitPos="6.0.0" EndBitPos="6.0.0" CheckValue="0x01" UnCheckValue="0x00"/>
+      <TreeItem Type="PropTreeItemCheckBox" Des="蓝牙4.0" StartBitPos="6.0.4" EndBitPos="6.0.4" CheckValue="0x01" UnCheckValue="0x00"/>
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="射频模块">
+      <TreeItem Type="PropTreeItemCombo" Des="功率值" StartBitPos="7.0.0" EndBitPos="7.0.7">
+        <List Des="0.25W" Value="0x01"/>
+        <List Des="0.50W" Value="0x02"/>
+        <List Des="0.75W" Value="0x03"/>
+        <List Des="1.00W" Value="0x04"/>
+        <List Des="1.25W" Value="0x05"/>
+        <List Des="1.50W" Value="0x06"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemCombo" Des="调制深度" StartBitPos="7.1.0" EndBitPos="7.1.7">
+        <List Des="OOK 100%" Value="0x00"/>
+        <List Des="ASK 10%" Value="0x80"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemCombo" Des="时隙" StartBitPos="7.4.0" EndBitPos="7.4.7">
+        <List Des="16 slot" Value="0x01"/>
+        <List Des="1 slot" Value="0x00"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemCombo" Des="标签查询方式" StartBitPos="7.8.0" EndBitPos="7.8.0">
+        <List Des="标准模式" Value="0x00"/>
+        <List Des="快速模式" Value="0x01"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemCheckBox" Des="匹配AFI" StartBitPos="7.8.1" EndBitPos="7.8.1" CheckValue="0x01" UnCheckValue="0x00"/>
+      <TreeItem Type="PropTreeItemCheckBox" Des="自动关闭射频" StartBitPos="7.8.2" EndBitPos="7.8.2" CheckValue="0x01" UnCheckValue="0x00"/>
+      <TreeItem Type="PropTreeItemCheckBox" Des="只读新标签" StartBitPos="7.8.3" EndBitPos="7.8.3" CheckValue="0x01" UnCheckValue="0x00"/>
+      <TreeItem Type="PropTreeItemEdit"  Des="AFI值" ValueFormat="ValueFormatHex" StartBitPos="7.9.0" EndBitPos="7.9.7"/>
+      <TreeItem Type="PropTreeItemEdit"  Des="溢出时间" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="7.10.0" EndBitPos="7.10.7"/>
+    </TreeItem>
+
+
+    <TreeItem Type="PropTreeItem" Des="系统设置">
+      <TreeItem Type="PropTreeItemCombo" Des="语言" StartBitPos="6.5.0" EndBitPos="6.5.7">
+        <List Des="中文" Value="0x00"/>
+        <List Des="英文" Value="0x01"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemCombo" Des="空闲自动关机(min)" ListStart="0"  ListEnd="60" StartBitPos="6.6.0" EndBitPos="6.6.7"/>
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="模式设置">
+      <TreeItem Type="PropTreeItemCombo" Des="工作模式" StartBitPos="6.4.0" EndBitPos="6.4.7">
+        <List Des="主机控制模式" Value="0x00"/>
+        <List Des="主动扫描模式" Value="0x01"/>
+        <List Des="防盗模式" Value="0x02"/>
+        <List Des="查找模式" Value="0x03"/>
+        <List Des="图书模式" Value="0x04"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemCombo" Des="数据保存区域" StartBitPos="8.6.0" EndBitPos="8.6.7">
+        <List Des="数据保存在RAM" Value="0x00"/>
+        <List Des="数据保存在Flash" Value="0x01"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemCheckBox" Des="读UID时加入DSFID" StartBitPos="8.10.0" EndBitPos="8.10.7" CheckValue="0x01" UnCheckValue="0x00"/>
+
+      <TreeItem Type="PropTreeItem" Des="主动模式配置">
+        <TreeItem Type="PropTreeItemCombo" Des="扫描内容" StartBitPos="8.0.0" EndBitPos="8.0.7">
+          <List Des="扫描UID" Value="0x00"/>
+          <List Des="扫描条形码" Value="0x01"/>
+          <List Des="UID+条形码" Value="0x02"/>
+        </TreeItem>
+        <TreeItem Type="PropTreeItemEdit"  Des="条形码开始字节" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="8.1.0" EndBitPos="8.1.7"/>
+        <TreeItem Type="PropTreeItemEdit"  Des="扫描字节数" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="8.2.0" EndBitPos="8.2.7"/>
+
+        <TreeItem Type="PropTreeItem" Des="使能操作">
+          <TreeItem Type="PropTreeItemCheckBox" Des="使能EAS" StartBitPos="8.3.0" EndBitPos="8.3.0" CheckValue="0x01" UnCheckValue="0x00"/>
+          <TreeItem Type="PropTreeItemCheckBox" Des="关闭EAS" StartBitPos="8.3.1" EndBitPos="8.3.1" CheckValue="0x01" UnCheckValue="0x00"/>
+          <TreeItem Type="PropTreeItemCheckBox" Des="检测EAS" StartBitPos="8.3.2" EndBitPos="8.3.2" CheckValue="0x01" UnCheckValue="0x00"/>
+          <TreeItem Type="PropTreeItemCheckBox" Des="修改AFI" StartBitPos="8.3.3" EndBitPos="8.3.3" CheckValue="0x01" UnCheckValue="0x00"/>
+          <TreeItem Type="PropTreeItemCheckBox" Des="修改DSFID" StartBitPos="8.3.4" EndBitPos="8.3.4" CheckValue="0x01" UnCheckValue="0x00"/>
+        </TreeItem>
+        <TreeItem Type="PropTreeItemEdit"  Des="AFI值" ValueFormat="ValueFormatHex" StartBitPos="8.4.0" EndBitPos="8.4.7"/>
+        <TreeItem Type="PropTreeItemEdit"  Des="DSFID值" ValueFormat="ValueFormatHex" StartBitPos="8.5.0" EndBitPos="8.5.7"/>
+      </TreeItem>
+
+
+      <TreeItem Type="PropTreeItem" Des="图书模式">
+        <TreeItem Type="PropTreeItem" Des="层架标签设置">
+          <TreeItem Type="PropTreeItemCombo" Des="扫描内容" StartBitPos="9.0.0" EndBitPos="9.0.7">
+            <List Des="扫描UID" Value="0x00"/>
+            <List Des="扫描条形码" Value="0x01"/>
+            <List Des="UID+条形码" Value="0x02"/>
+          </TreeItem>
+          <TreeItem Type="PropTreeItemEdit"  Des="开始字节" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="9.1.0" EndBitPos="9.1.7"/>
+          <TreeItem Type="PropTreeItemCombo" Des="字节数" ListStart="0"  ListEnd="20" StartBitPos="9.2.0" EndBitPos="9.2.7"/>
+          <TreeItem Type="PropTreeItemEdit"  Des="AFI值" ValueFormat="ValueFormatHex" StartBitPos="9.3.0" EndBitPos="9.3.7"/>
+        </TreeItem>
+        <TreeItem Type="PropTreeItem" Des="图书标签设置">
+          <TreeItem Type="PropTreeItemCombo" Des="扫描内容" StartBitPos="9.7.0" EndBitPos="9.7.7">
+            <List Des="扫描UID" Value="0x00"/>
+            <List Des="扫描条形码" Value="0x01"/>
+            <List Des="UID+条形码" Value="0x02"/>
+          </TreeItem>
+          <TreeItem Type="PropTreeItemEdit"  Des="开始字节" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="9.8.0" EndBitPos="9.8.7"/>
+          <TreeItem Type="PropTreeItemCombo" Des="字节数" ListStart="0"  ListEnd="20" StartBitPos="9.9.0" EndBitPos="9.9.7"/>
+          <TreeItem Type="PropTreeItemEdit"  Des="AFI值" ValueFormat="ValueFormatHex" StartBitPos="9.10.0" EndBitPos="9.10.7"/>
+        </TreeItem>
+      </TreeItem>
+
+      <TreeItem Type="PropTreeItem" Des="防盗检测配置">
+        <TreeItem Type="PropTreeItemCombo" Des="检测类型" StartBitPos="8.8.0" EndBitPos="8.8.7">
+          <List Des="EAS" Value="0x00"/>
+          <List Des="AFI" Value="0x01"/>
+        </TreeItem>
+        <TreeItem Type="PropTreeItemEdit"  Des="AFI值" ValueFormat="ValueFormatHex" StartBitPos="8.9.0" EndBitPos="8.9.7"/>
+      </TreeItem>
+
+      <TreeItem Type="PropTreeItem" Des="查找模式配置">
+        <TreeItem Type="PropTreeItemCombo" Des="扫描内容" StartBitPos="8.11.0" EndBitPos="8.11.7">
+          <List Des="扫描UID" Value="0x00"/>
+          <List Des="扫描条形码" Value="0x01"/>
+        </TreeItem>
+        <TreeItem Type="PropTreeItemEdit"  Des="开始字节" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="8.12.0" EndBitPos="8.12.7"/>
+        <TreeItem Type="PropTreeItemCombo" Des="字节数" ListStart="0"  ListEnd="41" StartBitPos="8.13.0" EndBitPos="8.13.7"/>
+        
+        <TreeItem Type="PropTreeItem" Des="标签1">
+          <TreeItem Type="PropTreeItemCombo" Des="匹配长度" ListStart="0"  ListEnd="41" StartBitPos="10.0.0" EndBitPos="10.0.7"/>
+          <TreeItem Type="PropTreeItermByteEdit" Des="匹配数据" ByteCount="41"  StartBitPos="10.1.0" EndBitPos="12.13.7"/>
+        </TreeItem>
+
+        <TreeItem Type="PropTreeItem" Des="标签2">
+          <TreeItem Type="PropTreeItemCombo" Des="匹配长度" ListStart="0"  ListEnd="41" StartBitPos="13.0.0" EndBitPos="13.0.7"/>
+          <TreeItem Type="PropTreeItermByteEdit" Des="匹配数据" ByteCount="41"  StartBitPos="13.1.0" EndBitPos="15.13.7"/>
+        </TreeItem>
+
+        <TreeItem Type="PropTreeItem" Des="标签3">
+          <TreeItem Type="PropTreeItemCombo" Des="匹配长度" ListStart="0"  ListEnd="41" StartBitPos="16.0.0" EndBitPos="16.0.7"/>
+          <TreeItem Type="PropTreeItermByteEdit" Des="匹配数据" ByteCount="41"  StartBitPos="16.1.0" EndBitPos="18.13.7"/>
+        </TreeItem>
+
+        <TreeItem Type="PropTreeItem" Des="标签4">
+          <TreeItem Type="PropTreeItemCombo" Des="匹配长度" ListStart="0"  ListEnd="41" StartBitPos="19.0.0" EndBitPos="19.0.7"/>
+          <TreeItem Type="PropTreeItermByteEdit" Des="匹配数据" ByteCount="41"  StartBitPos="19.1.0" EndBitPos="21.13.7"/>
+        </TreeItem>
+        
+      </TreeItem>
+    </TreeItem>
+
+
+  </PropTreeCfg>
+</Cfg>

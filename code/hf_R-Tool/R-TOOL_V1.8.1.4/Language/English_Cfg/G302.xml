@@ -1,0 +1,122 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Cfg Version="1.0">
+  <BlockCfg Size="8">
+    <Address From="0" To="7"/>
+  </BlockCfg>
+
+  <PropTreeCfg>
+    
+    <TreeItem Type="PropTreeItem" Des="Network parameters">
+      <TreeItem Type="PropTreeItemIPAddr" Des="IP address" StartBitPos="0.0.0" EndBitPos="0.3.7"/>
+      <TreeItem Type="PropTreeItemIPAddr" Des="Subnet mask" StartBitPos="0.4.0" EndBitPos="0.7.7"/>
+      <TreeItem Type="PropTreeItemIPAddr" Des="Gateway" StartBitPos="1.0.0" EndBitPos="1.3.7"/>
+    </TreeItem>
+    
+    <TreeItem Type="PropTreeItem" Des="No direction report">
+      <TreeItem Type="PropTreeItemCheckBox" Des="Enable" StartBitPos="3.3.0" EndBitPos="3.3.7" CheckValue="0x01" UnCheckValue="0x00"/>
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="Opposite direction">
+      <TreeItem Type="PropTreeItemCheckBox" Des="Enable" StartBitPos="3.2.0" EndBitPos="3.2.7" CheckValue="0x01" UnCheckValue="0x00"/>
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="Cheating check">
+      <TreeItem Type="PropTreeItemCheckBox" Des="Enable" StartBitPos="3.4.0" EndBitPos="3.4.7" CheckValue="0x01" UnCheckValue="0x00"/>
+      <TreeItem Type="PropTreeItemEdit"  Des="limited time(10ms)" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="3.5.0" EndBitPos="3.5.7"/>
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="AFI match">
+      <TreeItem Type="PropTreeItemCheckBox" Des="Enable" StartBitPos="2.3.0" EndBitPos="2.3.7" CheckValue="0x01" UnCheckValue="0x00"/>
+      <TreeItem Type="PropTreeItemEdit"  Des="AFI" ValueFormat="ValueFormatHex" StartBitPos="2.4.0" EndBitPos="2.4.7"/>
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="Infrared check">
+      <TreeItem Type="PropTreeItemCheckBox" Des="Enable" StartBitPos="3.0.0" EndBitPos="3.0.7" CheckValue="0x01" UnCheckValue="0x00"/>
+      <TreeItem Type="PropTreeItemCheckBox" Des="Filter card's ID" StartBitPos="3.1.0" EndBitPos="3.1.7" CheckValue="0x01" UnCheckValue="0x00"/>
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="Wiegand output">
+      <TreeItem Type="PropTreeItemCombo" Des="Statetus" StartBitPos="4.0.0" EndBitPos="4.0.7">
+        <List Des="Disable" Value="0x00"/>
+        <List Des="Wiegand-26" Value="0x01"/>
+        <List Des="Wiegand-34" Value="0x02"/>
+        <List Des="Wiegand-66" Value="0x03"/>
+      </TreeItem>
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="Device synchronization">
+      <TreeItem Type="PropTreeItemCombo" Des="Role" StartBitPos="5.0.0" EndBitPos="5.0.7">
+        <List Des="Master" Value="0x01"/>
+        <List Des="Slave 1" Value="0x02"/>
+        <List Des="Slave 2" Value="0x03"/>
+        <List Des="Slave 3" Value="0x04"/>
+        <List Des="Slave 4" Value="0x05"/>
+        <List Des="Slave 5" Value="0x06"/>
+        <List Des="Slave 6" Value="0x07"/>
+        <List Des="Slave 7" Value="0x08"/>
+        <List Des="Slave 8" Value="0x09"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemCombo" Des="Number" StartBitPos="5.1.0" EndBitPos="5.1.7">
+        <List Des="1" Value="0x01"/>
+        <List Des="2" Value="0x02"/>
+        <List Des="3" Value="0x03"/>
+        <List Des="4" Value="0x04"/>
+        <List Des="5" Value="0x05"/>
+        <List Des="6" Value="0x06"/>
+        <List Des="7" Value="0x07"/>
+        <List Des="8" Value="0x08"/>
+        <List Des="8" Value="0x09"/>
+      </TreeItem>
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="Antenna interface">
+      <TreeItem Type="PropTreeItemCombo" Des="Antenna count" StartBitPos="5.3.0" EndBitPos="5.3.7">
+        <List Des="2 antennas" Value="0x02"/>
+        <List Des="3 antennas" Value="0x03"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemCombo" Des="Switch mode" StartBitPos="5.4.0" EndBitPos="5.4.7">
+        <List Des="Dual antennas circle work" Value="0x00"/>
+        <List Des="Single antenna circle work" Value="0x01"/>
+        <List Des="Single and dual antennas circle work" Value="0x02"/>
+      </TreeItem>
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="RF Power">
+      <TreeItem Type="PropTreeItemCombo" Des="Power" StartBitPos="6.0.0" EndBitPos="6.0.7">
+        <List Des="0.5W" Value="0x01"/>
+        <List Des="1.0W" Value="0x02"/>
+        <List Des="1.5W" Value="0x03"/>
+        <List Des="2.0W" Value="0x04"/>
+        <List Des="2.5W" Value="0x05"/>
+        <List Des="3.0W" Value="0x06"/>
+        <List Des="3.5W" Value="0x07"/>
+        <List Des="4.0W" Value="0x08"/>
+        <List Des="4.5W" Value="0x09"/>
+        <List Des="5.0W" Value="0x10"/>
+        <List Des="5.5W" Value="0x11"/>
+        <List Des="6.0W" Value="0x12"/>
+        <List Des="6.5W" Value="0x13"/>
+        <List Des="7.0W" Value="0x14"/>
+        <List Des="7.5W" Value="0x15"/>
+        <List Des="8.0W" Value="0x16"/>
+        <List Des="8.5W" Value="0x17"/>
+        <List Des="9.0W" Value="0x18"/>
+        <List Des="9.5W" Value="0x19"/>
+        <List Des="10.0W" Value="0x20"/>
+      </TreeItem>
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="Read block">
+      <TreeItem Type="PropTreeItemCheckBox" Des="Enable" StartBitPos="2.0.0" EndBitPos="2.0.7" CheckValue="0x01" UnCheckValue="0x00"/>
+      <TreeItem Type="PropTreeItemEdit"  Des="Start address" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="2.1.0" EndBitPos="2.1.7"/>
+      <TreeItem Type="PropTreeItemCombo" Des="Block number" StartBitPos="2.2.0" EndBitPos="2.2.7">
+        <List Des="1" Value="0x01"/>
+        <List Des="2" Value="0x02"/>
+        <List Des="3" Value="0x03"/>
+        <List Des="4" Value="0x04"/>
+        <List Des="5" Value="0x05"/>
+      </TreeItem>
+    </TreeItem>
+  </PropTreeCfg>
+  
+</Cfg>

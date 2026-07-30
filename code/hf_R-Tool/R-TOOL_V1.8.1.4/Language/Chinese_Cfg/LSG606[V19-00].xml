@@ -1,0 +1,298 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Cfg Version="1.0">
+  <BlockCfg Size="8">
+    <Address From="0" To="20"/>
+  </BlockCfg>
+
+  <PropTreeCfg>
+    <TreeItem Type="PropTreeItem" Des="安全门IP地址">
+      <TreeItem Type="PropTreeItemIPAddr" Des="IP地址" StartBitPos="0.0.0" EndBitPos="0.3.7"/>
+      <TreeItem Type="PropTreeItemIPAddr" Des="子网掩码" StartBitPos="0.4.0" EndBitPos="0.7.7"/>
+      <TreeItem Type="PropTreeItemIPAddr" Des="网关" StartBitPos="1.0.0" EndBitPos="1.3.7"/>
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="基本配置">
+ 
+
+      <TreeItem Type="PropTreeItem" Des="多片安全门同步工作配置">
+        <TreeItem Type="PropTreeItemCombo" Des="安全门单片角色" StartBitPos="2.0.0" EndBitPos="2.0.7">
+          <List Des="同步主控" Value="0x00"/>
+          <List Des="同步被控1号机" Value="0x01"/>
+          <List Des="同步被控2号机" Value="0x02"/>
+          <List Des="同步被控3号机" Value="0x03"/>
+          <List Des="同步被控4号机" Value="0x04"/>
+          <List Des="同步被控5号机" Value="0x05"/>
+          <List Des="同步被控6号机" Value="0x06"/>
+          <List Des="同步被控7号机" Value="0x07"/>
+          <List Des="同步被控8号机" Value="0x08"/>
+        </TreeItem>
+
+        <TreeItem Type="PropTreeItemCombo" Des="同步系统总片数" StartBitPos="2.1.0" EndBitPos="2.1.7">
+          <List Des="1" Value="0x01"/>
+          <List Des="2" Value="0x02"/>
+          <List Des="3" Value="0x03"/>
+          <List Des="4" Value="0x04"/>
+          <List Des="5" Value="0x05"/>
+          <List Des="6" Value="0x06"/>
+          <List Des="7" Value="0x07"/>
+          <List Des="8" Value="0x08"/>
+        </TreeItem>
+
+      </TreeItem>
+
+      <TreeItem Type="PropTreeItem" Des="默认报警输出选项">
+        <TreeItem Type="PropTreeItemEdit"  Des="报警时间(100ms)" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="3.0.0" EndBitPos="3.0.7"/>
+        <TreeItem Type="PropTreeItemEdit"  Des="报警次数" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="3.1.0" EndBitPos="3.1.7"/>
+        <TreeItem Type="PropTreeItemEdit"  Des="报警停止时间(100ms)" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="3.2.0" EndBitPos="3.2.7"/>
+      </TreeItem>
+
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="报警条件">
+      <TreeItem Type="PropTreeItemCombo" Des="报警条件类型" StartBitPos="8.1.0" EndBitPos="8.1.7">
+        <List Des="匹配EPC" Value="0x00"/>
+		<List Des="匹配USER" Value="0x01"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItem" Des="EPC位匹配条件">
+        <TreeItem Type="PropTreeItemCombo" Des="匹配区选择" StartBitPos="15.1.0" EndBitPos="15.1.1">
+        <List Des="EPC 区1" Value="0x00"/>
+		<List Des="EPC 区1 + EPC 区2" Value="0x01"/>
+		<List Des="EPC 区1 + EPC 区3" Value="0x02"/>
+		<List Des="EPC 区1 + EPC 区2 + EPC 区3" Value="0x03"/>
+        </TreeItem>
+        <TreeItem Type="PropTreeItem" Des="EPC 区1">
+          <TreeItem Type="PropTreeItemEdit"  Des="匹配开始位" ValueFormat="ValueFormatNumber" MaxValue="96" StartBitPos="4.0.0" EndBitPos="4.1.7"/>
+          <TreeItem Type="PropTreeItemEdit"  Des="匹配长度(bit)" ValueFormat="ValueFormatNumber" MaxValue="96" StartBitPos="4.2.0" EndBitPos="4.2.7"/>
+          <TreeItem Type="PropTreeItermByteEdit" Des="匹配值(hex)" ByteCount="12"  StartBitPos="4.3.0" EndBitPos="5.6.7"/>
+        </TreeItem>
+
+        <TreeItem Type="PropTreeItem" Des="EPC 区2">
+          <TreeItem Type="PropTreeItemEdit"  Des="匹配开始位" ValueFormat="ValueFormatNumber" MaxValue="96" StartBitPos="6.0.0" EndBitPos="6.1.7"/>
+          <TreeItem Type="PropTreeItemEdit"  Des="匹配长度(bit)" ValueFormat="ValueFormatNumber" MaxValue="96" StartBitPos="6.2.0" EndBitPos="6.2.7"/>
+          <TreeItem Type="PropTreeItermByteEdit" Des="匹配值(hex)" ByteCount="12"  StartBitPos="6.3.0" EndBitPos="7.6.7"/>
+        </TreeItem>
+
+        <TreeItem Type="PropTreeItem" Des="EPC 区3">
+          <TreeItem Type="PropTreeItemEdit"  Des="匹配开始位" ValueFormat="ValueFormatNumber" MaxValue="96" StartBitPos="16.0.0" EndBitPos="16.1.7"/>
+          <TreeItem Type="PropTreeItemEdit"  Des="匹配长度(bit)" ValueFormat="ValueFormatNumber" MaxValue="96" StartBitPos="16.2.0" EndBitPos="16.2.7"/>
+          <TreeItem Type="PropTreeItermByteEdit" Des="匹配值(hex)" ByteCount="12"  StartBitPos="16.3.0" EndBitPos="17.6.7"/>
+        </TreeItem>
+      </TreeItem>
+	  <TreeItem Type="PropTreeItem" Des="USER位匹配条件">
+          <TreeItem Type="PropTreeItemEdit"  Des="匹配开始位" ValueFormat="ValueFormatNumber" MaxValue="96" StartBitPos="18.0.0" EndBitPos="18.1.7"/>
+          <TreeItem Type="PropTreeItemEdit"  Des="匹配长度(bit)" ValueFormat="ValueFormatNumber" MaxValue="96" StartBitPos="18.2.0" EndBitPos="18.2.7"/>
+          <TreeItem Type="PropTreeItermByteEdit" Des="匹配值(hex)" ByteCount="12"  StartBitPos="18.3.0" EndBitPos="19.6.7"/>
+	  </TreeItem>
+      <TreeItem Type="PropTreeItem" Des="报警动作">
+          <TreeItem Type="PropTreeItemCheckBox" Des="报警" StartBitPos="8.0.0" EndBitPos="8.0.0" CheckValue="0x01" UnCheckValue="0x00"/>
+          <TreeItem Type="PropTreeItemCheckBox" Des="保存记录" StartBitPos="8.0.1" EndBitPos="8.0.1" CheckValue="0x01" UnCheckValue="0x00"/>
+      </TreeItem>
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="基本输出">
+      <TreeItem Type="PropTreeItem" Des="基本继电器输出">
+        <TreeItem Type="PropTreeItemCombo" Des="触发类型" StartBitPos="9.4.0" EndBitPos="9.4.7">
+          <List Des="无" Value="0x00"/>
+          <List Des="非法报警联动" Value="0x01"/>
+          <List Des="合法进入联动" Value="0x02"/>
+          <List Des="合法离开联动" Value="0x03"/>
+          <List Des="合法进出联动" Value="0x04"/>
+          <List Des="红外触发联动" Value="0x05"/>
+        </TreeItem>
+        <TreeItem Type="PropTreeItemEdit"  Des="激活时间(100ms)" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="9.5.0" EndBitPos="9.5.7"/>
+        <TreeItem Type="PropTreeItemEdit"  Des="激活次数" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="9.6.0" EndBitPos="9.6.7"/>
+        <TreeItem Type="PropTreeItemEdit"  Des="停止时间(100ms)" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="9.7.0" EndBitPos="9.7.7"/>
+      </TreeItem>
+
+      <TreeItem Type="PropTreeItem" Des="基本MOS管输出">
+        <TreeItem Type="PropTreeItemCombo" Des="触发类型" StartBitPos="10.0.0" EndBitPos="10.0.7">
+          <List Des="无" Value="0x00"/>
+          <List Des="非法报警联动" Value="0x01"/>
+          <List Des="合法进入联动" Value="0x02"/>
+          <List Des="合法离开联动" Value="0x03"/>
+          <List Des="合法进出联动" Value="0x04"/>
+          <List Des="红外触发联动" Value="0x05"/>
+        </TreeItem>
+        <TreeItem Type="PropTreeItemEdit"  Des="激活时间(100ms)" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="10.1.0" EndBitPos="10.1.7"/>
+        <TreeItem Type="PropTreeItemEdit"  Des="激活次数" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="10.2.0" EndBitPos="10.2.7"/>
+        <TreeItem Type="PropTreeItemEdit"  Des="停止时间(100ms)" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="10.3.0" EndBitPos="10.3.7"/>
+      </TreeItem>
+
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="扩展输出">
+      <TreeItem Type="PropTreeItem" Des="扩展继电器1">
+        <TreeItem Type="PropTreeItemCombo" Des="联动报警" StartBitPos="11.0.0" EndBitPos="11.0.7">
+          <List Des="无" Value="0x00"/>
+          <List Des="非法报警联动" Value="0x01"/>
+          <List Des="合法进入联动" Value="0x02"/>
+          <List Des="合法离开联动" Value="0x03"/>
+          <List Des="合法进出联动" Value="0x04"/>
+          <List Des="红外触发联动" Value="0x05"/>
+        </TreeItem>
+        <TreeItem Type="PropTreeItemEdit"  Des="激活时间(100ms)" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="11.1.0" EndBitPos="11.1.7"/>
+        <TreeItem Type="PropTreeItemEdit"  Des="激活次数" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="11.2.0" EndBitPos="11.2.7"/>
+        <TreeItem Type="PropTreeItemEdit"  Des="停止时间(100ms)" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="11.3.0" EndBitPos="11.3.7"/>
+      </TreeItem>
+
+      <TreeItem Type="PropTreeItem" Des="扩展继电器2">
+        <TreeItem Type="PropTreeItemCombo" Des="联动报警" StartBitPos="11.4.0" EndBitPos="11.4.7">
+          <List Des="无" Value="0x00"/>
+          <List Des="非法报警联动" Value="0x01"/>
+          <List Des="合法进入联动" Value="0x02"/>
+          <List Des="合法离开联动" Value="0x03"/>
+          <List Des="合法进出联动" Value="0x04"/>
+          <List Des="红外触发联动" Value="0x05"/>
+        </TreeItem>
+        <TreeItem Type="PropTreeItemEdit"  Des="激活时间(100ms)" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="11.5.0" EndBitPos="11.5.7"/>
+        <TreeItem Type="PropTreeItemEdit"  Des="激活次数" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="11.6.0" EndBitPos="11.6.7"/>
+        <TreeItem Type="PropTreeItemEdit"  Des="停止时间(100ms)" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="11.7.0" EndBitPos="11.7.7"/>
+      </TreeItem>
+
+      <TreeItem Type="PropTreeItem" Des="扩展MOS管">
+        <TreeItem Type="PropTreeItemCombo" Des="联动报警" StartBitPos="12.0.0" EndBitPos="12.0.7">
+          <List Des="无" Value="0x00"/>
+          <List Des="非法报警联动" Value="0x01"/>
+          <List Des="合法进入联动" Value="0x02"/>
+          <List Des="合法离开联动" Value="0x03"/>
+          <List Des="合法进出联动" Value="0x04"/>
+          <List Des="红外触发联动" Value="0x05"/>
+        </TreeItem>
+        <TreeItem Type="PropTreeItemEdit"  Des="激活时间(100ms)" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="12.1.0" EndBitPos="12.1.7"/>
+        <TreeItem Type="PropTreeItemEdit"  Des="激活次数" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="12.2.0" EndBitPos="12.2.7"/>
+        <TreeItem Type="PropTreeItemEdit"  Des="停止时间(100ms)" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="12.3.0" EndBitPos="12.3.7"/>
+      </TreeItem>
+
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="射频功率">
+      <TreeItem Type="PropTreeItemCombo" Des="功率值" StartBitPos="13.0.0" EndBitPos="13.0.7">
+        <List Des="1DB" Value="1"/>
+        <List Des="2DB" Value="2"/>
+        <List Des="3DB" Value="3"/>
+        <List Des="4DB" Value="4"/>
+        <List Des="5DB" Value="5"/>
+        <List Des="6DB" Value="6"/>
+        <List Des="7DB" Value="7"/>
+        <List Des="8DB" Value="8"/>
+        <List Des="9DB" Value="9"/>
+        <List Des="10DB" Value="10"/>
+        <List Des="11DB" Value="11"/>
+        <List Des="12DB" Value="12"/>
+        <List Des="13DB" Value="13"/>
+        <List Des="14DB" Value="14"/>
+        <List Des="15DB" Value="15"/>
+        <List Des="16DB" Value="16"/>
+        <List Des="17DB" Value="17"/>
+        <List Des="18DB" Value="18"/>
+        <List Des="19DB" Value="19"/>
+        <List Des="20DB" Value="20"/>
+        <List Des="21DB" Value="21"/>
+        <List Des="22DB" Value="22"/>
+        <List Des="23DB" Value="23"/>
+        <List Des="24DB" Value="24"/>
+        <List Des="25DB" Value="25"/>
+        <List Des="26DB" Value="26"/>
+        <List Des="27DB" Value="27"/>
+        <List Des="28DB" Value="28"/>
+        <List Des="29DB" Value="29"/>
+        <List Des="30DB" Value="30"/>
+      </TreeItem>
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="高级配置">
+      <TreeItem Type="PropTreeItemCombo" Des="同步系统EAS模式" StartBitPos="14.0.0" EndBitPos="14.0.0">
+        <List Des="每片门独立报警" Value="0x00"/>
+        <List Des="每片门统一报警" Value="0x01"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemEdit"  Des="读卡最大时间(50ms)" ValueFormat="ValueFormatNumber" MaxValue="100" StartBitPos="14.2.0" EndBitPos="14.2.7"/>
+      <TreeItem Type="PropTreeItemCombo" Des="工作模式" StartBitPos="14.3.0" EndBitPos="14.3.0">
+        <List Des="主动读卡" Value="0x00"/>
+        <List Des="触发红外读卡" Value="0x01"/>
+      </TreeItem>
+    </TreeItem>
+
+
+    <TreeItem Type="PropTreeItem" Des="读写器配置">
+     	<TreeItem Type="PropTreeItemCombo" Des="频率" StartBitPos="15.0.0" EndBitPos="15.0.7">
+       		<List Des="NA     902~926MHz" Value="0x01"/>
+       		<List Des="EU     865~867MHz" Value="0x02"/>
+        		<List Des="KR     910~913MHz" Value="0x03"/>
+        		<List Des="IN     865~867MHz" Value="0x04"/>
+        		<List Des="JP     916.8~923.4MHz" Value="0x05"/>
+        		<List Des="PRC    920~925MHz" Value="0x06"/>
+        		<List Des="EU2    869~872MHz" Value="0x07"/>
+        		<List Des="EU3    865.6~867.6MHz" Value="0x08"/>
+        		<List Des="KR2    917~923.5MHz" Value="0x09"/>
+        		<List Des="PRC2   840~845MHz" Value="0x0A"/>
+        		<List Des="AU     920~926MHz" Value="0x0B"/>
+        		<List Des="NZ     922~927.5MHz" Value="0x0C"/>
+        		<List Des="NA2    917.4~927.2MHz" Value="0x0D"/>
+        		<List Des="NA3    917.5~922.5MHz" Value="0x0E"/>
+       		<List Des="Custom for ice locker" Value="0x10"/>
+        		<List Des="OPEN   859~873MHz 902~930MHz" Value="0xFF"/>
+      	</TreeItem>
+	<TreeItem Type="PropTreeItem" Des="跳频方式">
+		<TreeItem Type="PropTreeItemCombo" Des="换天线时跳频方式" StartBitPos="20.0.0" EndBitPos="20.0.7">
+       		        	<List Des="切换天线时不切换频率" Value="0"/>
+        			<List Des="切换天线时切换频率" Value="1"/>
+        			<List Des="两个天线为一组切换频率" Value="2"/>
+        			<List Des="三个天线为一组切换频率" Value="3"/>
+        			<List Des="四个天线为一组切换频率" Value="4"/>
+      		</TreeItem>
+		<TreeItem Type="PropTreeItemCombo" Des="一个天线内触发跳频方式" StartBitPos="20.1.0" EndBitPos="20.1.7">
+       		       	<List Des="时间超时" Value="0"/>
+        			<List Des="每次循环" Value="1"/>
+        			<List Des="定频" Value="2"/>
+      		</TreeItem>
+		<TreeItem Type="PropTreeItemCombo" Des="跳频时间间隔" StartBitPos="20.2.0" EndBitPos="20.3.7">
+       		 	<List Des="100MS" Value="100"/>
+        			<List Des="200MS" Value="200"/>
+        			<List Des="300MS" Value="300"/>
+        			<List Des="400MS" Value="400"/>
+        			<List Des="500MS" Value="500"/>
+       			<List Des="600MS" Value="600"/>
+        			<List Des="700MS" Value="700"/>
+       		 	<List Des="800MS" Value="800"/>
+        			<List Des="900MS" Value="900"/>
+        			<List Des="1000MS" Value="1000"/>
+       			<List Des="1500MS" Value="1500"/>
+        			<List Des="2000MS" Value="2000"/>
+        			<List Des="2500MS" Value="2500"/>
+       			<List Des="3000MS" Value="3000"/>
+        			<List Des="3500MS" Value="3500"/>
+       			 <List Des="4000MS" Value="4000"/>
+      		</TreeItem>
+			<TreeItem Type="PropTreeItemEdit"  Des="定频频率 MHZ" ValueFormat="ValueFormatNumber" MaxValue="0x3C0"  StartBitPos="20.4.0" EndBitPos="20.5.7">
+      		</TreeItem>
+	</TreeItem>
+	<TreeItem Type="PropTreeItem" Des="停止触发器">
+		<TreeItem Type="PropTreeItemCombo" Des="停止触发条件" StartBitPos="20.6.0" EndBitPos="20.6.7">
+       		 	<List Des="超时"    Value="0x00"/>
+        			<List Des="尝试N次" Value="0x01"/>
+      		</TreeItem>
+		<TreeItem Type="PropTreeItemCombo" Des="尝试次数" StartBitPos="20.7.0" EndBitPos="20.7.7">
+       		 	<List Des="0" Value="0"/>
+        			<List Des="1" Value="1"/>
+        			<List Des="2" Value="2"/>
+        			<List Des="3" Value="3"/>
+        			<List Des="4" Value="4"/>
+        			<List Des="5" Value="5"/>
+        			<List Des="6" Value="6"/>
+        			<List Des="7" Value="7"/>
+        			<List Des="8" Value="8"/>
+        			<List Des="9" Value="9"/>
+        			<List Des="10" Value="10"/>
+        			<List Des="11" Value="11"/>
+        			<List Des="12" Value="12"/>
+        			<List Des="13" Value="13"/>
+        			<List Des="14" Value="14"/>
+       			<List Des="15" Value="15"/>
+      		</TreeItem>
+	</TreeItem>
+      </TreeItem>
+    </TreeItem>
+
+  </PropTreeCfg>
+
+</Cfg>

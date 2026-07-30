@@ -1,0 +1,189 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Cfg Version="1.0">
+  <BlockCfg Size="8">
+    <Address From="0" To="7"/>
+    <Address From="9" To="9"/>
+    <Address From="11" To="13"/>
+  </BlockCfg>
+
+  <PropTreeCfg>
+    <TreeItem Type="PropTreeItem" Des="Communication">
+      <TreeItem Type="PropTreeItemEdit"  Des="Bus address" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="0.0.0" EndBitPos="0.0.7"/>
+      <TreeItem Type="PropTreeItem" Des="Network">
+        <TreeItem Type="PropTreeItemIPAddr" Des="IP address" StartBitPos="12.0.0" EndBitPos="12.3.7"/>
+        <TreeItem Type="PropTreeItemIPAddr" Des="Subnet mask" StartBitPos="12.4.0" EndBitPos="12.7.7"/>
+        <TreeItem Type="PropTreeItemIPAddr" Des="Gateway" StartBitPos="13.0.0" EndBitPos="13.3.7"/>
+      </TreeItem>
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="RF power">
+      <TreeItem Type="PropTreeItemCombo" Des="RF power level" StartBitPos="1.0.0" EndBitPos="1.0.7">
+        <List Des="1W" Value="0x02"/>
+        <List Des="2W" Value="0x04"/>
+        <List Des="3W" Value="0x06"/>
+        <List Des="4W" Value="0x08"/>
+        <List Des="5W" Value="0x0A"/>
+        <List Des="6W" Value="0x0C"/>
+        <List Des="7W" Value="0x0E"/>
+        <List Des="8W" Value="0x10"/>
+      </TreeItem>
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="Default antenna parameter">
+	  <TreeItem Type="PropTreeItemCheckBox" Des="Enable DC Power" StartBitPos="7.0.0" EndBitPos="7.3.7" CheckValue="0xFFFFFFFF" UnCheckValue="0x00000000" DefaultChecked="true"/>
+      <TreeItem Type="PropTreeItem" Des="Enable antenna">
+        <TreeItem Type="PropTreeItemCheckBox" Des="Antenna-1" IsAntenna="true" AntennaID="1" StartBitPos="1.1.0" EndBitPos="1.1.0" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="Antenna-2" IsAntenna="true" AntennaID="2" StartBitPos="1.1.1" EndBitPos="1.1.1" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="Antenna-3" IsAntenna="true" AntennaID="3" StartBitPos="1.1.2" EndBitPos="1.1.2" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="Antenna-4" IsAntenna="true" AntennaID="4" StartBitPos="1.1.3" EndBitPos="1.1.3" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="Antenna-5" IsAntenna="true" AntennaID="5" StartBitPos="1.1.4" EndBitPos="1.1.4" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="Antenna-6" IsAntenna="true" AntennaID="6" StartBitPos="1.1.5" EndBitPos="1.1.5" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="Antenna-7" IsAntenna="true" AntennaID="7" StartBitPos="1.1.6" EndBitPos="1.1.6" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="Antenna-8" IsAntenna="true" AntennaID="8" StartBitPos="1.1.7" EndBitPos="1.1.7" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="Antenna-9" IsAntenna="true" AntennaID="9" StartBitPos="1.2.0" EndBitPos="1.2.0" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="Antenna-10" IsAntenna="true" AntennaID="10" StartBitPos="1.2.1" EndBitPos="1.2.1" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="Antenna-11" IsAntenna="true" AntennaID="11" StartBitPos="1.2.2" EndBitPos="1.2.2" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="Antenna-12" IsAntenna="true" AntennaID="12" StartBitPos="1.2.3" EndBitPos="1.2.3" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="Antenna-13" IsAntenna="true" AntennaID="13" StartBitPos="1.2.4" EndBitPos="1.2.4" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="Antenna-14" IsAntenna="true" AntennaID="14" StartBitPos="1.2.5" EndBitPos="1.2.5" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="Antenna-15" IsAntenna="true" AntennaID="15" StartBitPos="1.2.6" EndBitPos="1.2.6" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="Antenna-16" IsAntenna="true" AntennaID="16" StartBitPos="1.2.7" EndBitPos="1.2.7" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="Antenna-17" IsAntenna="true" AntennaID="17" StartBitPos="1.4.0" EndBitPos="1.4.0" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="Antenna-18" IsAntenna="true" AntennaID="18" StartBitPos="1.4.1" EndBitPos="1.4.1" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="Antenna-19" IsAntenna="true" AntennaID="19" StartBitPos="1.4.2" EndBitPos="1.4.2" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="Antenna-20" IsAntenna="true" AntennaID="20" StartBitPos="1.4.3" EndBitPos="1.4.3" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="Antenna-21" IsAntenna="true" AntennaID="21" StartBitPos="1.4.4" EndBitPos="1.4.4" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="Antenna-22" IsAntenna="true" AntennaID="22" StartBitPos="1.4.5" EndBitPos="1.4.5" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="Antenna-23" IsAntenna="true" AntennaID="23" StartBitPos="1.4.6" EndBitPos="1.4.6" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="Antenna-24" IsAntenna="true" AntennaID="24" StartBitPos="1.4.7" EndBitPos="1.4.7" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="Antenna-25" IsAntenna="true" AntennaID="25" StartBitPos="1.5.0" EndBitPos="1.5.0" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="Antenna-26" IsAntenna="true" AntennaID="26" StartBitPos="1.5.1" EndBitPos="1.5.1" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="Antenna-27" IsAntenna="true" AntennaID="27" StartBitPos="1.5.2" EndBitPos="1.5.2" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="Antenna-28" IsAntenna="true" AntennaID="28" StartBitPos="1.5.3" EndBitPos="1.5.3" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="Antenna-29" IsAntenna="true" AntennaID="29" StartBitPos="1.5.4" EndBitPos="1.5.4" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="Antenna-30" IsAntenna="true" AntennaID="30" StartBitPos="1.5.5" EndBitPos="1.5.5" CheckValue="0x01" UnCheckValue="0x00"/>
+      </TreeItem>
+
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="Air protocol parameters">
+      <TreeItem Type="PropTreeItemCombo" Des="Modulation" StartBitPos="1.3.0" EndBitPos="1.3.7">
+        <List Des="OOK 100%" Value="0x00"/>
+        <List Des="ASK 10%" Value="0x80"/>
+      </TreeItem>
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="Anti-collision parameters">
+      <TreeItem Type="PropTreeItemCheckBox" Des="Fast mode" StartBitPos="3.0.0" EndBitPos="3.0.0" CheckValue="0x01" UnCheckValue="0x00"/>
+      <TreeItem Type="PropTreeItemCombo" Des="Slot" StartBitPos="2.0.0" EndBitPos="2.0.6">
+        <List Des="16 slots" Value="0x00"/>
+        <List Des="1 slot" Value="0x01"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItem" Des="Filter options">
+        <TreeItem Type="PropTreeItemCheckBox" Des=" Match AFI" StartBitPos="3.0.1" EndBitPos="3.0.1" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="Only read new tags" StartBitPos="3.0.3" EndBitPos="3.0.3" CheckValue="0x01" UnCheckValue="0x00"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemEdit"  Des="AFI" ValueFormat="ValueFormatHex" StartBitPos="3.1.0" EndBitPos="3.1.7"/>
+      <TreeItem Type="PropTreeItemCheckBox" Des="Close anti-collision" StartBitPos="2.0.7" EndBitPos="2.0.7" CheckValue="0x01" UnCheckValue="0x00"/>
+      <TreeItem Type="PropTreeItemEdit"  Des="Multiple tags anti-collision time(100ms)" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="3.2.0" EndBitPos="3.2.7"/>
+      <TreeItem Type="PropTreeItemCombo" Des="Anti-collision command" StartBitPos="3.0.5" EndBitPos="3.0.7">
+        <List Des="ISO15693 standard" Value="0x00"/>
+        <List Des="ICODE command" Value="0x01"/>
+        <List Des="Blend command" Value="0x02"/>
+      </TreeItem>
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="Trigger options">
+      <TreeItem Type="PropTreeItemCheckBox" Des="Close RF when free" StartBitPos="3.0.2" EndBitPos="3.0.2" CheckValue="0x01" UnCheckValue="0x00"/>
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="Output setting">
+      <TreeItem Type="PropTreeItem" Des="Relay">
+        <TreeItem Type="PropTreeItemEdit"  Des="Active duration(100ms)" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="9.0.0" EndBitPos="9.0.7"/>
+        <TreeItem Type="PropTreeItemEdit"  Des="Inactive(100ms)" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="9.1.0" EndBitPos="9.1.7"/>
+        <TreeItem Type="PropTreeItemEdit"  Des="Frequency" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="9.2.0" EndBitPos="9.2.7"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItem" Des="Buzzer on-board">
+        <TreeItem Type="PropTreeItemEdit"  Des="Active duration(100ms)" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="11.0.0" EndBitPos="11.0.7"/>
+        <TreeItem Type="PropTreeItemEdit"  Des="Inactive(100ms)" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="11.1.0" EndBitPos="11.1.7"/>
+        <TreeItem Type="PropTreeItemEdit"  Des="Frequency" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="11.2.0" EndBitPos="11.2.7"/>
+      </TreeItem>
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="Setting when the tag can't be recognized">
+      <TreeItem Type="PropTreeItemCombo" Des="Manufacturer's ID" StartBitPos="2.2.0" EndBitPos="2.2.7">
+        <List Des="Tag-it" Value="0x07"/>
+        <List Des="NXP" Value="0x04"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemEdit"  Des="Tag's type ID" ValueFormat="ValueFormatHex" StartBitPos="2.3.0" EndBitPos="2.3.7"/>
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="System working mode">
+      <TreeItem Type="PropTreeItemCombo" Des="Working mode" StartBitPos="4.0.0" EndBitPos="4.0.7">
+        <List Des="Host mode" Value="0x00"/>
+        <List Des="Scan mode" Value="0xA0"/>
+        <List Des="Wiegand read tags" Value="0xB0"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItem" Des="Scan mode parameters">
+        <TreeItem Type="PropTreeItem" Des="Scan data">
+          <TreeItem Type="PropTreeItemCheckBox" Des="Scan serial number" StartBitPos="6.0.0" EndBitPos="6.0.0" CheckValue="0x01" UnCheckValue="0x00"/>
+          <TreeItem Type="PropTreeItemCheckBox" Des="Scan block" StartBitPos="6.0.1" EndBitPos="6.0.1" CheckValue="0x01" UnCheckValue="0x00"/>
+          <TreeItem Type="PropTreeItemCheckBox" Des="Generic port" StartBitPos="6.0.2" EndBitPos="6.0.2" CheckValue="0x01" UnCheckValue="0x00"/>
+          <TreeItem Type="PropTreeItemCheckBox" Des="Antenna ID" StartBitPos="6.0.3" EndBitPos="6.0.3" CheckValue="0x01" UnCheckValue="0x00"/>
+        </TreeItem>
+        <TreeItem Type="PropTreeItem" Des="Block's parameters">
+          <TreeItem Type="PropTreeItemEdit"  Des="Block address" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="3.3.0" EndBitPos="3.3.7"/>
+          <TreeItem Type="PropTreeItemCombo" Des="Block count" ListStart="0"  ListEnd="8" StartBitPos="3.4.0" EndBitPos="3.4.7"/>
+        </TreeItem>
+        <TreeItem Type="PropTreeItemCombo" Des="Output format" StartBitPos="6.0.7" EndBitPos="6.0.7">
+          <List Des="Output with raw data" Value="0x00"/>
+          <List Des="Output with hexadecimal ASCII data" Value="0x01"/>
+        </TreeItem>
+
+        <TreeItem Type="PropTreeItem" Des="Separator symbol">
+          <TreeItem Type="PropTreeItemCombo" Des="Separator symbol type" StartBitPos="6.3.7" EndBitPos="6.3.7">
+            <List Des="System" Value="0x00"/>
+            <List Des="Customize" Value="0x01"/>
+          </TreeItem>
+          <TreeItem Type="PropTreeItemCombo" Des="System's separator symbol" StartBitPos="6.3.0" EndBitPos="6.3.6">
+            <List Des="Enter and new line(0x0D+0x0A)" Value="0x00"/>
+            <List Des="New line(0x0A)" Value="0x01"/>
+            <List Des="Enter(0x0D)" Value="0x02"/>
+            <List Des="TAB(0x07)" Value="0x03"/>
+            <List Des="Semicolon(0x3B)" Value="0x04"/>
+            <List Des="Comma(0x2C)" Value="0x05"/>
+            <List Des="Space(0x20)" Value="0x06"/>
+          </TreeItem>
+          <TreeItem Type="PropTreeItemEdit"  Des="Customized separator symbol" ValueFormat="ValueFormatHex" StartBitPos="6.4.0" EndBitPos="6.4.7"/>
+        </TreeItem>
+
+
+        <TreeItem Type="PropTreeItem" Des="End symbol">
+          <TreeItem Type="PropTreeItemCombo" Des="End symbol type" StartBitPos="6.5.7" EndBitPos="6.5.7">
+            <List Des="System" Value="0x00"/>
+            <List Des="Customize" Value="0x01"/>
+          </TreeItem>
+          <TreeItem Type="PropTreeItemCombo" Des="System's end symbol" StartBitPos="6.5.0" EndBitPos="6.5.6">
+            <List Des="Enter and new line(0x0D+0x0A)" Value="0x00"/>
+            <List Des="New line(0x0A)" Value="0x01"/>
+            <List Des="Enter(0x0D)" Value="0x02"/>
+            <List Des="TAB(0x07)" Value="0x03"/>
+            <List Des="Semicolon(0x3B)" Value="0x04"/>
+            <List Des="Comma(0x2C)" Value="0x05"/>
+            <List Des="Space(0x20)" Value="0x06"/>
+          </TreeItem>
+          <TreeItem Type="PropTreeItemEdit"  Des="Customized end symbol" ValueFormat="ValueFormatHex" StartBitPos="6.6.0" EndBitPos="6.6.7"/>
+        </TreeItem>
+      </TreeItem>
+
+      <TreeItem Type="PropTreeItem" Des="Parameters of wiegand read tags">
+        <TreeItem Type="PropTreeItemCombo" Des="Output format of wiegand" StartBitPos="5.0.0" EndBitPos="5.0.7">
+          <List Des="Wiegand-26" Value="0x00"/>
+          <List Des="Wiegand-34" Value="0x01"/>
+        </TreeItem>
+        <TreeItem Type="PropTreeItemEdit"  Des="TP negative pulse time(us)" ValueFormat="ValueFormatNumber" MaxValue="0xFFFF" StartBitPos="5.1.0" EndBitPos="5.2.7"/>
+        <TreeItem Type="PropTreeItemEdit"  Des="TW cycle time(us)" ValueFormat="ValueFormatNumber" MaxValue="0xFFFF" StartBitPos="5.3.0" EndBitPos="5.4.7"/>
+      </TreeItem>
+    </TreeItem>
+  </PropTreeCfg>
+</Cfg>

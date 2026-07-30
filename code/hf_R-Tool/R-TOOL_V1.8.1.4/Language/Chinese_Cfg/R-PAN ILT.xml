@@ -1,0 +1,92 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Cfg Version="1.0">
+  <BlockCfg Size="14">
+    <Address From="1" To="8"/>
+  </BlockCfg>
+
+  <PropTreeCfg>
+    <TreeItem Type="PropTreeItem" Des="网络接口">
+      <TreeItem Type="PropTreeItemCheckBox" Des="Wifi" StartBitPos="6.1.0" EndBitPos="6.1.7" CheckValue="0x01" UnCheckValue="0x00"/>
+      <TreeItem Type="PropTreeItemCombo" Des="Wifi工作模式" StartBitPos="6.3.0" EndBitPos="6.3.7">
+        <List Des="STA" Value="0x00"/>
+        <List Des="AP" Value="0x01"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemCheckBox" Des="DHCP" StartBitPos="6.2.0" EndBitPos="6.2.7" CheckValue="0x01" UnCheckValue="0x00"/>
+      <TreeItem Type="PropTreeItemEdit"  Des="名称" ValueFormat="ValueFormatText" StartBitPos="1.0.0" EndBitPos="2.5.7"/>
+      <TreeItem Type="PropTreeItemEdit"  Des="密码" ValueFormat="ValueFormatText" Password="True"  StartBitPos="3.0.0" EndBitPos="4.5.7"/>
+      <TreeItem Type="PropTreeItemIPAddr" Des="静态IP地址" StartBitPos="5.0.0" EndBitPos="5.3.7"/>
+      <TreeItem Type="PropTreeItemIPAddr" Des="静态子网掩码" StartBitPos="5.4.0" EndBitPos="5.7.7"/>
+      <TreeItem Type="PropTreeItemIPAddr" Des="网关" StartBitPos="5.8.0" EndBitPos="5.11.7"/>
+      <TreeItem Type="PropTreeItemEdit"  Des="端口号" ValueFormat="ValueFormatNumber" MaxValue="0xFFFF" StartBitPos="5.12.0" EndBitPos="5.13.7"/>
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="蓝牙开关">
+      <TreeItem Type="PropTreeItemCheckBox" Des="蓝牙2.1" StartBitPos="6.0.0" EndBitPos="6.0.0" CheckValue="0x01" UnCheckValue="0x00"/>
+      <TreeItem Type="PropTreeItemCheckBox" Des="蓝牙4.0" StartBitPos="6.0.4" EndBitPos="6.0.4" CheckValue="0x01" UnCheckValue="0x00"/>
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="射频模块">
+      <TreeItem Type="PropTreeItemCombo" Des="开始Q值" StartBitPos="7.0.0" EndBitPos="7.0.3">
+        <List Des="0" Value="0"/>
+        <List Des="1" Value="1"/>
+        <List Des="2" Value="2"/>
+        <List Des="3" Value="3"/>
+        <List Des="4" Value="4"/>
+        <List Des="5" Value="5"/>
+        <List Des="6" Value="6"/>
+        <List Des="7" Value="7"/>
+        <List Des="8" Value="8"/>
+        <List Des="9" Value="9"/>
+        <List Des="10" Value="10"/>
+        <List Des="11" Value="11"/>
+        <List Des="12" Value="12"/>
+        <List Des="13" Value="13"/>
+        <List Des="14" Value="14"/>
+        <List Des="15" Value="15"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemCombo" Des="会话" StartBitPos="7.0.4" EndBitPos="7.0.5">
+        <List Des="session 0" Value="0x00"/>
+        <List Des="session 2" Value="0x02"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemCheckBox" Des="使用动态Q值" StartBitPos="7.0.6" EndBitPos="7.0.6" CheckValue="0x01" UnCheckValue="0x00"/>
+      <TreeItem Type="PropTreeItemEdit"  Des="最大盘点时间(单位:100ms)" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="7.4.0" EndBitPos="7.4.7"/>
+      <TreeItem Type="PropTreeItemCheckBox" Des="只读新标签" StartBitPos="7.1.2" EndBitPos="7.1.2" CheckValue="0x01" UnCheckValue="0x00"/>
+      </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="标签内存扫描">
+      <TreeItem Type="PropTreeItemCombo" Des="内存区域" StartBitPos="8.3.0" EndBitPos="8.3.7">
+        <List Des="RFU" Value="0x00"/>
+        <List Des="EPC" Value="0x01"/>
+        <List Des="TID" Value="0x02"/>
+        <List Des="USER" Value="0x03"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemEdit"  Des="开始word" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="8.1.0" EndBitPos="8.1.7"/>
+      <TreeItem Type="PropTreeItemCombo" Des="word数量" StartBitPos="8.2.0" EndBitPos="8.2.7">
+        <List Des="0" Value="0x00"/>
+        <List Des="1" Value="0x01"/>
+        <List Des="2" Value="0x02"/>
+        <List Des="3" Value="0x03"/>
+        <List Des="4" Value="0x04"/>
+        <List Des="5" Value="0x05"/>
+        <List Des="6" Value="0x06"/>
+        <List Des="7" Value="0x07"/>
+        <List Des="8" Value="0x08"/>
+        <List Des="9" Value="0x09"/>
+        <List Des="10" Value="0x0A"/>
+      </TreeItem>
+    </TreeItem>
+    
+    <TreeItem Type="PropTreeItem" Des="系统设置">
+      <TreeItem Type="PropTreeItemCombo" Des="语言" StartBitPos="6.5.0" EndBitPos="6.5.7">
+        <List Des="中文" Value="0x00"/>
+        <List Des="英文" Value="0x01"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemCombo" Des="记录存储位置" StartBitPos="8.4.0" EndBitPos="8.4.7">
+        <List Des="RAM" Value="0x00"/>
+        <List Des="FLASH" Value="0x01"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemCombo" Des="空闲自动关机(min)" ListStart="0"  ListEnd="60" StartBitPos="6.6.0" EndBitPos="6.6.7"/>
+    </TreeItem>
+    
+  </PropTreeCfg>
+</Cfg>

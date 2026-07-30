@@ -1,0 +1,117 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Cfg Version="1.0">
+  <BlockCfg Size="8">
+    <Address From="0" To="7"/>
+    <Address From="9" To="9"/>
+    <Address From="11" To="13"/>
+  </BlockCfg>
+
+  <PropTreeCfg>
+    <TreeItem Type="PropTreeItem" Des="主机通信接口">
+      <TreeItem Type="PropTreeItemEdit"  Des="总线地址" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="0.0.0" EndBitPos="0.0.7"/>
+      <TreeItem Type="PropTreeItem" Des="网络通信">
+        <TreeItem Type="PropTreeItemIPAddr" Des="IP地址" StartBitPos="12.0.0" EndBitPos="12.3.7"/>
+        <TreeItem Type="PropTreeItemIPAddr" Des="子网掩码" StartBitPos="12.4.0" EndBitPos="12.7.7"/>
+        <TreeItem Type="PropTreeItemIPAddr" Des="网关地址" StartBitPos="13.0.0" EndBitPos="13.3.7"/>
+      </TreeItem>
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="射频功率">
+      <TreeItem Type="PropTreeItemCombo" Des="射频功率大小" StartBitPos="1.0.0" EndBitPos="1.0.7">
+        <List Des="1W" Value="0x02"/>
+        <List Des="2W" Value="0x04"/>
+        <List Des="3W" Value="0x06"/>
+        <List Des="4W" Value="0x08"/>
+        <List Des="5W" Value="0x0A"/>
+        <List Des="6W" Value="0x0C"/>
+        <List Des="7W" Value="0x0E"/>
+        <List Des="8W" Value="0x10"/>
+      </TreeItem>
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="触发选项">
+      <TreeItem Type="PropTreeItemCheckBox" Des="空闲自动关闭射频" StartBitPos="3.0.2" EndBitPos="3.0.2" CheckValue="0x01" UnCheckValue="0x00"/>
+    </TreeItem>
+    <TreeItem Type="PropTreeItem" Des="默认天线参数">
+      <TreeItem Type="PropTreeItemCheckBox" Des="使能直流电源" StartBitPos="7.0.0" EndBitPos="7.3.7" CheckValue="0xFFFFFFFF" UnCheckValue="0x00000000" DefaultChecked="true"/>
+      <TreeItem Type="PropTreeItem" Des="使能天线">
+        <TreeItem Type="PropTreeItemCheckBox" Des="天线1" IsAntenna="true" AntennaID="1" StartBitPos="1.1.0" EndBitPos="1.1.0" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="天线2" IsAntenna="true" AntennaID="2" StartBitPos="1.1.1" EndBitPos="1.1.1" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="天线3" IsAntenna="true" AntennaID="3" StartBitPos="1.1.2" EndBitPos="1.1.2" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="天线4" IsAntenna="true" AntennaID="4" StartBitPos="1.1.3" EndBitPos="1.1.3" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="天线5" IsAntenna="true" AntennaID="5" StartBitPos="1.1.4" EndBitPos="1.1.4" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="天线6" IsAntenna="true" AntennaID="6" StartBitPos="1.1.5" EndBitPos="1.1.5" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="天线7" IsAntenna="true" AntennaID="7" StartBitPos="1.1.6" EndBitPos="1.1.6" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="天线8" IsAntenna="true" AntennaID="8" StartBitPos="1.1.7" EndBitPos="1.1.7" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="天线9" IsAntenna="true" AntennaID="9" StartBitPos="1.2.0" EndBitPos="1.2.0" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="天线10" IsAntenna="true" AntennaID="10" StartBitPos="1.2.1" EndBitPos="1.2.1" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="天线11" IsAntenna="true" AntennaID="11" StartBitPos="1.2.2" EndBitPos="1.2.2" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="天线12" IsAntenna="true" AntennaID="12" StartBitPos="1.2.3" EndBitPos="1.2.3" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="天线13" IsAntenna="true" AntennaID="13" StartBitPos="1.2.4" EndBitPos="1.2.4" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="天线14" IsAntenna="true" AntennaID="14" StartBitPos="1.2.5" EndBitPos="1.2.5" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="天线15" IsAntenna="true" AntennaID="15" StartBitPos="1.2.6" EndBitPos="1.2.6" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="天线16" IsAntenna="true" AntennaID="16" StartBitPos="1.2.7" EndBitPos="1.2.7" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="天线17" IsAntenna="true" AntennaID="17" StartBitPos="1.4.0" EndBitPos="1.4.0" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="天线18" IsAntenna="true" AntennaID="18" StartBitPos="1.4.1" EndBitPos="1.4.1" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="天线19" IsAntenna="true" AntennaID="19" StartBitPos="1.4.2" EndBitPos="1.4.2" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="天线20" IsAntenna="true" AntennaID="20" StartBitPos="1.4.3" EndBitPos="1.4.3" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="天线21" IsAntenna="true" AntennaID="21" StartBitPos="1.4.4" EndBitPos="1.4.4" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="天线22" IsAntenna="true" AntennaID="22" StartBitPos="1.4.5" EndBitPos="1.4.5" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="天线23" IsAntenna="true" AntennaID="23" StartBitPos="1.4.6" EndBitPos="1.4.6" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="天线24" IsAntenna="true" AntennaID="24" StartBitPos="1.4.7" EndBitPos="1.4.7" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="天线25" IsAntenna="true" AntennaID="25" StartBitPos="1.5.0" EndBitPos="1.5.0" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="天线26" IsAntenna="true" AntennaID="26" StartBitPos="1.5.1" EndBitPos="1.5.1" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="天线27" IsAntenna="true" AntennaID="27" StartBitPos="1.5.2" EndBitPos="1.5.2" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="天线28" IsAntenna="true" AntennaID="28" StartBitPos="1.5.3" EndBitPos="1.5.3" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="天线29" IsAntenna="true" AntennaID="29" StartBitPos="1.5.4" EndBitPos="1.5.4" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="天线30" IsAntenna="true" AntennaID="30" StartBitPos="1.5.5" EndBitPos="1.5.5" CheckValue="0x01" UnCheckValue="0x00"/>
+      </TreeItem>
+    </TreeItem>
+    <TreeItem Type="PropTreeItem" Des="空中接口参数">
+      <TreeItem Type="PropTreeItemCombo" Des="调制深度" StartBitPos="1.3.0" EndBitPos="1.3.7">
+        <List Des="OOK 100%" Value="0x00"/>
+        <List Des="ASK 10%" Value="0x80"/>
+      </TreeItem>
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="防冲突参数">
+      <TreeItem Type="PropTreeItemCheckBox" Des="快速模式" StartBitPos="3.0.0" EndBitPos="3.0.0" CheckValue="0x01" UnCheckValue="0x00"/>
+      <TreeItem Type="PropTreeItemCombo" Des="时隙" StartBitPos="2.0.0" EndBitPos="2.0.6">
+        <List Des="16个时隙" Value="0x00"/>
+        <List Des="1个时隙" Value="0x01"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItem" Des="过滤选项">
+        <TreeItem Type="PropTreeItemCheckBox" Des="AFI匹配" StartBitPos="3.0.1" EndBitPos="3.0.1" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="只读新标签" StartBitPos="3.0.3" EndBitPos="3.0.3" CheckValue="0x01" UnCheckValue="0x00"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemEdit"  Des="AFI值" ValueFormat="ValueFormatHex" StartBitPos="3.1.0" EndBitPos="3.1.7"/>
+      <TreeItem Type="PropTreeItemCheckBox" Des="关闭防碰撞" StartBitPos="2.0.7" EndBitPos="2.0.7" CheckValue="0x01" UnCheckValue="0x00"/>
+      <TreeItem Type="PropTreeItemEdit"  Des="多标签防冲突时间(100ms)" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="3.2.0" EndBitPos="3.2.7"/>
+      <TreeItem Type="PropTreeItemCombo" Des="防冲突命令" StartBitPos="3.0.5" EndBitPos="3.0.7">
+        <List Des="ISO15693标准" Value="0x00"/>
+        <List Des="ICODE命令" Value="0x01"/>
+        <List Des="混合命令" Value="0x02"/>
+      </TreeItem>
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="无法识别标签时设置">
+      <TreeItem Type="PropTreeItemCombo" Des="厂商代码" StartBitPos="2.2.0" EndBitPos="2.2.7">
+        <List Des="Tag-it" Value="0x07"/>
+        <List Des="NXP" Value="0x04"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemEdit"  Des="电子标签型号代码" ValueFormat="ValueFormatHex" StartBitPos="2.3.0" EndBitPos="2.3.7"/>
+    </TreeItem>
+    
+    <TreeItem Type="PropTreeItem" Des="冰柜设置">
+      <TreeItem Type="PropTreeItemCombo" Des="冰柜类型" StartBitPos="4.0.0" EndBitPos="4.0.7">
+        <List Des="5层单门柜" Value="0x00"/>
+        <List Des="6层单门柜" Value="0x01"/>
+        <List Des="5层双门柜" Value="0x02"/>
+        <List Des="6层双门柜" Value="0x03"/>
+        <List Des="10层双门柜" Value="0x04"/>
+        <List Des="12层双门柜" Value="0x05"/>
+      </TreeItem>
+    </TreeItem>
+
+  </PropTreeCfg>
+</Cfg>

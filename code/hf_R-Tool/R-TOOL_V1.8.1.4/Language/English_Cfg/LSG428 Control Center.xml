@@ -1,0 +1,207 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Cfg Version="1.0">
+
+  <BlockCfg Size="14">
+    <Address From="2" To="13"/>
+  </BlockCfg>
+
+  <PropTreeCfg>
+
+    <TreeItem Type="PropTreeItem" Des="Communication Setting">
+
+      <TreeItem Type="PropTreeItem" Des="Serial">
+        <TreeItem Type="PropTreeItemEdit"  Des="Bus Address" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="2.0.0" EndBitPos="2.0.7"/>
+        <TreeItem Type="PropTreeItemCombo" Des="Baudrate" StartBitPos="2.1.0" EndBitPos="2.1.7">
+          <List Des="9600" Value="0x00"/>
+          <List Des="19200" Value="0x01"/>
+          <List Des="38400" Value="0x02"/>
+          <List Des="57600" Value="0x03"/>
+          <List Des="115200" Value="0x04"/>
+          <List Des="230400" Value="0x05"/>
+        </TreeItem>
+        <TreeItem Type="PropTreeItemCombo" Des="Parity check" StartBitPos="2.2.0" EndBitPos="2.2.1">
+          <List Des="none" Value="0x00"/>
+          <List Des="odd" Value="0x01"/>
+          <List Des="even" Value="0x02"/>
+        </TreeItem>
+      </TreeItem>
+
+      <TreeItem Type="PropTreeItem" Des="Net Communication">
+        <TreeItem Type="PropTreeItem" Des="Internet">
+          <TreeItem Type="PropTreeItemCheckBox" Des="enable DHCP" StartBitPos="2.3.0" EndBitPos="2.3.0" CheckValue="0x01" UnCheckValue="0x00"/>
+          <TreeItem Type="PropTreeItem" Des="static IP">
+            <TreeItem Type="PropTreeItemIPAddr" Des="IP" StartBitPos="3.0.0" EndBitPos="3.3.7"/>
+            <TreeItem Type="PropTreeItemIPAddr" Des="Subnet mask" StartBitPos="3.4.0" EndBitPos="3.7.7"/>
+            <TreeItem Type="PropTreeItemIPAddr" Des="Gateway" StartBitPos="3.8.0" EndBitPos="3.11.7"/>
+          </TreeItem>
+        </TreeItem>
+
+        <TreeItem Type="PropTreeItem" Des="WIFI STA">
+          <TreeItem Type="PropTreeItemEdit"  Des="SSID" ValueFormat="ValueFormatText" StartBitPos="5.0.0" EndBitPos="6.13.7"/>
+          <TreeItem Type="PropTreeItemEdit"  Des="Password" ValueFormat="ValueFormatText" StartBitPos="7.0.0" EndBitPos="8.13.7"/>
+          <TreeItem Type="PropTreeItemCheckBox" Des="enable DHCP" StartBitPos="2.3.1" EndBitPos="2.3.1" CheckValue="0x01" UnCheckValue="0x00"/>
+          <TreeItem Type="PropTreeItem" Des="static IP Address">
+            <TreeItem Type="PropTreeItemIPAddr" Des="IP" StartBitPos="4.0.0" EndBitPos="4.3.7"/>
+            <TreeItem Type="PropTreeItemIPAddr" Des="Subnet mask" StartBitPos="4.4.0" EndBitPos="4.7.7"/>
+            <TreeItem Type="PropTreeItemIPAddr" Des="Gateway" StartBitPos="4.8.0" EndBitPos="4.11.7"/>
+          </TreeItem>
+        </TreeItem>
+      </TreeItem>
+    </TreeItem>
+    
+    <TreeItem Type="PropTreeItem" Des="Anti-theft alarm parameters">
+
+      <TreeItem Type="PropTreeItemCombo" Des="Way to check if book in Library" StartBitPos="11.0.0" EndBitPos="11.0.7">
+        <List Des="EAS" Value="0x00"/>
+        <List Des="AFI" Value="0x01"/>
+        <List Des="EAS and AFI" Value="0x02"/>
+      </TreeItem>
+
+      <TreeItem Type="PropTreeItem" Des="EAS">
+        <TreeItem Type="PropTreeItemCombo" Des="EAS Command 1 Type" StartBitPos="11.1.0" EndBitPos="11.1.7">
+          <List Des="NXP Command" Value="0x00"/>
+          <List Des="FM Command" Value="0x01"/>
+          <List Des="ST Command" Value="0x02"/>
+        </TreeItem>
+        <TreeItem Type="PropTreeItem" Des="EAS Command 2">
+          <TreeItem Type="PropTreeItemCheckBox" Des="Enable" StartBitPos="11.2.0" EndBitPos="11.2.0" CheckValue="0x01" UnCheckValue="0x00"/>
+          <TreeItem Type="PropTreeItemCombo" Des="Type" StartBitPos="11.3.0" EndBitPos="11.3.7">
+            <List Des="NXP Command" Value="0x00"/>
+            <List Des="FM Command" Value="0x01"/>
+            <List Des="ST Command" Value="0x02"/>
+          </TreeItem>
+        </TreeItem>
+        <TreeItem Type="PropTreeItem" Des="EAS Command 3">
+          <TreeItem Type="PropTreeItemCheckBox" Des="Enable" StartBitPos="11.2.1" EndBitPos="11.2.1" CheckValue="0x01" UnCheckValue="0x00"/>
+          <TreeItem Type="PropTreeItemCombo" Des="Type" StartBitPos="11.4.0" EndBitPos="11.4.7">
+            <List Des="NXP Command" Value="0x00"/>
+            <List Des="FM Command" Value="0x01"/>
+            <List Des="ST Command" Value="0x02"/>
+          </TreeItem>
+        </TreeItem>
+      </TreeItem>
+
+      <TreeItem Type="PropTreeItem" Des="AFI">
+        <TreeItem Type="PropTreeItemEdit"  Des="AFI 1" ValueFormat="ValueFormatHex" MaxValue="0xFF" StartBitPos="11.9.0" EndBitPos="11.9.7"/>
+        <TreeItem Type="PropTreeItem" Des="AFI 2">
+          <TreeItem Type="PropTreeItemCheckBox" Des="Enable" StartBitPos="11.10.0" EndBitPos="11.10.0" CheckValue="0x01" UnCheckValue="0x00"/>
+          <TreeItem Type="PropTreeItemEdit"  Des="AFI value" ValueFormat="ValueFormatHex" MaxValue="0xFF" StartBitPos="11.11.0" EndBitPos="11.11.7"/>
+        </TreeItem>
+
+        <TreeItem Type="PropTreeItem" Des="AFI 3">
+          <TreeItem Type="PropTreeItemCheckBox" Des="Enable" StartBitPos="11.10.1" EndBitPos="11.10.1" CheckValue="0x01" UnCheckValue="0x00"/>
+          <TreeItem Type="PropTreeItemEdit"  Des="AFI value" ValueFormat="ValueFormatHex" MaxValue="0xFF" StartBitPos="11.12.0" EndBitPos="11.12.7"/>
+        </TreeItem>
+        <TreeItem Type="PropTreeItem" Des="AFI 4">
+          <TreeItem Type="PropTreeItemCheckBox" Des="Enalbe" StartBitPos="11.10.2" EndBitPos="11.10.2" CheckValue="0x01" UnCheckValue="0x00"/>
+          <TreeItem Type="PropTreeItemEdit"  Des="AFI value" ValueFormat="ValueFormatHex" MaxValue="0xFF" StartBitPos="11.13.0" EndBitPos="11.13.7"/>
+        </TreeItem>
+      </TreeItem>
+
+      <TreeItem Type="PropTreeItem" Des="Memory Bank Read">
+        <TreeItem Type="PropTreeItemCombo" Des="Memory Area" StartBitPos="12.0.0" EndBitPos="12.0.1">
+          <List Des="None" Value="0x00"/>
+          <List Des="UID Area" Value="0x01"/>
+          <List Des="USER Area" Value="0x02"/>
+          <List Des="UID and USER Area" Value="0x03"/>
+        </TreeItem>
+        <TreeItem Type="PropTreeItem" Des="USER Area">
+          <TreeItem Type="PropTreeItemEdit"  Des="Start Pos" ValueFormat="ValueFormatNumber"  MaxValue="0xFF" StartBitPos="12.1.0" EndBitPos="12.2.7"/>
+          <TreeItem Type="PropTreeItemEdit"  Des="Length" ValueFormat="ValueFormatNumber" MaxValue="0xFF"  StartBitPos="12.3.0" EndBitPos="12.3.7"/>
+          <TreeItem Type="PropTreeItem" Des="Unrecognizable Tag">
+            <TreeItem Type="PropTreeItemEdit"  Des="block length" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="13.3.0" EndBitPos="13.3.7"/>
+            <TreeItem Type="PropTreeItemCombo" Des="Read Command" StartBitPos="13.4.0" EndBitPos="13.4.3">
+              <List Des="Read Single Block Command" Value="0x00"/>
+              <List Des="Read Multi-Block Command" Value="0x01"/>
+            </TreeItem>
+          </TreeItem>
+        </TreeItem>
+
+      </TreeItem>
+
+      <TreeItem Type="PropTreeItem" Des="Acousto-optic alarm">
+        <TreeItem Type="PropTreeItemCombo" Des="Trigger condition" StartBitPos="12.6.0" EndBitPos="12.6.3">
+          <List Des="None" Value="0x00"/>
+          <List Des="Alarm when books are detected" Value="0x01"/>
+          <List Des="Alarm when reading UID and barcode" Value="0x02"/>
+        </TreeItem>
+        <TreeItem Type="PropTreeItemCheckBox" Des="Enable Broadcast Alarm" StartBitPos="12.6.7" EndBitPos="12.6.7" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItem" Des="Alarm output parameters">
+          <TreeItem Type="PropTreeItemEdit"  Des="Shine frequency" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="12.7.0" EndBitPos="12.7.7"/>
+          <TreeItem Type="PropTreeItemEdit"  Des="Active time" ValueFormat="ValueFormatNumber" MaxValue="0xFFFF" StartBitPos="12.8.0" EndBitPos="12.9.7"/>
+          <TreeItem Type="PropTreeItemEdit"  Des="Disactive time" ValueFormat="ValueFormatNumber" MaxValue="0xFFFF" StartBitPos="12.10.0" EndBitPos="12.11.7"/>
+        </TreeItem>
+      </TreeItem>
+
+      <TreeItem Type="PropTreeItem" Des="Data Store">
+        <TreeItem Type="PropTreeItemCombo" Des="Alarm record Stored Position" StartBitPos="12.4.0" EndBitPos="12.4.7">
+          <List Des="FLASH" Value="0x00"/>
+          <List Des="RAM" Value="0x01"/>
+        </TreeItem>
+        <TreeItem Type="PropTreeItemEdit"  Des="How many seconds does the same tag save only one record" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="12.5.0" EndBitPos="12.5.7"/>
+      </TreeItem>
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="Tag Detection Performance Parameters">
+      <TreeItem Type="PropTreeItemCombo" Des="RF Power" StartBitPos="13.0.0" EndBitPos="13.0.7">
+        <List Des="1W" Value="0x03"/>
+        <List Des="2W" Value="0x07"/>
+        <List Des="3W" Value="0x0B"/>
+        <List Des="4W" Value="0x0F"/>
+        <List Des="5W" Value="0x13"/>
+        <List Des="6W" Value="0x17"/>
+        <List Des="7W" Value="0x1B"/>
+        <List Des="8W" Value="0x1F"/>
+      </TreeItem>
+
+      <TreeItem Type="PropTreeItemCombo" Des="Anti-interference Level" StartBitPos="13.1.0" EndBitPos="13.1.7">
+        <List Des="Best" Value="0x00"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemCombo" Des="Receive sensitivity" StartBitPos="13.5.0" EndBitPos="13.5.3">
+        <List Des="low" Value="0x00"/>
+        <List Des="middle" Value="0x01"/>
+        <List Des="high" Value="0x02"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemCombo" Des="Modulation depth" StartBitPos="13.5.4" EndBitPos="13.5.4">
+        <List Des="ASK 10%" Value="0x00"/>
+        <List Des="ASK 100%" Value="0x01"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemCombo" Des="Anti-collision slot type" StartBitPos="13.5.5" EndBitPos="13.5.5">
+        <List Des="1 Slot" Value="0x00"/>
+        <List Des="16 Slot" Value="0x01"/>
+      </TreeItem>
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="Other Param">
+      <TreeItem Type="PropTreeItemCombo" Des="Infrared Analytical Direction" StartBitPos="13.2.0" EndBitPos="13.2.7">
+        <List Des="1->2 In, 2->1Out" Value="0x00"/>
+        <List Des="1->2 Out, 2->1In" Value="0x01"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemCombo" Des="Buzzer volume regulation" StartBitPos="13.6.0" EndBitPos="13.6.7">
+        <List Des="First gear" Value="0x00"/>
+        <List Des="Second gear" Value="0x01"/>
+        <List Des="Third gear" Value="0x02"/>
+        <List Des="Fourth gear" Value="0x03"/>
+      </TreeItem>
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="Proactive Notification Report">
+      <TreeItem Type="PropTreeItem" Des="Enable Option">
+        <TreeItem Type="PropTreeItemCheckBox" Des="Enable proactive notification" StartBitPos="9.7.0" EndBitPos="9.7.0" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="Enable server reply" StartBitPos="9.7.1" EndBitPos="9.7.1" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="Enable keepalive" StartBitPos="9.7.2" EndBitPos="9.7.2" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemEdit"  Des="Keepalive Intervals=(n+1) * 1s" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="9.8.0" EndBitPos="9.8.7"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItem" Des="Server">
+        <TreeItem Type="PropTreeItemIPAddr" Des="IP" StartBitPos="9.0.0" EndBitPos="9.3.7"/>
+        <TreeItem Type="PropTreeItemEdit"  Des="Port" ValueFormat="ValueFormatNumber" MaxValue="0xFFFF" StartBitPos="9.4.0" EndBitPos="9.5.7"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItem" Des="Send">
+        <TreeItem Type="PropTreeItemCheckBox" Des="Alarm record" StartBitPos="9.6.0" EndBitPos="9.6.0" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="People counter" StartBitPos="9.6.1" EndBitPos="9.6.1" CheckValue="0x01" UnCheckValue="0x00"/>
+      </TreeItem>
+    </TreeItem>
+
+  </PropTreeCfg>
+
+</Cfg>

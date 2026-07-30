@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Cfg Version="1.0">
+  <BlockCfg Size="14">
+    <Address From="0" To="2"/>
+  </BlockCfg>
+
+  <PropTreeCfg>
+
+    <TreeItem Type="PropTreeItem" Des="系统工作模式">
+      <TreeItem Type="PropTreeItemCombo" Des="工作模式" StartBitPos="0.7.0" EndBitPos="0.7.7">
+        <List Des="主机控制模式" Value="0x00"/>
+        <List Des="模拟键盘模式" Value="0x02"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItem" Des="键盘输出模式">
+        <TreeItem Type="PropTreeItemCombo" Des="读操作类型" StartBitPos="2.4.0" EndBitPos="2.4.7">
+          <List Des="读卡片序列号" Value="0x00"/>
+          <List Des="读卡片内容" Value="0x01"/>
+        </TreeItem>
+        <TreeItem Type="PropTreeItem" Des="读序列号参数">
+          <TreeItem Type="PropTreeItemCombo" Des="卡号输出格式" StartBitPos="2.0.0" EndBitPos="2.0.7">
+            <List Des="卡号十六进制字符串输出" Value="0x00"/>
+            <List Des="兼容微耕韦根26控制器编码输出" Value="0x01"/>
+            <List Des="兼容周立功韦根26控制器编码输出" Value="0x02"/>
+            <List Des="兼容周立功韦根34控制器编码输出" Value="0x03"/>
+          </TreeItem>
+          <TreeItem Type="PropTreeItemCombo" Des="卡号输出最大长度" StartBitPos="2.1.0" EndBitPos="2.1.7">
+            <List Des="0" Value="0x00"/>
+            <List Des="1" Value="0x01"/>
+            <List Des="2" Value="0x02"/>
+            <List Des="3" Value="0x03"/>
+            <List Des="4" Value="0x04"/>
+            <List Des="5" Value="0x05"/>
+            <List Des="6" Value="0x06"/>
+            <List Des="7" Value="0x07"/>
+            <List Des="8" Value="0x08"/>
+            <List Des="9" Value="0x07"/>
+            <List Des="10" Value="0x0A"/>
+          </TreeItem>
+          <TreeItem Type="PropTreeItemCheckBox" Des="反转序列号" StartBitPos="2.3.0" EndBitPos="2.3.7" CheckValue="0x01" UnCheckValue="0x00"/>
+        </TreeItem>      
+        <TreeItem Type="PropTreeItem" Des="读内容">
+          <TreeItem Type="PropTreeItemCombo" Des="输出格式" StartBitPos="2.5.0" EndBitPos="2.5.7">
+            <List Des="每个字节以十六进制输出" Value="0x00"/>
+            <List Des="每个字节以ASCII方式输出" Value="0x01"/>
+          </TreeItem>
+          <TreeItem Type="PropTreeItemEdit"  Des="数据位移" ValueFormat="ValueFormatNumber" MaxValue="0xFFFF" StartBitPos="2.6.0" EndBitPos="2.7.7"/>
+          <TreeItem Type="PropTreeItemEdit"  Des="数据长度" ValueFormat="ValueFormatNumber" MaxValue="0xFFFF" StartBitPos="2.8.0" EndBitPos="2.9.7"/>
+          <TreeItem Type="PropTreeItem" Des="Mifare classic">
+            <TreeItem Type="PropTreeItemCombo" Des="密钥类型" StartBitPos="2.10.0" EndBitPos="2.10.7">
+              <List Des="Key A" Value="0x00"/>
+              <List Des="Key B" Value="0x01"/>
+            </TreeItem>
+            <TreeItem Type="PropTreeItemCombo" Des="密钥储存区" StartBitPos="2.11.0" EndBitPos="2.11.7">
+              <List Des="区1" Value="1"/>
+              <List Des="区2" Value="2"/>
+            </TreeItem>
+          </TreeItem>
+         
+        </TreeItem>
+        <TreeItem Type="PropTreeItemCheckBox" Des="追加回车换行" StartBitPos="2.2.0" EndBitPos="2.2.7" CheckValue="0x01" UnCheckValue="0x00"/>
+      </TreeItem>
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="触发参数">
+      <TreeItem Type="PropTreeItemCheckBox" Des="读卡蜂鸣" StartBitPos="0.0.0" EndBitPos="0.0.0" CheckValue="0x01" UnCheckValue="0x00"/>
+      <TreeItem Type="PropTreeItemCheckBox" Des="空闲时关闭射频" StartBitPos="0.10.0" EndBitPos="0.10.0" CheckValue="0x01" UnCheckValue="0x00"/>
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="蜂鸣器参数">
+        <TreeItem Type="PropTreeItemEdit"  Des="激活时间(×100ms)" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="0.2.0" EndBitPos="0.2.7"/>
+        <TreeItem Type="PropTreeItemEdit"  Des="停止时间(×100ms)" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="0.3.0" EndBitPos="0.3.7"/>
+        <TreeItem Type="PropTreeItemEdit"  Des="鸣叫频率" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="0.4.0" EndBitPos="0.4.7"/>
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="主动扫描读卡选项">
+      <TreeItem Type="PropTreeItemCheckBox" Des="只读新标签" StartBitPos="0.0.1" EndBitPos="0.0.1" CheckValue="0x01" UnCheckValue="0x00"/>
+      <TreeItem Type="PropTreeItemCheckBox" Des="匹配AFI" StartBitPos="0.0.2" EndBitPos="0.0.2" CheckValue="0x01" UnCheckValue="0x00"/>
+      <TreeItem Type="PropTreeItemEdit"  Des="AFI值" ValueFormat="ValueFormatHex" StartBitPos="0.1.0" EndBitPos="0.1.7"/>
+      <TreeItem Type="PropTreeItemCheckBox" Des="过滤重复序列号" StartBitPos="0.0.3" EndBitPos="0.0.3" CheckValue="0x01" UnCheckValue="0x00"/>
+      <TreeItem Type="PropTreeItemEdit"  Des="过滤重复序列号周期(s)" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="0.11.0" EndBitPos="0.11.7"/>
+    </TreeItem>
+  </PropTreeCfg>
+</Cfg>

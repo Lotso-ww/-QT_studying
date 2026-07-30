@@ -1,0 +1,468 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Cfg Version="1.0">
+  <BlockCfg Size="14">
+    <Address From="0" To="5"/>
+  </BlockCfg>
+
+  <PropTreeCfg>
+    <TreeItem Type="PropTreeItem" Des="通信接口">
+      <TreeItem Type="PropTreeItemEdit"  Des="总线地址" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="1.0.0" EndBitPos="1.0.7"/>
+      <TreeItem Type="PropTreeItemCombo" Des="波特率" StartBitPos="1.1.0" EndBitPos="1.1.7">
+        <List Des="9600" Value="0"/>
+        <List Des="19200" Value="1"/>
+        <List Des="38400" Value="2"/>
+        <List Des="57600" Value="3"/>
+        <List Des="115200" Value="4"/>
+        <List Des="230400" Value="5"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemCombo" Des="校验类型" StartBitPos="1.2.0" EndBitPos="1.2.1">
+        <List Des="无校验" Value="0"/>
+        <List Des="奇校验" Value="1"/>
+        <List Des="偶校验" Value="2"/>
+      </TreeItem>
+    </TreeItem>
+
+
+
+    <TreeItem Type="PropTreeItem" Des="基本参数配置">
+      <TreeItem Type="PropTreeItemCombo" Des="对话" StartBitPos="2.0.0" EndBitPos="2.0.1">
+        <List Des="S0" Value="0x00"/>
+        <List Des="S1" Value="0x01"/>
+        <List Des="S2" Value="0x02"/>
+        <List Des="S3" Value="0x03"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemCombo" Des="目标" StartBitPos="2.1.0" EndBitPos="2.1.1">
+        <List Des="A" Value="0x00"/>
+        <List Des="B" Value="0x01"/>
+        <List Des="A->B" Value="0x02"/>
+        <List Des="B->A" Value="0x03"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemCombo" Des="编码方式" StartBitPos="2.2.0" EndBitPos="2.2.7">
+        <List Des="FM0" Value="0x00"/>
+        <List Des="M2" Value="0x01"/>
+        <List Des="M4" Value="0x02"/>
+        <List Des="M8" Value="0x03"/>
+      </TreeItem>
+      
+      <TreeItem Type="PropTreeItemCombo" Des="连接频率" StartBitPos="2.4.0" EndBitPos="2.4.7">
+        <List Des="250KHz" Value="0x00"/>
+        <List Des="320KHz" Value="0x01"/>
+        <List Des="640KHz" Value="0x02"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemCombo" Des="Tari" StartBitPos="2.5.0" EndBitPos="2.5.7">
+        <List Des="25us" Value="0x00"/>
+        <List Des="12.5us" Value="0x01"/>
+        <List Des="6.25us" Value="0x02"/>
+      </TreeItem>
+	<TreeItem Type="PropTreeItemCombo" Des="Q值" StartBitPos="2.3.0" EndBitPos="2.3.7">
+        <List Des="动态Q值" Value="0xFF"/>
+        <List Des="0" Value="0x00"/>
+        <List Des="1" Value="0x01"/>
+        <List Des="2" Value="0x02"/>
+        <List Des="3" Value="0x03"/>
+        <List Des="4" Value="0x04"/>
+        <List Des="5" Value="0x05"/>
+        <List Des="6" Value="0x06"/>
+        <List Des="7" Value="0x07"/>
+        <List Des="8" Value="0x08"/>
+        <List Des="9" Value="0x09"/>
+        <List Des="10" Value="0x0A"/>
+        <List Des="11" Value="0x0B"/>
+        <List Des="12" Value="0x0C"/>
+        <List Des="13" Value="0x0D"/>
+        <List Des="14" Value="0x0E"/>
+        <List Des="15" Value="0x0F"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemCombo" Des="动态Q值的初始Q值" StartBitPos="4.2.0" EndBitPos="4.2.7">
+        <List Des="0" Value="0"/>
+	<List Des="1" Value="1"/>
+        <List Des="2" Value="2"/>
+        <List Des="3" Value="3"/>
+        <List Des="4" Value="4"/>
+        <List Des="5" Value="5"/>
+        <List Des="6" Value="6"/>
+        <List Des="7" Value="7"/>
+        <List Des="8" Value="8"/>
+        <List Des="9" Value="9"/>
+        <List Des="10" Value="10"/>
+        <List Des="11" Value="11"/>
+        <List Des="12" Value="12"/>
+        <List Des="13" Value="13"/>
+        <List Des="14" Value="14"/>
+        <List Des="15" Value="15"/>
+      </TreeItem>
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="天线参数（不独立时，全部天线都是天线1的功率）">
+	<TreeItem Type="PropTreeItemCheckBox" Des="天线功率独立" StartBitPos="5.12.0" EndBitPos="5.12.7"  CheckValue="0x01" UnCheckValue="0x00"/>
+
+      <TreeItem Type="PropTreeItemCombo" Des="天线1的读功率" StartBitPos="3.0.0" EndBitPos="3.1.7">
+        <List Des="1DB" Value="100"/>
+        <List Des="2DB" Value="200"/>
+        <List Des="3DB" Value="300"/>
+        <List Des="4DB" Value="400"/>
+        <List Des="5DB" Value="500"/>
+        <List Des="6DB" Value="600"/>
+        <List Des="7DB" Value="700"/>
+        <List Des="8DB" Value="800"/>
+        <List Des="9DB" Value="900"/>
+        <List Des="10DB" Value="1000"/>
+        <List Des="11DB" Value="1100"/>
+        <List Des="12DB" Value="1200"/>
+        <List Des="13DB" Value="1300"/>
+        <List Des="14DB" Value="1400"/>
+        <List Des="15DB" Value="1500"/>
+        <List Des="16DB" Value="1600"/>
+        <List Des="17DB" Value="1700"/>
+        <List Des="18DB" Value="1800"/>
+        <List Des="19DB" Value="1900"/>
+        <List Des="20DB" Value="2000"/>
+        <List Des="21DB" Value="2100"/>
+        <List Des="22DB" Value="2200"/>
+        <List Des="23DB" Value="2300"/>
+        <List Des="24DB" Value="2400"/>
+        <List Des="25DB" Value="2500"/>
+        <List Des="26DB" Value="2600"/>
+        <List Des="27DB" Value="2700"/>
+        <List Des="28DB" Value="2800"/>
+        <List Des="29DB" Value="2900"/>
+        <List Des="30DB" Value="3000"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemCombo" Des="天线1的写功率" StartBitPos="3.2.0" EndBitPos="3.3.7">
+        <List Des="1DB" Value="100"/>
+        <List Des="2DB" Value="200"/>
+        <List Des="3DB" Value="300"/>
+        <List Des="4DB" Value="400"/>
+        <List Des="5DB" Value="500"/>
+        <List Des="6DB" Value="600"/>
+        <List Des="7DB" Value="700"/>
+        <List Des="8DB" Value="800"/>
+        <List Des="9DB" Value="900"/>
+        <List Des="10DB" Value="1000"/>
+        <List Des="11DB" Value="1100"/>
+        <List Des="12DB" Value="1200"/>
+        <List Des="13DB" Value="1300"/>
+        <List Des="14DB" Value="1400"/>
+        <List Des="15DB" Value="1500"/>
+        <List Des="16DB" Value="1600"/>
+        <List Des="17DB" Value="1700"/>
+        <List Des="18DB" Value="1800"/>
+        <List Des="19DB" Value="1900"/>
+        <List Des="20DB" Value="2000"/>
+        <List Des="21DB" Value="2100"/>
+        <List Des="22DB" Value="2200"/>
+        <List Des="23DB" Value="2300"/>
+        <List Des="24DB" Value="2400"/>
+        <List Des="25DB" Value="2500"/>
+        <List Des="26DB" Value="2600"/>
+        <List Des="27DB" Value="2700"/>
+        <List Des="28DB" Value="2800"/>
+        <List Des="29DB" Value="2900"/>
+        <List Des="30DB" Value="3000"/>
+      </TreeItem>
+	
+	<TreeItem Type="PropTreeItemCombo" Des="天线2的读功率" StartBitPos="5.0.0" EndBitPos="5.1.7">
+        <List Des="1DB" Value="100"/>
+        <List Des="2DB" Value="200"/>
+        <List Des="3DB" Value="300"/>
+        <List Des="4DB" Value="400"/>
+        <List Des="5DB" Value="500"/>
+        <List Des="6DB" Value="600"/>
+        <List Des="7DB" Value="700"/>
+        <List Des="8DB" Value="800"/>
+        <List Des="9DB" Value="900"/>
+        <List Des="10DB" Value="1000"/>
+        <List Des="11DB" Value="1100"/>
+        <List Des="12DB" Value="1200"/>
+        <List Des="13DB" Value="1300"/>
+        <List Des="14DB" Value="1400"/>
+        <List Des="15DB" Value="1500"/>
+        <List Des="16DB" Value="1600"/>
+        <List Des="17DB" Value="1700"/>
+        <List Des="18DB" Value="1800"/>
+        <List Des="19DB" Value="1900"/>
+        <List Des="20DB" Value="2000"/>
+        <List Des="21DB" Value="2100"/>
+        <List Des="22DB" Value="2200"/>
+        <List Des="23DB" Value="2300"/>
+        <List Des="24DB" Value="2400"/>
+        <List Des="25DB" Value="2500"/>
+        <List Des="26DB" Value="2600"/>
+        <List Des="27DB" Value="2700"/>
+        <List Des="28DB" Value="2800"/>
+        <List Des="29DB" Value="2900"/>
+        <List Des="30DB" Value="3000"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemCombo" Des="天线2的写功率" StartBitPos="5.2.0" EndBitPos="5.3.7">
+        <List Des="1DB" Value="100"/>
+        <List Des="2DB" Value="200"/>
+        <List Des="3DB" Value="300"/>
+        <List Des="4DB" Value="400"/>
+        <List Des="5DB" Value="500"/>
+        <List Des="6DB" Value="600"/>
+        <List Des="7DB" Value="700"/>
+        <List Des="8DB" Value="800"/>
+        <List Des="9DB" Value="900"/>
+        <List Des="10DB" Value="1000"/>
+        <List Des="11DB" Value="1100"/>
+        <List Des="12DB" Value="1200"/>
+        <List Des="13DB" Value="1300"/>
+        <List Des="14DB" Value="1400"/>
+        <List Des="15DB" Value="1500"/>
+        <List Des="16DB" Value="1600"/>
+        <List Des="17DB" Value="1700"/>
+        <List Des="18DB" Value="1800"/>
+        <List Des="19DB" Value="1900"/>
+        <List Des="20DB" Value="2000"/>
+        <List Des="21DB" Value="2100"/>
+        <List Des="22DB" Value="2200"/>
+        <List Des="23DB" Value="2300"/>
+        <List Des="24DB" Value="2400"/>
+        <List Des="25DB" Value="2500"/>
+        <List Des="26DB" Value="2600"/>
+        <List Des="27DB" Value="2700"/>
+        <List Des="28DB" Value="2800"/>
+        <List Des="29DB" Value="2900"/>
+        <List Des="30DB" Value="3000"/>
+      </TreeItem>
+
+	<TreeItem Type="PropTreeItemCombo" Des="天线3的读功率" StartBitPos="5.4.0" EndBitPos="5.5.7">
+        <List Des="1DB" Value="100"/>
+        <List Des="2DB" Value="200"/>
+        <List Des="3DB" Value="300"/>
+        <List Des="4DB" Value="400"/>
+        <List Des="5DB" Value="500"/>
+        <List Des="6DB" Value="600"/>
+        <List Des="7DB" Value="700"/>
+        <List Des="8DB" Value="800"/>
+        <List Des="9DB" Value="900"/>
+        <List Des="10DB" Value="1000"/>
+        <List Des="11DB" Value="1100"/>
+        <List Des="12DB" Value="1200"/>
+        <List Des="13DB" Value="1300"/>
+        <List Des="14DB" Value="1400"/>
+        <List Des="15DB" Value="1500"/>
+        <List Des="16DB" Value="1600"/>
+        <List Des="17DB" Value="1700"/>
+        <List Des="18DB" Value="1800"/>
+        <List Des="19DB" Value="1900"/>
+        <List Des="20DB" Value="2000"/>
+        <List Des="21DB" Value="2100"/>
+        <List Des="22DB" Value="2200"/>
+        <List Des="23DB" Value="2300"/>
+        <List Des="24DB" Value="2400"/>
+        <List Des="25DB" Value="2500"/>
+        <List Des="26DB" Value="2600"/>
+        <List Des="27DB" Value="2700"/>
+        <List Des="28DB" Value="2800"/>
+        <List Des="29DB" Value="2900"/>
+        <List Des="30DB" Value="3000"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemCombo" Des="天线3的写功率" StartBitPos="5.6.0" EndBitPos="5.7.7">
+        <List Des="1DB" Value="100"/>
+        <List Des="2DB" Value="200"/>
+        <List Des="3DB" Value="300"/>
+        <List Des="4DB" Value="400"/>
+        <List Des="5DB" Value="500"/>
+        <List Des="6DB" Value="600"/>
+        <List Des="7DB" Value="700"/>
+        <List Des="8DB" Value="800"/>
+        <List Des="9DB" Value="900"/>
+        <List Des="10DB" Value="1000"/>
+        <List Des="11DB" Value="1100"/>
+        <List Des="12DB" Value="1200"/>
+        <List Des="13DB" Value="1300"/>
+        <List Des="14DB" Value="1400"/>
+        <List Des="15DB" Value="1500"/>
+        <List Des="16DB" Value="1600"/>
+        <List Des="17DB" Value="1700"/>
+        <List Des="18DB" Value="1800"/>
+        <List Des="19DB" Value="1900"/>
+        <List Des="20DB" Value="2000"/>
+        <List Des="21DB" Value="2100"/>
+        <List Des="22DB" Value="2200"/>
+        <List Des="23DB" Value="2300"/>
+        <List Des="24DB" Value="2400"/>
+        <List Des="25DB" Value="2500"/>
+        <List Des="26DB" Value="2600"/>
+        <List Des="27DB" Value="2700"/>
+        <List Des="28DB" Value="2800"/>
+        <List Des="29DB" Value="2900"/>
+        <List Des="30DB" Value="3000"/>
+      </TreeItem>
+
+	<TreeItem Type="PropTreeItemCombo" Des="天线4的读功率" StartBitPos="5.8.0" EndBitPos="5.9.7">
+        <List Des="1DB" Value="100"/>
+        <List Des="2DB" Value="200"/>
+        <List Des="3DB" Value="300"/>
+        <List Des="4DB" Value="400"/>
+        <List Des="5DB" Value="500"/>
+        <List Des="6DB" Value="600"/>
+        <List Des="7DB" Value="700"/>
+        <List Des="8DB" Value="800"/>
+        <List Des="9DB" Value="900"/>
+        <List Des="10DB" Value="1000"/>
+        <List Des="11DB" Value="1100"/>
+        <List Des="12DB" Value="1200"/>
+        <List Des="13DB" Value="1300"/>
+        <List Des="14DB" Value="1400"/>
+        <List Des="15DB" Value="1500"/>
+        <List Des="16DB" Value="1600"/>
+        <List Des="17DB" Value="1700"/>
+        <List Des="18DB" Value="1800"/>
+        <List Des="19DB" Value="1900"/>
+        <List Des="20DB" Value="2000"/>
+        <List Des="21DB" Value="2100"/>
+        <List Des="22DB" Value="2200"/>
+        <List Des="23DB" Value="2300"/>
+        <List Des="24DB" Value="2400"/>
+        <List Des="25DB" Value="2500"/>
+        <List Des="26DB" Value="2600"/>
+        <List Des="27DB" Value="2700"/>
+        <List Des="28DB" Value="2800"/>
+        <List Des="29DB" Value="2900"/>
+        <List Des="30DB" Value="3000"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemCombo" Des="天线4的写功率" StartBitPos="5.10.0" EndBitPos="5.11.7">
+        <List Des="1DB" Value="100"/>
+        <List Des="2DB" Value="200"/>
+        <List Des="3DB" Value="300"/>
+        <List Des="4DB" Value="400"/>
+        <List Des="5DB" Value="500"/>
+        <List Des="6DB" Value="600"/>
+        <List Des="7DB" Value="700"/>
+        <List Des="8DB" Value="800"/>
+        <List Des="9DB" Value="900"/>
+        <List Des="10DB" Value="1000"/>
+        <List Des="11DB" Value="1100"/>
+        <List Des="12DB" Value="1200"/>
+        <List Des="13DB" Value="1300"/>
+        <List Des="14DB" Value="1400"/>
+        <List Des="15DB" Value="1500"/>
+        <List Des="16DB" Value="1600"/>
+        <List Des="17DB" Value="1700"/>
+        <List Des="18DB" Value="1800"/>
+        <List Des="19DB" Value="1900"/>
+        <List Des="20DB" Value="2000"/>
+        <List Des="21DB" Value="2100"/>
+        <List Des="22DB" Value="2200"/>
+        <List Des="23DB" Value="2300"/>
+        <List Des="24DB" Value="2400"/>
+        <List Des="25DB" Value="2500"/>
+        <List Des="26DB" Value="2600"/>
+        <List Des="27DB" Value="2700"/>
+        <List Des="28DB" Value="2800"/>
+        <List Des="29DB" Value="2900"/>
+        <List Des="30DB" Value="3000"/>
+      </TreeItem>
+    </TreeItem>
+
+
+    <TreeItem Type="PropTreeItem" Des="盘点参数">
+	<TreeItem Type="PropTreeItemCombo" Des="频率参数" StartBitPos="2.6.0" EndBitPos="2.6.7">
+        <List Des="NA     902~926MHz" Value="0x01"/>
+        <List Des="EU     865~867MHz" Value="0x02"/>
+        <List Des="KR     910~913MHz" Value="0x03"/>
+        <List Des="IN     865~867MHz" Value="0x04"/>
+        <List Des="JP     916.8~923.4MHz" Value="0x05"/>
+        <List Des="PRC    920~925MHz" Value="0x06"/>
+        <List Des="EU2    869~872MHz" Value="0x07"/>
+        <List Des="EU3    865.6~867.6MHz" Value="0x08"/>
+        <List Des="KR2    917~923.5MHz" Value="0x09"/>
+        <List Des="PRC2   840~845MHz" Value="0x0A"/>
+        <List Des="AU     920~926MHz" Value="0x0B"/>
+        <List Des="NZ     922~927.5MHz" Value="0x0C"/>
+        <List Des="NA2    917.4~927.2MHz" Value="0x0D"/>
+        <List Des="NA3    917.5~922.5MHz" Value="0x0E"/>
+	<List Des="Custom for ice locker" Value="0x10"/>
+        <List Des="OPEN   859~873MHz 902~930MHz" Value="0xFF"/>
+      </TreeItem>
+
+	<TreeItem Type="PropTreeItemCheckBox" Des="天线作为缓冲区惟一标识符" StartBitPos="1.4.0" EndBitPos="1.4.7" CheckValue="0x00" UnCheckValue="0x01"/>
+	</TreeItem>
+
+
+	<TreeItem Type="PropTreeItem" Des="跳频方式">
+	<TreeItem Type="PropTreeItemCheckBox" Des="切换天线就切换频率" StartBitPos="4.10.0" EndBitPos="4.10.7"         	CheckValue="0x01" UnCheckValue="0x00"/>
+	
+	<TreeItem Type="PropTreeItemCombo" Des="触发跳频方式" StartBitPos="4.11.0" EndBitPos="4.11.7">
+        <List Des="时间超时" Value="0"/>	
+	<List Des="每次循环" Value="1"/>
+	<List Des="定频" Value="2"/>
+	</TreeItem>
+      <TreeItem Type="PropTreeItemCombo" Des="跳频时间间隔" StartBitPos="4.3.0" EndBitPos="4.4.7">	
+	<List Des="100MS" Value="100"/>
+	<List Des="200MS" Value="200"/>
+	<List Des="300MS" Value="300"/>
+	<List Des="400MS" Value="400"/>
+	<List Des="500MS" Value="500"/>
+	<List Des="600MS" Value="600"/>
+	<List Des="700MS" Value="700"/>
+	<List Des="800MS" Value="800"/>
+	<List Des="900MS" Value="900"/>
+	<List Des="1000MS" Value="1000"/>
+	<List Des="1500MS" Value="1500"/>
+	<List Des="2000MS" Value="2000"/>
+	<List Des="2500MS" Value="2500"/>
+	<List Des="3000MS" Value="3000"/>
+	<List Des="3500MS" Value="3500"/>
+	<List Des="4000MS" Value="4000"/>
+      </TreeItem>
+	<TreeItem Type="PropTreeItemEdit"  Des="定频频率 MHZ" ValueFormat="ValueFormatNumber" MaxValue="0x3C0"  StartBitPos="4.7.0" EndBitPos="4.8.7"/>
+
+	</TreeItem>
+
+
+    <TreeItem Type="PropTreeItem" Des="停止触发器">
+      <TreeItem Type="PropTreeItemCombo" Des="停止触发条件" StartBitPos="4.0.0" EndBitPos="4.0.7">
+        <List Des="超时"    Value="0x00"/>
+        <List Des="尝试N次" Value="0x01"/>
+      </TreeItem>
+
+      <TreeItem Type="PropTreeItemCombo" Des="尝试次数" StartBitPos="4.1.0" EndBitPos="4.1.7">
+        <List Des="0" Value="0"/>
+	<List Des="1" Value="1"/>
+        <List Des="2" Value="2"/>
+        <List Des="3" Value="3"/>
+        <List Des="4" Value="4"/>
+        <List Des="5" Value="5"/>
+        <List Des="6" Value="6"/>
+        <List Des="7" Value="7"/>
+        <List Des="8" Value="8"/>
+        <List Des="9" Value="9"/>
+        <List Des="10" Value="10"/>
+        <List Des="11" Value="11"/>
+        <List Des="12" Value="12"/>
+        <List Des="13" Value="13"/>
+        <List Des="14" Value="14"/>
+        <List Des="15" Value="15"/>	
+      </TreeItem>
+    </TreeItem>
+
+
+     <TreeItem Type="PropTreeItem" Des="S3">
+      <TreeItem Type="PropTreeItemCheckBox" Des="唤醒标签" StartBitPos="4.6.0" EndBitPos="4.6.7"         	CheckValue="0x01" UnCheckValue="0x00"/>
+
+   	<TreeItem Type="PropTreeItemCombo" Des="唤醒次数" StartBitPos="4.9.0" EndBitPos="4.9.7">        
+	<List Des="1" Value="1"/>
+        <List Des="2" Value="2"/>
+        <List Des="3" Value="3"/>
+        <List Des="4" Value="4"/>
+        <List Des="5" Value="5"/>
+        <List Des="6" Value="6"/>
+        <List Des="7" Value="7"/>
+        <List Des="8" Value="8"/>
+        <List Des="9" Value="9"/>
+        <List Des="10" Value="10"/>
+        <List Des="11" Value="11"/>
+        <List Des="12" Value="12"/>
+        <List Des="13" Value="13"/>
+        <List Des="14" Value="14"/>
+        <List Des="15" Value="15"/>
+
+      </TreeItem>
+    </TreeItem>
+
+
+  </PropTreeCfg>
+</Cfg>

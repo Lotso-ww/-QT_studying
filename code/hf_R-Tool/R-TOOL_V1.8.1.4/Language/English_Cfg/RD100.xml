@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Cfg Version="1.0">
+  <BlockCfg Size="14">
+    <Address From="0" To="2"/>
+  </BlockCfg>
+
+  <PropTreeCfg>
+
+    <TreeItem Type="PropTreeItem" Des="System work mode">
+      <TreeItem Type="PropTreeItemCombo" Des="Work mode" StartBitPos="0.7.0" EndBitPos="0.7.7">
+        <List Des="Host mode" Value="0x00"/>
+        <List Des="Virtual keyboard" Value="0x02"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItem" Des="Virtual keyboard mode setting">
+        <TreeItem Type="PropTreeItemCombo" Des="Operation type" StartBitPos="2.4.0" EndBitPos="2.4.7">
+          <List Des="UID" Value="0x00"/>
+          <List Des="Block" Value="0x01"/>
+        </TreeItem>
+        <TreeItem Type="PropTreeItem" Des="Parameters of reading UID">
+          <TreeItem Type="PropTreeItemCombo" Des="Format of UID" StartBitPos="2.0.0" EndBitPos="2.0.7">
+            <List Des="Hexadecimal string" Value="0x00"/>
+            <List Des="Coding with microtower wiegand 26" Value="0x01"/>
+            <List Des="Coding with zhouligong wiegand 26" Value="0x02"/>
+            <List Des="Coding with zhouligong wiegand 26" Value="0x03"/>
+          </TreeItem>
+          <TreeItem Type="PropTreeItemCombo" Des="Max length of UID" StartBitPos="2.1.0" EndBitPos="2.1.7">
+            <List Des="0" Value="0x00"/>
+            <List Des="1" Value="0x01"/>
+            <List Des="2" Value="0x02"/>
+            <List Des="3" Value="0x03"/>
+            <List Des="4" Value="0x04"/>
+            <List Des="5" Value="0x05"/>
+            <List Des="6" Value="0x06"/>
+            <List Des="7" Value="0x07"/>
+            <List Des="8" Value="0x08"/>
+            <List Des="9" Value="0x07"/>
+            <List Des="10" Value="0x0A"/>
+          </TreeItem>
+          <TreeItem Type="PropTreeItemCheckBox" Des="Reverse the UID" StartBitPos="2.3.0" EndBitPos="2.3.7" CheckValue="0x01" UnCheckValue="0x00"/>
+        </TreeItem>      
+        <TreeItem Type="PropTreeItem" Des="Read block">
+          <TreeItem Type="PropTreeItemCombo" Des="Output format" StartBitPos="2.5.0" EndBitPos="2.5.7">
+            <List Des="Hexadecimal tring" Value="0x00"/>
+            <List Des="ASCII" Value="0x01"/>
+          </TreeItem>
+          <TreeItem Type="PropTreeItemEdit"  Des="Offset" ValueFormat="ValueFormatNumber" MaxValue="0xFFFF" StartBitPos="2.6.0" EndBitPos="2.7.7"/>
+          <TreeItem Type="PropTreeItemEdit"  Des="Length" ValueFormat="ValueFormatNumber" MaxValue="0xFFFF" StartBitPos="2.8.0" EndBitPos="2.9.7"/>
+          <TreeItem Type="PropTreeItem" Des="Mifare classic">
+            <TreeItem Type="PropTreeItemCombo" Des="Key type" StartBitPos="2.10.0" EndBitPos="2.10.7">
+              <List Des="Key A" Value="0x00"/>
+              <List Des="Key B" Value="0x01"/>
+            </TreeItem>
+            <TreeItem Type="PropTreeItemCombo" Des="Key storage area" StartBitPos="2.11.0" EndBitPos="2.11.7">
+              <List Des="Area 1" Value="1"/>
+              <List Des="Area 2" Value="2"/>
+            </TreeItem>
+          </TreeItem>
+         
+        </TreeItem>
+        <TreeItem Type="PropTreeItemCheckBox" Des="Enter and new line" StartBitPos="2.2.0" EndBitPos="2.2.7" CheckValue="0x01" UnCheckValue="0x00"/>
+      </TreeItem>
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="Trigger parameters">
+      <TreeItem Type="PropTreeItemCheckBox" Des="Beep when read tags" StartBitPos="0.0.0" EndBitPos="0.0.0" CheckValue="0x01" UnCheckValue="0x00"/>
+      <TreeItem Type="PropTreeItemCheckBox" Des="Close RF when free automatically" StartBitPos="0.10.0" EndBitPos="0.10.0" CheckValue="0x01" UnCheckValue="0x00"/>
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="Buzzer parameters">
+        <TreeItem Type="PropTreeItemEdit"  Des="Active time(×100ms)" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="0.2.0" EndBitPos="0.2.7"/>
+        <TreeItem Type="PropTreeItemEdit"  Des="Stop time(×100ms)" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="0.3.0" EndBitPos="0.3.7"/>
+        <TreeItem Type="PropTreeItemEdit"  Des="Frequency" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="0.4.0" EndBitPos="0.4.7"/>
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="Option of virtual keyboard">
+      <TreeItem Type="PropTreeItemCheckBox" Des="Only read new tags" StartBitPos="0.0.1" EndBitPos="0.0.1" CheckValue="0x01" UnCheckValue="0x00"/>
+      <TreeItem Type="PropTreeItemCheckBox" Des="Match AFI" StartBitPos="0.0.2" EndBitPos="0.0.2" CheckValue="0x01" UnCheckValue="0x00"/>
+      <TreeItem Type="PropTreeItemEdit"  Des="AFI" ValueFormat="ValueFormatHex" StartBitPos="0.1.0" EndBitPos="0.1.7"/>
+      <TreeItem Type="PropTreeItemCheckBox" Des="Filter the duplicate serial number" StartBitPos="0.0.3" EndBitPos="0.0.3" CheckValue="0x01" UnCheckValue="0x00"/>
+      <TreeItem Type="PropTreeItemEdit"  Des="period time of filter(s)" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="0.11.0" EndBitPos="0.11.7"/>
+    </TreeItem>
+  </PropTreeCfg>
+</Cfg>

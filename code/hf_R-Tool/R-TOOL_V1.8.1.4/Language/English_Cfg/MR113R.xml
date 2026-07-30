@@ -1,0 +1,123 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Cfg Version="1.0">
+  <BlockCfg Size="14">
+    <Address From="0" To="2"/>
+  </BlockCfg>
+
+  <PropTreeCfg>
+
+    <TreeItem Type="PropTreeItem" Des="Air protocol parameters">
+      <TreeItem Type="PropTreeItemCombo" Des="Subcarrier" StartBitPos="0.5.0" EndBitPos="0.5.7">
+        <List Des="Single subcarrier" Value="0"/>
+        <List Des="Double subcarriers" Value="1"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemCombo" Des="Modulation depth" StartBitPos="0.6.0" EndBitPos="0.6.7">
+        <List Des="OOK 100%" Value="100"/>
+        <List Des="ASK 7%" Value="7"/>
+        <List Des="ASK 8.5%" Value="8"/>
+        <List Des="ASK 10%" Value="10"/>
+        <List Des="ASK 13%" Value="13"/>
+        <List Des="ASK 16%" Value="16"/>
+        <List Des="ASK 22%" Value="22"/>
+        <List Des="ASK 30%" Value="30"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemCombo" Des="RF coding" StartBitPos="0.9.0" EndBitPos="0.9.7">
+        <List Des="1/4" Value="0x00"/>
+        <List Des="1/256" Value="0x01"/>
+      </TreeItem>
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="System working mode">
+      <TreeItem Type="PropTreeItemCombo" Des="Working mode" StartBitPos="0.7.0" EndBitPos="0.7.7">
+        <List Des="Host mode" Value="0x00"/>
+        <List Des="Scan mode" Value="0x01"/>
+        <List Des="Virtual keyboard mode" Value="0x02"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItem" Des="Parameters">
+        <TreeItem Type="PropTreeItemCheckBox" Des="Read block" StartBitPos="1.0.1" EndBitPos="1.0.1" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemEdit"  Des="Block address" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="1.1.0" EndBitPos="1.1.7"/>
+        <TreeItem Type="PropTreeItemCombo" Des="Block count" ListStart="0"  ListEnd="8" StartBitPos="1.2.0" EndBitPos="1.2.7"/> 
+        <TreeItem Type="PropTreeItemCombo" Des="Output format" StartBitPos="1.3.0" EndBitPos="1.3.7">
+          <List Des="Output with raw data output" Value="0x00"/>
+          <List Des="Raw data convert to hex string" Value="0x01"/>
+        </TreeItem>
+
+        <TreeItem Type="PropTreeItem" Des="Separator symbol">
+          <TreeItem Type="PropTreeItemCombo" Des="Separator symbol type" StartBitPos="1.4.7" EndBitPos="1.4.7">
+            <List Des="System" Value="0x00"/>
+            <List Des="Customize" Value="0x01"/>
+          </TreeItem>
+          <TreeItem Type="PropTreeItemCombo" Des="System's separator symbol" StartBitPos="1.4.0" EndBitPos="1.4.6">
+            <List Des="Enter and new line(0x0D+0x0A)" Value="0x00"/>
+            <List Des="New line(0x0A)" Value="0x01"/>
+            <List Des="Enter(0x0D)" Value="0x02"/>
+            <List Des="TAB(0x07)" Value="0x03"/>
+            <List Des="Semicolon(0x3B)" Value="0x04"/>
+            <List Des="Comma(0x2C)" Value="0x05"/>
+            <List Des="Space(0x20)" Value="0x06"/>
+          </TreeItem>
+          <TreeItem Type="PropTreeItemEdit"  Des="Customized separator symbol" ValueFormat="ValueFormatHex" StartBitPos="1.5.0" EndBitPos="1.5.7"/>
+        </TreeItem>
+
+
+        <TreeItem Type="PropTreeItem" Des="End symbol">
+          <TreeItem Type="PropTreeItemCombo" Des="End symbol type" StartBitPos="1.6.7" EndBitPos="1.6.7">
+            <List Des="System" Value="0x00"/>
+            <List Des="Customize" Value="0x01"/>
+          </TreeItem>
+          <TreeItem Type="PropTreeItemCombo" Des="System's end symbol" StartBitPos="1.6.0" EndBitPos="1.6.6">
+            <List Des="Enter and new line(0x0D+0x0A)" Value="0x00"/>
+            <List Des="New line(0x0A)" Value="0x01"/>
+            <List Des="Enter(0x0D)" Value="0x02"/>
+            <List Des="TAB(0x07)" Value="0x03"/>
+            <List Des="Semicolon(0x3B)" Value="0x04"/>
+            <List Des="Comma(0x2C)" Value="0x05"/>
+            <List Des="Space(0x20)" Value="0x06"/>
+          </TreeItem>
+          <TreeItem Type="PropTreeItemEdit"  Des="Customized end symbol" ValueFormat="ValueFormatHex" StartBitPos="1.7.0" EndBitPos="1.7.7"/>
+        </TreeItem>
+      </TreeItem>
+
+      <TreeItem Type="PropTreeItem" Des="Virtual keyboard mode">
+        <TreeItem Type="PropTreeItemCombo" Des="UID format" StartBitPos="2.0.0" EndBitPos="2.0.7">
+          <List Des="Hexadecimal string" Value="0x00"/>
+          <List Des="Coding with microtower wiegand 26" Value="0x01"/>
+          <List Des="Coding with zhouligong wiegand 26" Value="0x02"/>
+          <List Des="Coding with zhouligong wiegand 26" Value="0x03"/>
+        </TreeItem>
+        <TreeItem Type="PropTreeItemCombo" Des="Max length of UID" StartBitPos="2.1.0" EndBitPos="2.1.7">
+          <List Des="0" Value="0x00"/>
+          <List Des="1" Value="0x01"/>
+          <List Des="2" Value="0x02"/>
+          <List Des="3" Value="0x03"/>
+          <List Des="4" Value="0x04"/>
+          <List Des="5" Value="0x05"/>
+          <List Des="6" Value="0x06"/>
+          <List Des="7" Value="0x07"/>
+          <List Des="8" Value="0x08"/>
+        </TreeItem>
+        <TreeItem Type="PropTreeItemCheckBox" Des="Add enter and new line" StartBitPos="2.2.0" EndBitPos="2.2.7" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="Reverse UID" StartBitPos="2.3.0" EndBitPos="2.3.7" CheckValue="0x01" UnCheckValue="0x00"/>
+      </TreeItem>
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="Trigger parameters">
+      <TreeItem Type="PropTreeItemCheckBox" Des="Beep when reading tags" StartBitPos="0.0.0" EndBitPos="0.0.0" CheckValue="0x01" UnCheckValue="0x00"/>
+      <TreeItem Type="PropTreeItemCheckBox" Des="Close RF when free" StartBitPos="0.10.0" EndBitPos="0.10.0" CheckValue="0x01" UnCheckValue="0x00"/>
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="Parameters of buzzer">
+        <TreeItem Type="PropTreeItemEdit"  Des="Active time(×100ms)" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="0.2.0" EndBitPos="0.2.7"/>
+        <TreeItem Type="PropTreeItemEdit"  Des="Stop time(×100ms)" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="0.3.0" EndBitPos="0.3.7"/>
+        <TreeItem Type="PropTreeItemEdit"  Des="Frequency" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="0.4.0" EndBitPos="0.4.7"/>
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="Proactive read tag options">
+      <TreeItem Type="PropTreeItemCheckBox" Des="Only read new tags" StartBitPos="0.0.1" EndBitPos="0.0.1" CheckValue="0x01" UnCheckValue="0x00"/>
+      <TreeItem Type="PropTreeItemCheckBox" Des="Match AFI" StartBitPos="0.0.2" EndBitPos="0.0.2" CheckValue="0x01" UnCheckValue="0x00"/>
+      <TreeItem Type="PropTreeItemEdit"  Des="AFI" ValueFormat="ValueFormatHex" StartBitPos="0.1.0" EndBitPos="0.1.7"/>
+      <TreeItem Type="PropTreeItemCheckBox" Des="Filter the duplicate serial number" StartBitPos="0.0.3" EndBitPos="0.0.3" CheckValue="0x01" UnCheckValue="0x00"/>
+      <TreeItem Type="PropTreeItemEdit"  Des="Cycle time of duplication(s)" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="0.11.0" EndBitPos="0.11.7"/>
+    </TreeItem>
+  </PropTreeCfg>
+</Cfg>

@@ -1,0 +1,2090 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Cfg Version="1.0">
+  <BlockCfg Size="14">
+    <Address From="1" To="11"/>
+  </BlockCfg>
+
+  <PropTreeCfg>
+    <TreeItem Type="PropTreeItem" Des="Communication">
+      <TreeItem Type="PropTreeItemEdit"  Des="Bus" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="1.0.0" EndBitPos="1.0.7"/>
+      <TreeItem Type="PropTreeItemCombo" Des="Baud" StartBitPos="1.1.0" EndBitPos="1.1.7">
+        <List Des="9600" Value="0"/>
+        <List Des="19200" Value="1"/>
+        <List Des="38400" Value="2"/>
+        <List Des="57600" Value="3"/>
+        <List Des="115200" Value="4"/>
+        <List Des="230400" Value="5"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemCombo" Des="Parity" StartBitPos="1.2.0" EndBitPos="1.2.1">
+        <List Des="none" Value="0"/>
+        <List Des="odd" Value="1"/>
+        <List Des="even" Value="2"/>
+      </TreeItem>
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="Peripheral configuration">
+      <TreeItem Type="PropTreeItemCheckBox" Des="Enable antenna multiplexer" StartBitPos="1.8.0" EndBitPos="1.8.7" CheckValue="0x01" UnCheckValue="0x00"/>
+      <TreeItem Type="PropTreeItemCombo" Des="Working status" StartBitPos="1.9.0" EndBitPos="1.9.7">
+        <List Des="disable" Value="0x00"/>
+        <List Des="GPIO0" Value="0x01"/>
+        <List Des="GPIO1" Value="0x02"/>
+        <List Des="GPIO2" Value="0x03"/>
+        <List Des="GPIO3" Value="0x04"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemCombo" Des="Relay" StartBitPos="1.10.0" EndBitPos="1.10.7">
+        <List Des="disable" Value="0"/>
+        <List Des="GPIO0" Value="1"/>
+        <List Des="GPIO1" Value="2"/>
+        <List Des="GPIO2" Value="3"/>
+        <List Des="GPIO3" Value="4"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemCombo" Des="Buzzer" StartBitPos="1.11.0" EndBitPos="1.11.7">
+        <List Des="disable" Value="0"/>
+        <List Des="GPIO0" Value="1"/>
+        <List Des="GPIO1" Value="2"/>
+        <List Des="GPIO2" Value="3"/>
+        <List Des="GPIO3" Value="4"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemCombo" Des="Tag indicator" StartBitPos="1.12.0" EndBitPos="1.12.7">
+        <List Des="disable" Value="0"/>
+        <List Des="GPIO0" Value="1"/>
+        <List Des="GPIO1" Value="2"/>
+        <List Des="GPIO2" Value="3"/>
+        <List Des="GPIO3" Value="4"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemCombo" Des="Communication indicator" StartBitPos="1.13.0" EndBitPos="1.13.7">
+        <List Des="disable" Value="0"/>
+        <List Des="GPIO0" Value="1"/>
+        <List Des="GPIO1" Value="2"/>
+        <List Des="GPIO2" Value="3"/>
+        <List Des="GPIO3" Value="4"/>
+      </TreeItem>
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="RF parameters">
+
+      <TreeItem Type="PropTreeItemCombo" Des="Miller subcarrier" StartBitPos="2.2.0" EndBitPos="2.2.7">
+        <List Des="FM0" Value="0x00"/>
+        <List Des="M2" Value="0x01"/>
+        <List Des="M4" Value="0x02"/>
+        <List Des="M8" Value="0x03"/>
+      </TreeItem>
+      
+      <TreeItem Type="PropTreeItemCombo" Des="Region" StartBitPos="2.6.0" EndBitPos="2.6.7">
+        <List Des="OPEN   859~873MHz 902~930MHz" Value="0x00"/>
+        <List Des="NA(902~926MHz)" Value="0x01"/>
+        <List Des="EU(865~867MHz)" Value="0x02"/>
+        <List Des="KR(910~913MHz)" Value="0x03"/>
+        <List Des="IN(865~867MHz)" Value="0x04"/>
+        <List Des="JP(916.8~923.4MHz)" Value="0x05"/>
+        <List Des="PRC(920~925MHz)" Value="0x06"/>
+        <List Des="EU2(869~872MHz)" Value="0x07"/>
+        <List Des="EU3(865.6~867.6MHz)" Value="0x08"/>
+        <List Des="KR2(917~923.5MHz)" Value="0x09"/>
+        <List Des="PRC2(840~845MHz)" Value="0x0A"/>
+        <List Des="AU(920~926MHz)" Value="0x0B"/>
+        <List Des="NZ(922~927.5MHz)" Value="0x0C"/>
+        <List Des="NA2(917.4~927.2MHz)" Value="0x0D"/>
+        <List Des="NA3(917.5~922.5MHz)" Value="0x0E"/>
+        <List Des="Custom frequency" Value="0xFF"/>
+      </TreeItem>
+
+      <TreeItem Type="PropTreeItem" Des="Custom frequency configuration">
+        <TreeItem Type="PropTreeItemCombo" Des="Frequency count" StartBitPos="2.7.0" EndBitPos="2.7.3">
+          <List Des="1" Value="0"/>
+          <List Des="2" Value="1"/>
+          <List Des="3" Value="2"/>
+          <List Des="4" Value="3"/>
+          <List Des="5" Value="4"/>
+          <List Des="6" Value="5"/>
+          <List Des="7" Value="6"/>
+          <List Des="8" Value="7"/>
+          <List Des="9" Value="8"/>
+          <List Des="10" Value="9"/>
+          <List Des="11" Value="10"/>
+          <List Des="12" Value="11"/>
+        </TreeItem>
+        <TreeItem Type="PropTreeItemCombo" Des="Custom frequency type" StartBitPos="2.7.6" EndBitPos="2.7.7">
+          <List Des="by frequency range" Value="0x00"/>
+          <List Des="by specific frequency" Value="0x01"/>
+        </TreeItem>
+        <TreeItem Type="PropTreeItem" Des="Parameters of frequency range">
+          <TreeItem Type="PropTreeItemEdit"  Des="Minimum frequency(kHz)" ValueFormat="ValueFormatNumber" MinValue="860000" MaxValue="960000"  StartBitPos="2.8.0" EndBitPos="2.10.7"/>
+          <TreeItem Type="PropTreeItemEdit"  Des="Maximum frequency(kHz)" ValueFormat="ValueFormatNumber" MinValue="860000" MaxValue="960000"  StartBitPos="2.11.0" EndBitPos="2.13.7"/>
+        </TreeItem>
+        <TreeItem Type="PropTreeItem" Des="Parameters of specific frequency">
+          <TreeItem Type="PropTreeItemEdit"  Des="frequency-1(kHz)" ValueFormat="ValueFormatNumber" MinValue="860000" MaxValue="960000"  StartBitPos="5.0.0" EndBitPos="5.2.7"/>
+          <TreeItem Type="PropTreeItemEdit"  Des="frequency-2(kHz)" ValueFormat="ValueFormatNumber" MinValue="860000" MaxValue="960000"  StartBitPos="5.3.0" EndBitPos="5.5.7"/>
+          <TreeItem Type="PropTreeItemEdit"  Des="frequency-3(kHz)" ValueFormat="ValueFormatNumber" MinValue="860000" MaxValue="960000"  StartBitPos="5.6.0" EndBitPos="5.8.7"/>
+          <TreeItem Type="PropTreeItemEdit"  Des="frequency-4(kHz)" ValueFormat="ValueFormatNumber" MinValue="860000" MaxValue="960000"  StartBitPos="5.9.0" EndBitPos="5.11.7"/>
+          <TreeItem Type="PropTreeItemEdit"  Des="frequency-5(kHz)" ValueFormat="ValueFormatNumber" MinValue="860000" MaxValue="960000"  StartBitPos="6.0.0" EndBitPos="6.2.7"/>
+          <TreeItem Type="PropTreeItemEdit"  Des="frequency-6(kHz)" ValueFormat="ValueFormatNumber" MinValue="860000" MaxValue="960000"  StartBitPos="6.3.0" EndBitPos="6.5.7"/>
+          <TreeItem Type="PropTreeItemEdit"  Des="frequency-7(kHz)" ValueFormat="ValueFormatNumber" MinValue="860000" MaxValue="960000"  StartBitPos="6.6.0" EndBitPos="6.8.7"/>
+          <TreeItem Type="PropTreeItemEdit"  Des="frequency-8(kHz)" ValueFormat="ValueFormatNumber" MinValue="860000" MaxValue="960000"  StartBitPos="6.9.0" EndBitPos="6.11.7"/>
+          <TreeItem Type="PropTreeItemEdit"  Des="frequency-9(kHz)" ValueFormat="ValueFormatNumber" MinValue="860000" MaxValue="960000"  StartBitPos="7.0.0" EndBitPos="7.2.7"/>
+          <TreeItem Type="PropTreeItemEdit"  Des="frequency-10(kHz)" ValueFormat="ValueFormatNumber" MinValue="860000" MaxValue="960000"  StartBitPos="7.3.0" EndBitPos="7.5.7"/>
+          <TreeItem Type="PropTreeItemEdit"  Des="frequency-11(kHz)" ValueFormat="ValueFormatNumber" MinValue="860000" MaxValue="960000"  StartBitPos="7.6.0" EndBitPos="7.8.7"/>
+          <TreeItem Type="PropTreeItemEdit"  Des="frequency-12(kHz)" ValueFormat="ValueFormatNumber" MinValue="860000" MaxValue="960000"  StartBitPos="7.9.0" EndBitPos="7.11.7"/>
+        </TreeItem>
+
+      </TreeItem>
+
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="Protocol parameters">
+      <TreeItem Type="PropTreeItemCombo" Des="Session" StartBitPos="2.0.0" EndBitPos="2.0.7">
+        <List Des="S0" Value="0x00"/>
+        <List Des="S1" Value="0x01"/>
+        <List Des="S2" Value="0x02"/>
+        <List Des="S3" Value="0x03"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemCombo" Des="Target" StartBitPos="2.1.0" EndBitPos="2.1.7">
+        <List Des="A" Value="0x00"/>
+        <List Des="B" Value="0x01"/>
+        <List Des="A->B" Value="0x02"/>
+        <List Des="B->A" Value="0x03"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemCombo" Des="Q value" StartBitPos="2.3.0" EndBitPos="2.3.7">
+        <List Des="dynamic Q" Value="0xFF"/>
+        <List Des="0" Value="0x00"/>
+        <List Des="1" Value="0x01"/>
+        <List Des="2" Value="0x02"/>
+        <List Des="3" Value="0x03"/>
+        <List Des="4" Value="0x04"/>
+        <List Des="5" Value="0x05"/>
+        <List Des="6" Value="0x06"/>
+        <List Des="7" Value="0x07"/>
+        <List Des="8" Value="0x08"/>
+        <List Des="9" Value="0x09"/>
+        <List Des="10" Value="0x0A"/>
+        <List Des="11" Value="0x0B"/>
+        <List Des="12" Value="0x0C"/>
+        <List Des="13" Value="0x0D"/>
+        <List Des="14" Value="0x0E"/>
+        <List Des="15" Value="0x0F"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemCombo" Des="Initial value of dynamic Q" StartBitPos="4.2.0" EndBitPos="4.2.7">
+        <List Des="0" Value="0"/>
+        <List Des="1" Value="1"/>
+        <List Des="2" Value="2"/>
+        <List Des="3" Value="3"/>
+        <List Des="4" Value="4"/>
+        <List Des="5" Value="5"/>
+        <List Des="6" Value="6"/>
+        <List Des="7" Value="7"/>
+        <List Des="8" Value="8"/>
+        <List Des="9" Value="9"/>
+        <List Des="10" Value="10"/>
+        <List Des="11" Value="11"/>
+        <List Des="12" Value="12"/>
+        <List Des="13" Value="13"/>
+        <List Des="14" Value="14"/>
+        <List Des="15" Value="15"/>
+      </TreeItem>
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="Antennas parameters">
+      <TreeItem Type="PropTreeItem" Des="default antennas">
+        <TreeItem Type="PropTreeItemCheckBox" Des="antenna-1" IsAntenna="true" AntennaID="1" StartBitPos="3.4.0" EndBitPos="3.4.0" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="antenna-2" IsAntenna="true" AntennaID="2" StartBitPos="3.4.1" EndBitPos="3.4.1" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="antenna-3" IsAntenna="true" AntennaID="3" StartBitPos="3.4.2" EndBitPos="3.4.2" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="antenna-4" IsAntenna="true" AntennaID="4" StartBitPos="3.4.3" EndBitPos="3.4.3" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="antenna-5" IsAntenna="true" AntennaID="5" StartBitPos="3.4.4" EndBitPos="3.4.4" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="antenna-6" IsAntenna="true" AntennaID="6" StartBitPos="3.4.5" EndBitPos="3.4.5" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="antenna-7" IsAntenna="true" AntennaID="7" StartBitPos="3.4.6" EndBitPos="3.4.6" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="antenna-8" IsAntenna="true" AntennaID="8" StartBitPos="3.4.7" EndBitPos="3.4.7" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="antenna-9" IsAntenna="true" AntennaID="9" StartBitPos="3.5.0" EndBitPos="3.5.0" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="antenna-10" IsAntenna="true" AntennaID="10" StartBitPos="3.5.1" EndBitPos="3.5.1" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="antenna-11" IsAntenna="true" AntennaID="11" StartBitPos="3.5.2" EndBitPos="3.5.2" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="antenna-12" IsAntenna="true" AntennaID="12" StartBitPos="3.5.3" EndBitPos="3.5.3" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="antenna-13" IsAntenna="true" AntennaID="13" StartBitPos="3.5.4" EndBitPos="3.5.4" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="antenna-14" IsAntenna="true" AntennaID="14" StartBitPos="3.5.5" EndBitPos="3.5.5" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="antenna-15" IsAntenna="true" AntennaID="15" StartBitPos="3.5.6" EndBitPos="3.5.6" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="antenna-16" IsAntenna="true" AntennaID="16" StartBitPos="3.5.7" EndBitPos="3.5.7" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="antenna-17" IsAntenna="true" AntennaID="17" StartBitPos="3.6.0" EndBitPos="3.6.0" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="antenna-18" IsAntenna="true" AntennaID="18" StartBitPos="3.6.1" EndBitPos="3.6.1" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="antenna-19" IsAntenna="true" AntennaID="19" StartBitPos="3.6.2" EndBitPos="3.6.2" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="antenna-20" IsAntenna="true" AntennaID="20" StartBitPos="3.6.3" EndBitPos="3.6.3" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="antenna-21" IsAntenna="true" AntennaID="21" StartBitPos="3.6.4" EndBitPos="3.6.4" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="antenna-22" IsAntenna="true" AntennaID="22" StartBitPos="3.6.5" EndBitPos="3.6.5" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="antenna-23" IsAntenna="true" AntennaID="23" StartBitPos="3.6.6" EndBitPos="3.6.6" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="antenna-24" IsAntenna="true" AntennaID="24" StartBitPos="3.6.7" EndBitPos="3.6.7" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="antenna-25" IsAntenna="true" AntennaID="25" StartBitPos="3.7.0" EndBitPos="3.7.0" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="antenna-26" IsAntenna="true" AntennaID="26" StartBitPos="3.7.1" EndBitPos="3.7.1" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="antenna-27" IsAntenna="true" AntennaID="27" StartBitPos="3.7.2" EndBitPos="3.7.2" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="antenna-28" IsAntenna="true" AntennaID="28" StartBitPos="3.7.3" EndBitPos="3.7.3" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="antenna-29" IsAntenna="true" AntennaID="29" StartBitPos="3.7.4" EndBitPos="3.7.4" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="antenna-30" IsAntenna="true" AntennaID="30" StartBitPos="3.7.5" EndBitPos="3.7.5" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="antenna-31" IsAntenna="true" AntennaID="31" StartBitPos="3.7.6" EndBitPos="3.7.6" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="antenna-32" IsAntenna="true" AntennaID="32" StartBitPos="3.7.7" EndBitPos="3.7.7" CheckValue="0x01" UnCheckValue="0x00"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItem" Des="RF power">
+
+        <TreeItem Type="PropTreeItemCheckBox" Des="Each antenna has different power" StartBitPos="8.0.0" EndBitPos="8.0.1" CheckValue="0x01" UnCheckValue="0x00"/>
+
+        <TreeItem Type="PropTreeItem" IsAntenna="true" AntennaID="1" Des="Antenna-1">
+          <TreeItem Type="PropTreeItemCombo" Des="Read" StartBitPos="8.2.0" EndBitPos="8.2.7">
+            <List Des="1DB" Value="1"/>
+            <List Des="2DB" Value="2"/>
+            <List Des="3DB" Value="3"/>
+            <List Des="4DB" Value="4"/>
+            <List Des="5DB" Value="5"/>
+            <List Des="6DB" Value="6"/>
+            <List Des="7DB" Value="7"/>
+            <List Des="8DB" Value="8"/>
+            <List Des="9DB" Value="9"/>
+            <List Des="10DB" Value="10"/>
+            <List Des="11DB" Value="11"/>
+            <List Des="12DB" Value="12"/>
+            <List Des="13DB" Value="13"/>
+            <List Des="14DB" Value="14"/>
+            <List Des="15DB" Value="15"/>
+            <List Des="16DB" Value="16"/>
+            <List Des="17DB" Value="17"/>
+            <List Des="18DB" Value="18"/>
+            <List Des="19DB" Value="19"/>
+            <List Des="20DB" Value="20"/>
+            <List Des="21DB" Value="21"/>
+            <List Des="22DB" Value="22"/>
+            <List Des="23DB" Value="23"/>
+            <List Des="24DB" Value="24"/>
+            <List Des="25DB" Value="25"/>
+            <List Des="26DB" Value="26"/>
+            <List Des="27DB" Value="27"/>
+            <List Des="28DB" Value="28"/>
+            <List Des="29DB" Value="29"/>
+            <List Des="30DB" Value="30"/>
+            <List Des="31DB" Value="31"/>
+            <List Des="32DB" Value="32"/>
+          </TreeItem>
+          <TreeItem Type="PropTreeItemCombo" Des="Write" StartBitPos="8.3.0" EndBitPos="8.3.7">
+            <List Des="1DB" Value="1"/>
+            <List Des="2DB" Value="2"/>
+            <List Des="3DB" Value="3"/>
+            <List Des="4DB" Value="4"/>
+            <List Des="5DB" Value="5"/>
+            <List Des="6DB" Value="6"/>
+            <List Des="7DB" Value="7"/>
+            <List Des="8DB" Value="8"/>
+            <List Des="9DB" Value="9"/>
+            <List Des="10DB" Value="10"/>
+            <List Des="11DB" Value="11"/>
+            <List Des="12DB" Value="12"/>
+            <List Des="13DB" Value="13"/>
+            <List Des="14DB" Value="14"/>
+            <List Des="15DB" Value="15"/>
+            <List Des="16DB" Value="16"/>
+            <List Des="17DB" Value="17"/>
+            <List Des="18DB" Value="18"/>
+            <List Des="19DB" Value="19"/>
+            <List Des="20DB" Value="20"/>
+            <List Des="21DB" Value="21"/>
+            <List Des="22DB" Value="22"/>
+            <List Des="23DB" Value="23"/>
+            <List Des="24DB" Value="24"/>
+            <List Des="25DB" Value="25"/>
+            <List Des="26DB" Value="26"/>
+            <List Des="27DB" Value="27"/>
+            <List Des="28DB" Value="28"/>
+            <List Des="29DB" Value="29"/>
+            <List Des="30DB" Value="30"/>
+            <List Des="31DB" Value="31"/>
+            <List Des="32DB" Value="32"/>
+          </TreeItem>
+        </TreeItem>
+
+        <TreeItem Type="PropTreeItem" IsAntenna="true" AntennaID="2" Des="Antenna-2">
+          <TreeItem Type="PropTreeItemCombo" Des="Read" StartBitPos="8.4.0" EndBitPos="8.4.7">
+            <List Des="1DB" Value="1"/>
+            <List Des="2DB" Value="2"/>
+            <List Des="3DB" Value="3"/>
+            <List Des="4DB" Value="4"/>
+            <List Des="5DB" Value="5"/>
+            <List Des="6DB" Value="6"/>
+            <List Des="7DB" Value="7"/>
+            <List Des="8DB" Value="8"/>
+            <List Des="9DB" Value="9"/>
+            <List Des="10DB" Value="10"/>
+            <List Des="11DB" Value="11"/>
+            <List Des="12DB" Value="12"/>
+            <List Des="13DB" Value="13"/>
+            <List Des="14DB" Value="14"/>
+            <List Des="15DB" Value="15"/>
+            <List Des="16DB" Value="16"/>
+            <List Des="17DB" Value="17"/>
+            <List Des="18DB" Value="18"/>
+            <List Des="19DB" Value="19"/>
+            <List Des="20DB" Value="20"/>
+            <List Des="21DB" Value="21"/>
+            <List Des="22DB" Value="22"/>
+            <List Des="23DB" Value="23"/>
+            <List Des="24DB" Value="24"/>
+            <List Des="25DB" Value="25"/>
+            <List Des="26DB" Value="26"/>
+            <List Des="27DB" Value="27"/>
+            <List Des="28DB" Value="28"/>
+            <List Des="29DB" Value="29"/>
+            <List Des="30DB" Value="30"/>
+            <List Des="31DB" Value="31"/>
+            <List Des="32DB" Value="32"/>
+          </TreeItem>
+          <TreeItem Type="PropTreeItemCombo" Des="Write" StartBitPos="8.5.0" EndBitPos="8.5.7">
+            <List Des="1DB" Value="1"/>
+            <List Des="2DB" Value="2"/>
+            <List Des="3DB" Value="3"/>
+            <List Des="4DB" Value="4"/>
+            <List Des="5DB" Value="5"/>
+            <List Des="6DB" Value="6"/>
+            <List Des="7DB" Value="7"/>
+            <List Des="8DB" Value="8"/>
+            <List Des="9DB" Value="9"/>
+            <List Des="10DB" Value="10"/>
+            <List Des="11DB" Value="11"/>
+            <List Des="12DB" Value="12"/>
+            <List Des="13DB" Value="13"/>
+            <List Des="14DB" Value="14"/>
+            <List Des="15DB" Value="15"/>
+            <List Des="16DB" Value="16"/>
+            <List Des="17DB" Value="17"/>
+            <List Des="18DB" Value="18"/>
+            <List Des="19DB" Value="19"/>
+            <List Des="20DB" Value="20"/>
+            <List Des="21DB" Value="21"/>
+            <List Des="22DB" Value="22"/>
+            <List Des="23DB" Value="23"/>
+            <List Des="24DB" Value="24"/>
+            <List Des="25DB" Value="25"/>
+            <List Des="26DB" Value="26"/>
+            <List Des="27DB" Value="27"/>
+            <List Des="28DB" Value="28"/>
+            <List Des="29DB" Value="29"/>
+            <List Des="30DB" Value="30"/>
+            <List Des="31DB" Value="31"/>
+            <List Des="32DB" Value="32"/>
+          </TreeItem>
+        </TreeItem>
+
+        <TreeItem Type="PropTreeItem" IsAntenna="true" AntennaID="3" Des="Antenna-3">
+          <TreeItem Type="PropTreeItemCombo" Des="Read" StartBitPos="8.6.0" EndBitPos="8.6.7">
+            <List Des="1DB" Value="1"/>
+            <List Des="2DB" Value="2"/>
+            <List Des="3DB" Value="3"/>
+            <List Des="4DB" Value="4"/>
+            <List Des="5DB" Value="5"/>
+            <List Des="6DB" Value="6"/>
+            <List Des="7DB" Value="7"/>
+            <List Des="8DB" Value="8"/>
+            <List Des="9DB" Value="9"/>
+            <List Des="10DB" Value="10"/>
+            <List Des="11DB" Value="11"/>
+            <List Des="12DB" Value="12"/>
+            <List Des="13DB" Value="13"/>
+            <List Des="14DB" Value="14"/>
+            <List Des="15DB" Value="15"/>
+            <List Des="16DB" Value="16"/>
+            <List Des="17DB" Value="17"/>
+            <List Des="18DB" Value="18"/>
+            <List Des="19DB" Value="19"/>
+            <List Des="20DB" Value="20"/>
+            <List Des="21DB" Value="21"/>
+            <List Des="22DB" Value="22"/>
+            <List Des="23DB" Value="23"/>
+            <List Des="24DB" Value="24"/>
+            <List Des="25DB" Value="25"/>
+            <List Des="26DB" Value="26"/>
+            <List Des="27DB" Value="27"/>
+            <List Des="28DB" Value="28"/>
+            <List Des="29DB" Value="29"/>
+            <List Des="30DB" Value="30"/>
+            <List Des="31DB" Value="31"/>
+            <List Des="32DB" Value="32"/>
+          </TreeItem>
+          <TreeItem Type="PropTreeItemCombo" Des="Write" StartBitPos="8.7.0" EndBitPos="8.7.7">
+            <List Des="1DB" Value="1"/>
+            <List Des="2DB" Value="2"/>
+            <List Des="3DB" Value="3"/>
+            <List Des="4DB" Value="4"/>
+            <List Des="5DB" Value="5"/>
+            <List Des="6DB" Value="6"/>
+            <List Des="7DB" Value="7"/>
+            <List Des="8DB" Value="8"/>
+            <List Des="9DB" Value="9"/>
+            <List Des="10DB" Value="10"/>
+            <List Des="11DB" Value="11"/>
+            <List Des="12DB" Value="12"/>
+            <List Des="13DB" Value="13"/>
+            <List Des="14DB" Value="14"/>
+            <List Des="15DB" Value="15"/>
+            <List Des="16DB" Value="16"/>
+            <List Des="17DB" Value="17"/>
+            <List Des="18DB" Value="18"/>
+            <List Des="19DB" Value="19"/>
+            <List Des="20DB" Value="20"/>
+            <List Des="21DB" Value="21"/>
+            <List Des="22DB" Value="22"/>
+            <List Des="23DB" Value="23"/>
+            <List Des="24DB" Value="24"/>
+            <List Des="25DB" Value="25"/>
+            <List Des="26DB" Value="26"/>
+            <List Des="27DB" Value="27"/>
+            <List Des="28DB" Value="28"/>
+            <List Des="29DB" Value="29"/>
+            <List Des="30DB" Value="30"/>
+            <List Des="31DB" Value="31"/>
+            <List Des="32DB" Value="32"/>
+          </TreeItem>
+        </TreeItem>
+
+        <TreeItem Type="PropTreeItem" IsAntenna="true" AntennaID="4" Des="Antenna-4">
+          <TreeItem Type="PropTreeItemCombo" Des="Read" StartBitPos="8.8.0" EndBitPos="8.8.7">
+            <List Des="1DB" Value="1"/>
+            <List Des="2DB" Value="2"/>
+            <List Des="3DB" Value="3"/>
+            <List Des="4DB" Value="4"/>
+            <List Des="5DB" Value="5"/>
+            <List Des="6DB" Value="6"/>
+            <List Des="7DB" Value="7"/>
+            <List Des="8DB" Value="8"/>
+            <List Des="9DB" Value="9"/>
+            <List Des="10DB" Value="10"/>
+            <List Des="11DB" Value="11"/>
+            <List Des="12DB" Value="12"/>
+            <List Des="13DB" Value="13"/>
+            <List Des="14DB" Value="14"/>
+            <List Des="15DB" Value="15"/>
+            <List Des="16DB" Value="16"/>
+            <List Des="17DB" Value="17"/>
+            <List Des="18DB" Value="18"/>
+            <List Des="19DB" Value="19"/>
+            <List Des="20DB" Value="20"/>
+            <List Des="21DB" Value="21"/>
+            <List Des="22DB" Value="22"/>
+            <List Des="23DB" Value="23"/>
+            <List Des="24DB" Value="24"/>
+            <List Des="25DB" Value="25"/>
+            <List Des="26DB" Value="26"/>
+            <List Des="27DB" Value="27"/>
+            <List Des="28DB" Value="28"/>
+            <List Des="29DB" Value="29"/>
+            <List Des="30DB" Value="30"/>
+            <List Des="31DB" Value="31"/>
+            <List Des="32DB" Value="32"/>
+          </TreeItem>
+          <TreeItem Type="PropTreeItemCombo" Des="Write" StartBitPos="8.9.0" EndBitPos="8.9.7">
+            <List Des="1DB" Value="1"/>
+            <List Des="2DB" Value="2"/>
+            <List Des="3DB" Value="3"/>
+            <List Des="4DB" Value="4"/>
+            <List Des="5DB" Value="5"/>
+            <List Des="6DB" Value="6"/>
+            <List Des="7DB" Value="7"/>
+            <List Des="8DB" Value="8"/>
+            <List Des="9DB" Value="9"/>
+            <List Des="10DB" Value="10"/>
+            <List Des="11DB" Value="11"/>
+            <List Des="12DB" Value="12"/>
+            <List Des="13DB" Value="13"/>
+            <List Des="14DB" Value="14"/>
+            <List Des="15DB" Value="15"/>
+            <List Des="16DB" Value="16"/>
+            <List Des="17DB" Value="17"/>
+            <List Des="18DB" Value="18"/>
+            <List Des="19DB" Value="19"/>
+            <List Des="20DB" Value="20"/>
+            <List Des="21DB" Value="21"/>
+            <List Des="22DB" Value="22"/>
+            <List Des="23DB" Value="23"/>
+            <List Des="24DB" Value="24"/>
+            <List Des="25DB" Value="25"/>
+            <List Des="26DB" Value="26"/>
+            <List Des="27DB" Value="27"/>
+            <List Des="28DB" Value="28"/>
+            <List Des="29DB" Value="29"/>
+            <List Des="30DB" Value="30"/>
+            <List Des="31DB" Value="31"/>
+            <List Des="32DB" Value="32"/>
+          </TreeItem>
+        </TreeItem>
+
+        <TreeItem Type="PropTreeItem" IsAntenna="true" AntennaID="5" Des="Antenna-5">
+          <TreeItem Type="PropTreeItemCombo" Des="Read" StartBitPos="8.10.0" EndBitPos="8.10.7">
+            <List Des="1DB" Value="1"/>
+            <List Des="2DB" Value="2"/>
+            <List Des="3DB" Value="3"/>
+            <List Des="4DB" Value="4"/>
+            <List Des="5DB" Value="5"/>
+            <List Des="6DB" Value="6"/>
+            <List Des="7DB" Value="7"/>
+            <List Des="8DB" Value="8"/>
+            <List Des="9DB" Value="9"/>
+            <List Des="10DB" Value="10"/>
+            <List Des="11DB" Value="11"/>
+            <List Des="12DB" Value="12"/>
+            <List Des="13DB" Value="13"/>
+            <List Des="14DB" Value="14"/>
+            <List Des="15DB" Value="15"/>
+            <List Des="16DB" Value="16"/>
+            <List Des="17DB" Value="17"/>
+            <List Des="18DB" Value="18"/>
+            <List Des="19DB" Value="19"/>
+            <List Des="20DB" Value="20"/>
+            <List Des="21DB" Value="21"/>
+            <List Des="22DB" Value="22"/>
+            <List Des="23DB" Value="23"/>
+            <List Des="24DB" Value="24"/>
+            <List Des="25DB" Value="25"/>
+            <List Des="26DB" Value="26"/>
+            <List Des="27DB" Value="27"/>
+            <List Des="28DB" Value="28"/>
+            <List Des="29DB" Value="29"/>
+            <List Des="30DB" Value="30"/>
+            <List Des="31DB" Value="31"/>
+            <List Des="32DB" Value="32"/>
+          </TreeItem>
+          <TreeItem Type="PropTreeItemCombo" Des="Write" StartBitPos="8.11.0" EndBitPos="8.11.7">
+            <List Des="1DB" Value="1"/>
+            <List Des="2DB" Value="2"/>
+            <List Des="3DB" Value="3"/>
+            <List Des="4DB" Value="4"/>
+            <List Des="5DB" Value="5"/>
+            <List Des="6DB" Value="6"/>
+            <List Des="7DB" Value="7"/>
+            <List Des="8DB" Value="8"/>
+            <List Des="9DB" Value="9"/>
+            <List Des="10DB" Value="10"/>
+            <List Des="11DB" Value="11"/>
+            <List Des="12DB" Value="12"/>
+            <List Des="13DB" Value="13"/>
+            <List Des="14DB" Value="14"/>
+            <List Des="15DB" Value="15"/>
+            <List Des="16DB" Value="16"/>
+            <List Des="17DB" Value="17"/>
+            <List Des="18DB" Value="18"/>
+            <List Des="19DB" Value="19"/>
+            <List Des="20DB" Value="20"/>
+            <List Des="21DB" Value="21"/>
+            <List Des="22DB" Value="22"/>
+            <List Des="23DB" Value="23"/>
+            <List Des="24DB" Value="24"/>
+            <List Des="25DB" Value="25"/>
+            <List Des="26DB" Value="26"/>
+            <List Des="27DB" Value="27"/>
+            <List Des="28DB" Value="28"/>
+            <List Des="29DB" Value="29"/>
+            <List Des="30DB" Value="30"/>
+            <List Des="31DB" Value="31"/>
+            <List Des="32DB" Value="32"/>
+          </TreeItem>
+        </TreeItem>
+
+        <TreeItem Type="PropTreeItem" IsAntenna="true" AntennaID="6" Des="Antenna-6">
+          <TreeItem Type="PropTreeItemCombo" Des="Read" StartBitPos="8.12.0" EndBitPos="8.12.7">
+            <List Des="1DB" Value="1"/>
+            <List Des="2DB" Value="2"/>
+            <List Des="3DB" Value="3"/>
+            <List Des="4DB" Value="4"/>
+            <List Des="5DB" Value="5"/>
+            <List Des="6DB" Value="6"/>
+            <List Des="7DB" Value="7"/>
+            <List Des="8DB" Value="8"/>
+            <List Des="9DB" Value="9"/>
+            <List Des="10DB" Value="10"/>
+            <List Des="11DB" Value="11"/>
+            <List Des="12DB" Value="12"/>
+            <List Des="13DB" Value="13"/>
+            <List Des="14DB" Value="14"/>
+            <List Des="15DB" Value="15"/>
+            <List Des="16DB" Value="16"/>
+            <List Des="17DB" Value="17"/>
+            <List Des="18DB" Value="18"/>
+            <List Des="19DB" Value="19"/>
+            <List Des="20DB" Value="20"/>
+            <List Des="21DB" Value="21"/>
+            <List Des="22DB" Value="22"/>
+            <List Des="23DB" Value="23"/>
+            <List Des="24DB" Value="24"/>
+            <List Des="25DB" Value="25"/>
+            <List Des="26DB" Value="26"/>
+            <List Des="27DB" Value="27"/>
+            <List Des="28DB" Value="28"/>
+            <List Des="29DB" Value="29"/>
+            <List Des="30DB" Value="30"/>
+            <List Des="31DB" Value="31"/>
+            <List Des="32DB" Value="32"/>
+          </TreeItem>
+          <TreeItem Type="PropTreeItemCombo" Des="Write" StartBitPos="8.13.0" EndBitPos="8.13.7">
+            <List Des="1DB" Value="1"/>
+            <List Des="2DB" Value="2"/>
+            <List Des="3DB" Value="3"/>
+            <List Des="4DB" Value="4"/>
+            <List Des="5DB" Value="5"/>
+            <List Des="6DB" Value="6"/>
+            <List Des="7DB" Value="7"/>
+            <List Des="8DB" Value="8"/>
+            <List Des="9DB" Value="9"/>
+            <List Des="10DB" Value="10"/>
+            <List Des="11DB" Value="11"/>
+            <List Des="12DB" Value="12"/>
+            <List Des="13DB" Value="13"/>
+            <List Des="14DB" Value="14"/>
+            <List Des="15DB" Value="15"/>
+            <List Des="16DB" Value="16"/>
+            <List Des="17DB" Value="17"/>
+            <List Des="18DB" Value="18"/>
+            <List Des="19DB" Value="19"/>
+            <List Des="20DB" Value="20"/>
+            <List Des="21DB" Value="21"/>
+            <List Des="22DB" Value="22"/>
+            <List Des="23DB" Value="23"/>
+            <List Des="24DB" Value="24"/>
+            <List Des="25DB" Value="25"/>
+            <List Des="26DB" Value="26"/>
+            <List Des="27DB" Value="27"/>
+            <List Des="28DB" Value="28"/>
+            <List Des="29DB" Value="29"/>
+            <List Des="30DB" Value="30"/>
+            <List Des="31DB" Value="31"/>
+            <List Des="32DB" Value="32"/>
+          </TreeItem>
+        </TreeItem>
+
+        <TreeItem Type="PropTreeItem" IsAntenna="true" AntennaID="7" Des="Antenna-7">
+          <TreeItem Type="PropTreeItemCombo" Des="Read" StartBitPos="9.0.0" EndBitPos="9.0.7">
+            <List Des="1DB" Value="1"/>
+            <List Des="2DB" Value="2"/>
+            <List Des="3DB" Value="3"/>
+            <List Des="4DB" Value="4"/>
+            <List Des="5DB" Value="5"/>
+            <List Des="6DB" Value="6"/>
+            <List Des="7DB" Value="7"/>
+            <List Des="8DB" Value="8"/>
+            <List Des="9DB" Value="9"/>
+            <List Des="10DB" Value="10"/>
+            <List Des="11DB" Value="11"/>
+            <List Des="12DB" Value="12"/>
+            <List Des="13DB" Value="13"/>
+            <List Des="14DB" Value="14"/>
+            <List Des="15DB" Value="15"/>
+            <List Des="16DB" Value="16"/>
+            <List Des="17DB" Value="17"/>
+            <List Des="18DB" Value="18"/>
+            <List Des="19DB" Value="19"/>
+            <List Des="20DB" Value="20"/>
+            <List Des="21DB" Value="21"/>
+            <List Des="22DB" Value="22"/>
+            <List Des="23DB" Value="23"/>
+            <List Des="24DB" Value="24"/>
+            <List Des="25DB" Value="25"/>
+            <List Des="26DB" Value="26"/>
+            <List Des="27DB" Value="27"/>
+            <List Des="28DB" Value="28"/>
+            <List Des="29DB" Value="29"/>
+            <List Des="30DB" Value="30"/>
+            <List Des="31DB" Value="31"/>
+            <List Des="32DB" Value="32"/>
+          </TreeItem>
+          <TreeItem Type="PropTreeItemCombo" Des="Write" StartBitPos="9.1.0" EndBitPos="9.1.7">
+            <List Des="1DB" Value="1"/>
+            <List Des="2DB" Value="2"/>
+            <List Des="3DB" Value="3"/>
+            <List Des="4DB" Value="4"/>
+            <List Des="5DB" Value="5"/>
+            <List Des="6DB" Value="6"/>
+            <List Des="7DB" Value="7"/>
+            <List Des="8DB" Value="8"/>
+            <List Des="9DB" Value="9"/>
+            <List Des="10DB" Value="10"/>
+            <List Des="11DB" Value="11"/>
+            <List Des="12DB" Value="12"/>
+            <List Des="13DB" Value="13"/>
+            <List Des="14DB" Value="14"/>
+            <List Des="15DB" Value="15"/>
+            <List Des="16DB" Value="16"/>
+            <List Des="17DB" Value="17"/>
+            <List Des="18DB" Value="18"/>
+            <List Des="19DB" Value="19"/>
+            <List Des="20DB" Value="20"/>
+            <List Des="21DB" Value="21"/>
+            <List Des="22DB" Value="22"/>
+            <List Des="23DB" Value="23"/>
+            <List Des="24DB" Value="24"/>
+            <List Des="25DB" Value="25"/>
+            <List Des="26DB" Value="26"/>
+            <List Des="27DB" Value="27"/>
+            <List Des="28DB" Value="28"/>
+            <List Des="29DB" Value="29"/>
+            <List Des="30DB" Value="30"/>
+            <List Des="31DB" Value="31"/>
+            <List Des="32DB" Value="32"/>
+          </TreeItem>
+        </TreeItem>
+
+        <TreeItem Type="PropTreeItem" IsAntenna="true" AntennaID="8" Des="Antenna-8">
+          <TreeItem Type="PropTreeItemCombo" Des="Read" StartBitPos="9.2.0" EndBitPos="9.2.7">
+            <List Des="1DB" Value="1"/>
+            <List Des="2DB" Value="2"/>
+            <List Des="3DB" Value="3"/>
+            <List Des="4DB" Value="4"/>
+            <List Des="5DB" Value="5"/>
+            <List Des="6DB" Value="6"/>
+            <List Des="7DB" Value="7"/>
+            <List Des="8DB" Value="8"/>
+            <List Des="9DB" Value="9"/>
+            <List Des="10DB" Value="10"/>
+            <List Des="11DB" Value="11"/>
+            <List Des="12DB" Value="12"/>
+            <List Des="13DB" Value="13"/>
+            <List Des="14DB" Value="14"/>
+            <List Des="15DB" Value="15"/>
+            <List Des="16DB" Value="16"/>
+            <List Des="17DB" Value="17"/>
+            <List Des="18DB" Value="18"/>
+            <List Des="19DB" Value="19"/>
+            <List Des="20DB" Value="20"/>
+            <List Des="21DB" Value="21"/>
+            <List Des="22DB" Value="22"/>
+            <List Des="23DB" Value="23"/>
+            <List Des="24DB" Value="24"/>
+            <List Des="25DB" Value="25"/>
+            <List Des="26DB" Value="26"/>
+            <List Des="27DB" Value="27"/>
+            <List Des="28DB" Value="28"/>
+            <List Des="29DB" Value="29"/>
+            <List Des="30DB" Value="30"/>
+            <List Des="31DB" Value="31"/>
+            <List Des="32DB" Value="32"/>
+          </TreeItem>
+          <TreeItem Type="PropTreeItemCombo" Des="Write" StartBitPos="9.3.0" EndBitPos="9.3.7">
+            <List Des="1DB" Value="1"/>
+            <List Des="2DB" Value="2"/>
+            <List Des="3DB" Value="3"/>
+            <List Des="4DB" Value="4"/>
+            <List Des="5DB" Value="5"/>
+            <List Des="6DB" Value="6"/>
+            <List Des="7DB" Value="7"/>
+            <List Des="8DB" Value="8"/>
+            <List Des="9DB" Value="9"/>
+            <List Des="10DB" Value="10"/>
+            <List Des="11DB" Value="11"/>
+            <List Des="12DB" Value="12"/>
+            <List Des="13DB" Value="13"/>
+            <List Des="14DB" Value="14"/>
+            <List Des="15DB" Value="15"/>
+            <List Des="16DB" Value="16"/>
+            <List Des="17DB" Value="17"/>
+            <List Des="18DB" Value="18"/>
+            <List Des="19DB" Value="19"/>
+            <List Des="20DB" Value="20"/>
+            <List Des="21DB" Value="21"/>
+            <List Des="22DB" Value="22"/>
+            <List Des="23DB" Value="23"/>
+            <List Des="24DB" Value="24"/>
+            <List Des="25DB" Value="25"/>
+            <List Des="26DB" Value="26"/>
+            <List Des="27DB" Value="27"/>
+            <List Des="28DB" Value="28"/>
+            <List Des="29DB" Value="29"/>
+            <List Des="30DB" Value="30"/>
+            <List Des="31DB" Value="31"/>
+            <List Des="32DB" Value="32"/>
+          </TreeItem>
+        </TreeItem>
+
+        <TreeItem Type="PropTreeItem" IsAntenna="true" AntennaID="9" Des="Antenna-9">
+          <TreeItem Type="PropTreeItemCombo" Des="Read" StartBitPos="9.4.0" EndBitPos="9.4.7">
+            <List Des="1DB" Value="1"/>
+            <List Des="2DB" Value="2"/>
+            <List Des="3DB" Value="3"/>
+            <List Des="4DB" Value="4"/>
+            <List Des="5DB" Value="5"/>
+            <List Des="6DB" Value="6"/>
+            <List Des="7DB" Value="7"/>
+            <List Des="8DB" Value="8"/>
+            <List Des="9DB" Value="9"/>
+            <List Des="10DB" Value="10"/>
+            <List Des="11DB" Value="11"/>
+            <List Des="12DB" Value="12"/>
+            <List Des="13DB" Value="13"/>
+            <List Des="14DB" Value="14"/>
+            <List Des="15DB" Value="15"/>
+            <List Des="16DB" Value="16"/>
+            <List Des="17DB" Value="17"/>
+            <List Des="18DB" Value="18"/>
+            <List Des="19DB" Value="19"/>
+            <List Des="20DB" Value="20"/>
+            <List Des="21DB" Value="21"/>
+            <List Des="22DB" Value="22"/>
+            <List Des="23DB" Value="23"/>
+            <List Des="24DB" Value="24"/>
+            <List Des="25DB" Value="25"/>
+            <List Des="26DB" Value="26"/>
+            <List Des="27DB" Value="27"/>
+            <List Des="28DB" Value="28"/>
+            <List Des="29DB" Value="29"/>
+            <List Des="30DB" Value="30"/>
+            <List Des="31DB" Value="31"/>
+            <List Des="32DB" Value="32"/>
+          </TreeItem>
+          <TreeItem Type="PropTreeItemCombo" Des="Write" StartBitPos="9.5.0" EndBitPos="9.5.7">
+            <List Des="1DB" Value="1"/>
+            <List Des="2DB" Value="2"/>
+            <List Des="3DB" Value="3"/>
+            <List Des="4DB" Value="4"/>
+            <List Des="5DB" Value="5"/>
+            <List Des="6DB" Value="6"/>
+            <List Des="7DB" Value="7"/>
+            <List Des="8DB" Value="8"/>
+            <List Des="9DB" Value="9"/>
+            <List Des="10DB" Value="10"/>
+            <List Des="11DB" Value="11"/>
+            <List Des="12DB" Value="12"/>
+            <List Des="13DB" Value="13"/>
+            <List Des="14DB" Value="14"/>
+            <List Des="15DB" Value="15"/>
+            <List Des="16DB" Value="16"/>
+            <List Des="17DB" Value="17"/>
+            <List Des="18DB" Value="18"/>
+            <List Des="19DB" Value="19"/>
+            <List Des="20DB" Value="20"/>
+            <List Des="21DB" Value="21"/>
+            <List Des="22DB" Value="22"/>
+            <List Des="23DB" Value="23"/>
+            <List Des="24DB" Value="24"/>
+            <List Des="25DB" Value="25"/>
+            <List Des="26DB" Value="26"/>
+            <List Des="27DB" Value="27"/>
+            <List Des="28DB" Value="28"/>
+            <List Des="29DB" Value="29"/>
+            <List Des="30DB" Value="30"/>
+            <List Des="31DB" Value="31"/>
+            <List Des="32DB" Value="32"/>
+          </TreeItem>
+        </TreeItem>
+
+        <TreeItem Type="PropTreeItem" IsAntenna="true" AntennaID="10" Des="Antenna-10">
+          <TreeItem Type="PropTreeItemCombo" Des="Read" StartBitPos="9.6.0" EndBitPos="9.6.7">
+            <List Des="1DB" Value="1"/>
+            <List Des="2DB" Value="2"/>
+            <List Des="3DB" Value="3"/>
+            <List Des="4DB" Value="4"/>
+            <List Des="5DB" Value="5"/>
+            <List Des="6DB" Value="6"/>
+            <List Des="7DB" Value="7"/>
+            <List Des="8DB" Value="8"/>
+            <List Des="9DB" Value="9"/>
+            <List Des="10DB" Value="10"/>
+            <List Des="11DB" Value="11"/>
+            <List Des="12DB" Value="12"/>
+            <List Des="13DB" Value="13"/>
+            <List Des="14DB" Value="14"/>
+            <List Des="15DB" Value="15"/>
+            <List Des="16DB" Value="16"/>
+            <List Des="17DB" Value="17"/>
+            <List Des="18DB" Value="18"/>
+            <List Des="19DB" Value="19"/>
+            <List Des="20DB" Value="20"/>
+            <List Des="21DB" Value="21"/>
+            <List Des="22DB" Value="22"/>
+            <List Des="23DB" Value="23"/>
+            <List Des="24DB" Value="24"/>
+            <List Des="25DB" Value="25"/>
+            <List Des="26DB" Value="26"/>
+            <List Des="27DB" Value="27"/>
+            <List Des="28DB" Value="28"/>
+            <List Des="29DB" Value="29"/>
+            <List Des="30DB" Value="30"/>
+            <List Des="31DB" Value="31"/>
+            <List Des="32DB" Value="32"/>
+          </TreeItem>
+          <TreeItem Type="PropTreeItemCombo" Des="Write" StartBitPos="9.7.0" EndBitPos="9.7.7">
+            <List Des="1DB" Value="1"/>
+            <List Des="2DB" Value="2"/>
+            <List Des="3DB" Value="3"/>
+            <List Des="4DB" Value="4"/>
+            <List Des="5DB" Value="5"/>
+            <List Des="6DB" Value="6"/>
+            <List Des="7DB" Value="7"/>
+            <List Des="8DB" Value="8"/>
+            <List Des="9DB" Value="9"/>
+            <List Des="10DB" Value="10"/>
+            <List Des="11DB" Value="11"/>
+            <List Des="12DB" Value="12"/>
+            <List Des="13DB" Value="13"/>
+            <List Des="14DB" Value="14"/>
+            <List Des="15DB" Value="15"/>
+            <List Des="16DB" Value="16"/>
+            <List Des="17DB" Value="17"/>
+            <List Des="18DB" Value="18"/>
+            <List Des="19DB" Value="19"/>
+            <List Des="20DB" Value="20"/>
+            <List Des="21DB" Value="21"/>
+            <List Des="22DB" Value="22"/>
+            <List Des="23DB" Value="23"/>
+            <List Des="24DB" Value="24"/>
+            <List Des="25DB" Value="25"/>
+            <List Des="26DB" Value="26"/>
+            <List Des="27DB" Value="27"/>
+            <List Des="28DB" Value="28"/>
+            <List Des="29DB" Value="29"/>
+            <List Des="30DB" Value="30"/>
+            <List Des="31DB" Value="31"/>
+            <List Des="32DB" Value="32"/>
+          </TreeItem>
+        </TreeItem>
+
+        <TreeItem Type="PropTreeItem" IsAntenna="true" AntennaID="11" Des="Antenna-11">
+          <TreeItem Type="PropTreeItemCombo" Des="Read" StartBitPos="9.8.0" EndBitPos="9.8.7">
+            <List Des="1DB" Value="1"/>
+            <List Des="2DB" Value="2"/>
+            <List Des="3DB" Value="3"/>
+            <List Des="4DB" Value="4"/>
+            <List Des="5DB" Value="5"/>
+            <List Des="6DB" Value="6"/>
+            <List Des="7DB" Value="7"/>
+            <List Des="8DB" Value="8"/>
+            <List Des="9DB" Value="9"/>
+            <List Des="10DB" Value="10"/>
+            <List Des="11DB" Value="11"/>
+            <List Des="12DB" Value="12"/>
+            <List Des="13DB" Value="13"/>
+            <List Des="14DB" Value="14"/>
+            <List Des="15DB" Value="15"/>
+            <List Des="16DB" Value="16"/>
+            <List Des="17DB" Value="17"/>
+            <List Des="18DB" Value="18"/>
+            <List Des="19DB" Value="19"/>
+            <List Des="20DB" Value="20"/>
+            <List Des="21DB" Value="21"/>
+            <List Des="22DB" Value="22"/>
+            <List Des="23DB" Value="23"/>
+            <List Des="24DB" Value="24"/>
+            <List Des="25DB" Value="25"/>
+            <List Des="26DB" Value="26"/>
+            <List Des="27DB" Value="27"/>
+            <List Des="28DB" Value="28"/>
+            <List Des="29DB" Value="29"/>
+            <List Des="30DB" Value="30"/>
+            <List Des="31DB" Value="31"/>
+            <List Des="32DB" Value="32"/>
+          </TreeItem>
+          <TreeItem Type="PropTreeItemCombo" Des="Write" StartBitPos="9.9.0" EndBitPos="9.9.7">
+            <List Des="1DB" Value="1"/>
+            <List Des="2DB" Value="2"/>
+            <List Des="3DB" Value="3"/>
+            <List Des="4DB" Value="4"/>
+            <List Des="5DB" Value="5"/>
+            <List Des="6DB" Value="6"/>
+            <List Des="7DB" Value="7"/>
+            <List Des="8DB" Value="8"/>
+            <List Des="9DB" Value="9"/>
+            <List Des="10DB" Value="10"/>
+            <List Des="11DB" Value="11"/>
+            <List Des="12DB" Value="12"/>
+            <List Des="13DB" Value="13"/>
+            <List Des="14DB" Value="14"/>
+            <List Des="15DB" Value="15"/>
+            <List Des="16DB" Value="16"/>
+            <List Des="17DB" Value="17"/>
+            <List Des="18DB" Value="18"/>
+            <List Des="19DB" Value="19"/>
+            <List Des="20DB" Value="20"/>
+            <List Des="21DB" Value="21"/>
+            <List Des="22DB" Value="22"/>
+            <List Des="23DB" Value="23"/>
+            <List Des="24DB" Value="24"/>
+            <List Des="25DB" Value="25"/>
+            <List Des="26DB" Value="26"/>
+            <List Des="27DB" Value="27"/>
+            <List Des="28DB" Value="28"/>
+            <List Des="29DB" Value="29"/>
+            <List Des="30DB" Value="30"/>
+            <List Des="31DB" Value="31"/>
+            <List Des="32DB" Value="32"/>
+          </TreeItem>
+        </TreeItem>
+
+        <TreeItem Type="PropTreeItem" IsAntenna="true" AntennaID="12" Des="Antenna-12">
+          <TreeItem Type="PropTreeItemCombo" Des="Read" StartBitPos="9.10.0" EndBitPos="9.10.7">
+            <List Des="1DB" Value="1"/>
+            <List Des="2DB" Value="2"/>
+            <List Des="3DB" Value="3"/>
+            <List Des="4DB" Value="4"/>
+            <List Des="5DB" Value="5"/>
+            <List Des="6DB" Value="6"/>
+            <List Des="7DB" Value="7"/>
+            <List Des="8DB" Value="8"/>
+            <List Des="9DB" Value="9"/>
+            <List Des="10DB" Value="10"/>
+            <List Des="11DB" Value="11"/>
+            <List Des="12DB" Value="12"/>
+            <List Des="13DB" Value="13"/>
+            <List Des="14DB" Value="14"/>
+            <List Des="15DB" Value="15"/>
+            <List Des="16DB" Value="16"/>
+            <List Des="17DB" Value="17"/>
+            <List Des="18DB" Value="18"/>
+            <List Des="19DB" Value="19"/>
+            <List Des="20DB" Value="20"/>
+            <List Des="21DB" Value="21"/>
+            <List Des="22DB" Value="22"/>
+            <List Des="23DB" Value="23"/>
+            <List Des="24DB" Value="24"/>
+            <List Des="25DB" Value="25"/>
+            <List Des="26DB" Value="26"/>
+            <List Des="27DB" Value="27"/>
+            <List Des="28DB" Value="28"/>
+            <List Des="29DB" Value="29"/>
+            <List Des="30DB" Value="30"/>
+            <List Des="31DB" Value="31"/>
+            <List Des="32DB" Value="32"/>
+          </TreeItem>
+          <TreeItem Type="PropTreeItemCombo" Des="Write" StartBitPos="9.11.0" EndBitPos="9.11.7">
+            <List Des="1DB" Value="1"/>
+            <List Des="2DB" Value="2"/>
+            <List Des="3DB" Value="3"/>
+            <List Des="4DB" Value="4"/>
+            <List Des="5DB" Value="5"/>
+            <List Des="6DB" Value="6"/>
+            <List Des="7DB" Value="7"/>
+            <List Des="8DB" Value="8"/>
+            <List Des="9DB" Value="9"/>
+            <List Des="10DB" Value="10"/>
+            <List Des="11DB" Value="11"/>
+            <List Des="12DB" Value="12"/>
+            <List Des="13DB" Value="13"/>
+            <List Des="14DB" Value="14"/>
+            <List Des="15DB" Value="15"/>
+            <List Des="16DB" Value="16"/>
+            <List Des="17DB" Value="17"/>
+            <List Des="18DB" Value="18"/>
+            <List Des="19DB" Value="19"/>
+            <List Des="20DB" Value="20"/>
+            <List Des="21DB" Value="21"/>
+            <List Des="22DB" Value="22"/>
+            <List Des="23DB" Value="23"/>
+            <List Des="24DB" Value="24"/>
+            <List Des="25DB" Value="25"/>
+            <List Des="26DB" Value="26"/>
+            <List Des="27DB" Value="27"/>
+            <List Des="28DB" Value="28"/>
+            <List Des="29DB" Value="29"/>
+            <List Des="30DB" Value="30"/>
+            <List Des="31DB" Value="31"/>
+            <List Des="32DB" Value="32"/>
+          </TreeItem>
+        </TreeItem>
+
+        <TreeItem Type="PropTreeItem" IsAntenna="true" AntennaID="13" Des="Antenna-13">
+          <TreeItem Type="PropTreeItemCombo" Des="Read" StartBitPos="9.12.0" EndBitPos="9.12.7">
+            <List Des="1DB" Value="1"/>
+            <List Des="2DB" Value="2"/>
+            <List Des="3DB" Value="3"/>
+            <List Des="4DB" Value="4"/>
+            <List Des="5DB" Value="5"/>
+            <List Des="6DB" Value="6"/>
+            <List Des="7DB" Value="7"/>
+            <List Des="8DB" Value="8"/>
+            <List Des="9DB" Value="9"/>
+            <List Des="10DB" Value="10"/>
+            <List Des="11DB" Value="11"/>
+            <List Des="12DB" Value="12"/>
+            <List Des="13DB" Value="13"/>
+            <List Des="14DB" Value="14"/>
+            <List Des="15DB" Value="15"/>
+            <List Des="16DB" Value="16"/>
+            <List Des="17DB" Value="17"/>
+            <List Des="18DB" Value="18"/>
+            <List Des="19DB" Value="19"/>
+            <List Des="20DB" Value="20"/>
+            <List Des="21DB" Value="21"/>
+            <List Des="22DB" Value="22"/>
+            <List Des="23DB" Value="23"/>
+            <List Des="24DB" Value="24"/>
+            <List Des="25DB" Value="25"/>
+            <List Des="26DB" Value="26"/>
+            <List Des="27DB" Value="27"/>
+            <List Des="28DB" Value="28"/>
+            <List Des="29DB" Value="29"/>
+            <List Des="30DB" Value="30"/>
+            <List Des="31DB" Value="31"/>
+            <List Des="32DB" Value="32"/>
+          </TreeItem>
+          <TreeItem Type="PropTreeItemCombo" Des="Write" StartBitPos="9.13.0" EndBitPos="9.13.7">
+            <List Des="1DB" Value="1"/>
+            <List Des="2DB" Value="2"/>
+            <List Des="3DB" Value="3"/>
+            <List Des="4DB" Value="4"/>
+            <List Des="5DB" Value="5"/>
+            <List Des="6DB" Value="6"/>
+            <List Des="7DB" Value="7"/>
+            <List Des="8DB" Value="8"/>
+            <List Des="9DB" Value="9"/>
+            <List Des="10DB" Value="10"/>
+            <List Des="11DB" Value="11"/>
+            <List Des="12DB" Value="12"/>
+            <List Des="13DB" Value="13"/>
+            <List Des="14DB" Value="14"/>
+            <List Des="15DB" Value="15"/>
+            <List Des="16DB" Value="16"/>
+            <List Des="17DB" Value="17"/>
+            <List Des="18DB" Value="18"/>
+            <List Des="19DB" Value="19"/>
+            <List Des="20DB" Value="20"/>
+            <List Des="21DB" Value="21"/>
+            <List Des="22DB" Value="22"/>
+            <List Des="23DB" Value="23"/>
+            <List Des="24DB" Value="24"/>
+            <List Des="25DB" Value="25"/>
+            <List Des="26DB" Value="26"/>
+            <List Des="27DB" Value="27"/>
+            <List Des="28DB" Value="28"/>
+            <List Des="29DB" Value="29"/>
+            <List Des="30DB" Value="30"/>
+            <List Des="31DB" Value="31"/>
+            <List Des="32DB" Value="32"/>
+          </TreeItem>
+        </TreeItem>
+
+        <TreeItem Type="PropTreeItem" IsAntenna="true" AntennaID="14" Des="Antenna-14">
+          <TreeItem Type="PropTreeItemCombo" Des="Read" StartBitPos="10.0.0" EndBitPos="10.0.7">
+            <List Des="1DB" Value="1"/>
+            <List Des="2DB" Value="2"/>
+            <List Des="3DB" Value="3"/>
+            <List Des="4DB" Value="4"/>
+            <List Des="5DB" Value="5"/>
+            <List Des="6DB" Value="6"/>
+            <List Des="7DB" Value="7"/>
+            <List Des="8DB" Value="8"/>
+            <List Des="9DB" Value="9"/>
+            <List Des="10DB" Value="10"/>
+            <List Des="11DB" Value="11"/>
+            <List Des="12DB" Value="12"/>
+            <List Des="13DB" Value="13"/>
+            <List Des="14DB" Value="14"/>
+            <List Des="15DB" Value="15"/>
+            <List Des="16DB" Value="16"/>
+            <List Des="17DB" Value="17"/>
+            <List Des="18DB" Value="18"/>
+            <List Des="19DB" Value="19"/>
+            <List Des="20DB" Value="20"/>
+            <List Des="21DB" Value="21"/>
+            <List Des="22DB" Value="22"/>
+            <List Des="23DB" Value="23"/>
+            <List Des="24DB" Value="24"/>
+            <List Des="25DB" Value="25"/>
+            <List Des="26DB" Value="26"/>
+            <List Des="27DB" Value="27"/>
+            <List Des="28DB" Value="28"/>
+            <List Des="29DB" Value="29"/>
+            <List Des="30DB" Value="30"/>
+            <List Des="31DB" Value="31"/>
+            <List Des="32DB" Value="32"/>
+          </TreeItem>
+          <TreeItem Type="PropTreeItemCombo" Des="Write" StartBitPos="10.1.0" EndBitPos="10.1.7">
+            <List Des="1DB" Value="1"/>
+            <List Des="2DB" Value="2"/>
+            <List Des="3DB" Value="3"/>
+            <List Des="4DB" Value="4"/>
+            <List Des="5DB" Value="5"/>
+            <List Des="6DB" Value="6"/>
+            <List Des="7DB" Value="7"/>
+            <List Des="8DB" Value="8"/>
+            <List Des="9DB" Value="9"/>
+            <List Des="10DB" Value="10"/>
+            <List Des="11DB" Value="11"/>
+            <List Des="12DB" Value="12"/>
+            <List Des="13DB" Value="13"/>
+            <List Des="14DB" Value="14"/>
+            <List Des="15DB" Value="15"/>
+            <List Des="16DB" Value="16"/>
+            <List Des="17DB" Value="17"/>
+            <List Des="18DB" Value="18"/>
+            <List Des="19DB" Value="19"/>
+            <List Des="20DB" Value="20"/>
+            <List Des="21DB" Value="21"/>
+            <List Des="22DB" Value="22"/>
+            <List Des="23DB" Value="23"/>
+            <List Des="24DB" Value="24"/>
+            <List Des="25DB" Value="25"/>
+            <List Des="26DB" Value="26"/>
+            <List Des="27DB" Value="27"/>
+            <List Des="28DB" Value="28"/>
+            <List Des="29DB" Value="29"/>
+            <List Des="30DB" Value="30"/>
+            <List Des="31DB" Value="31"/>
+            <List Des="32DB" Value="32"/>
+          </TreeItem>
+        </TreeItem>
+
+        <TreeItem Type="PropTreeItem" IsAntenna="true" AntennaID="15" Des="Antenna-15">
+          <TreeItem Type="PropTreeItemCombo" Des="Read" StartBitPos="10.2.0" EndBitPos="10.2.7">
+            <List Des="1DB" Value="1"/>
+            <List Des="2DB" Value="2"/>
+            <List Des="3DB" Value="3"/>
+            <List Des="4DB" Value="4"/>
+            <List Des="5DB" Value="5"/>
+            <List Des="6DB" Value="6"/>
+            <List Des="7DB" Value="7"/>
+            <List Des="8DB" Value="8"/>
+            <List Des="9DB" Value="9"/>
+            <List Des="10DB" Value="10"/>
+            <List Des="11DB" Value="11"/>
+            <List Des="12DB" Value="12"/>
+            <List Des="13DB" Value="13"/>
+            <List Des="14DB" Value="14"/>
+            <List Des="15DB" Value="15"/>
+            <List Des="16DB" Value="16"/>
+            <List Des="17DB" Value="17"/>
+            <List Des="18DB" Value="18"/>
+            <List Des="19DB" Value="19"/>
+            <List Des="20DB" Value="20"/>
+            <List Des="21DB" Value="21"/>
+            <List Des="22DB" Value="22"/>
+            <List Des="23DB" Value="23"/>
+            <List Des="24DB" Value="24"/>
+            <List Des="25DB" Value="25"/>
+            <List Des="26DB" Value="26"/>
+            <List Des="27DB" Value="27"/>
+            <List Des="28DB" Value="28"/>
+            <List Des="29DB" Value="29"/>
+            <List Des="30DB" Value="30"/>
+            <List Des="31DB" Value="31"/>
+            <List Des="32DB" Value="32"/>
+          </TreeItem>
+          <TreeItem Type="PropTreeItemCombo" Des="Write" StartBitPos="10.3.0" EndBitPos="10.3.7">
+            <List Des="1DB" Value="1"/>
+            <List Des="2DB" Value="2"/>
+            <List Des="3DB" Value="3"/>
+            <List Des="4DB" Value="4"/>
+            <List Des="5DB" Value="5"/>
+            <List Des="6DB" Value="6"/>
+            <List Des="7DB" Value="7"/>
+            <List Des="8DB" Value="8"/>
+            <List Des="9DB" Value="9"/>
+            <List Des="10DB" Value="10"/>
+            <List Des="11DB" Value="11"/>
+            <List Des="12DB" Value="12"/>
+            <List Des="13DB" Value="13"/>
+            <List Des="14DB" Value="14"/>
+            <List Des="15DB" Value="15"/>
+            <List Des="16DB" Value="16"/>
+            <List Des="17DB" Value="17"/>
+            <List Des="18DB" Value="18"/>
+            <List Des="19DB" Value="19"/>
+            <List Des="20DB" Value="20"/>
+            <List Des="21DB" Value="21"/>
+            <List Des="22DB" Value="22"/>
+            <List Des="23DB" Value="23"/>
+            <List Des="24DB" Value="24"/>
+            <List Des="25DB" Value="25"/>
+            <List Des="26DB" Value="26"/>
+            <List Des="27DB" Value="27"/>
+            <List Des="28DB" Value="28"/>
+            <List Des="29DB" Value="29"/>
+            <List Des="30DB" Value="30"/>
+            <List Des="31DB" Value="31"/>
+            <List Des="32DB" Value="32"/>
+          </TreeItem>
+        </TreeItem>
+
+        <TreeItem Type="PropTreeItem" IsAntenna="true" AntennaID="16" Des="Antenna-16">
+          <TreeItem Type="PropTreeItemCombo" Des="Read" StartBitPos="10.4.0" EndBitPos="10.4.7">
+            <List Des="1DB" Value="1"/>
+            <List Des="2DB" Value="2"/>
+            <List Des="3DB" Value="3"/>
+            <List Des="4DB" Value="4"/>
+            <List Des="5DB" Value="5"/>
+            <List Des="6DB" Value="6"/>
+            <List Des="7DB" Value="7"/>
+            <List Des="8DB" Value="8"/>
+            <List Des="9DB" Value="9"/>
+            <List Des="10DB" Value="10"/>
+            <List Des="11DB" Value="11"/>
+            <List Des="12DB" Value="12"/>
+            <List Des="13DB" Value="13"/>
+            <List Des="14DB" Value="14"/>
+            <List Des="15DB" Value="15"/>
+            <List Des="16DB" Value="16"/>
+            <List Des="17DB" Value="17"/>
+            <List Des="18DB" Value="18"/>
+            <List Des="19DB" Value="19"/>
+            <List Des="20DB" Value="20"/>
+            <List Des="21DB" Value="21"/>
+            <List Des="22DB" Value="22"/>
+            <List Des="23DB" Value="23"/>
+            <List Des="24DB" Value="24"/>
+            <List Des="25DB" Value="25"/>
+            <List Des="26DB" Value="26"/>
+            <List Des="27DB" Value="27"/>
+            <List Des="28DB" Value="28"/>
+            <List Des="29DB" Value="29"/>
+            <List Des="30DB" Value="30"/>
+            <List Des="31DB" Value="31"/>
+            <List Des="32DB" Value="32"/>
+          </TreeItem>
+          <TreeItem Type="PropTreeItemCombo" Des="Write" StartBitPos="10.5.0" EndBitPos="10.5.7">
+            <List Des="1DB" Value="1"/>
+            <List Des="2DB" Value="2"/>
+            <List Des="3DB" Value="3"/>
+            <List Des="4DB" Value="4"/>
+            <List Des="5DB" Value="5"/>
+            <List Des="6DB" Value="6"/>
+            <List Des="7DB" Value="7"/>
+            <List Des="8DB" Value="8"/>
+            <List Des="9DB" Value="9"/>
+            <List Des="10DB" Value="10"/>
+            <List Des="11DB" Value="11"/>
+            <List Des="12DB" Value="12"/>
+            <List Des="13DB" Value="13"/>
+            <List Des="14DB" Value="14"/>
+            <List Des="15DB" Value="15"/>
+            <List Des="16DB" Value="16"/>
+            <List Des="17DB" Value="17"/>
+            <List Des="18DB" Value="18"/>
+            <List Des="19DB" Value="19"/>
+            <List Des="20DB" Value="20"/>
+            <List Des="21DB" Value="21"/>
+            <List Des="22DB" Value="22"/>
+            <List Des="23DB" Value="23"/>
+            <List Des="24DB" Value="24"/>
+            <List Des="25DB" Value="25"/>
+            <List Des="26DB" Value="26"/>
+            <List Des="27DB" Value="27"/>
+            <List Des="28DB" Value="28"/>
+            <List Des="29DB" Value="29"/>
+            <List Des="30DB" Value="30"/>
+            <List Des="31DB" Value="31"/>
+            <List Des="32DB" Value="32"/>
+          </TreeItem>
+        </TreeItem>
+
+        <TreeItem Type="PropTreeItem" IsAntenna="true" AntennaID="17" Des="Antenna-17">
+          <TreeItem Type="PropTreeItemCombo" Des="Read" StartBitPos="10.6.0" EndBitPos="10.6.7">
+            <List Des="1DB" Value="1"/>
+            <List Des="2DB" Value="2"/>
+            <List Des="3DB" Value="3"/>
+            <List Des="4DB" Value="4"/>
+            <List Des="5DB" Value="5"/>
+            <List Des="6DB" Value="6"/>
+            <List Des="7DB" Value="7"/>
+            <List Des="8DB" Value="8"/>
+            <List Des="9DB" Value="9"/>
+            <List Des="10DB" Value="10"/>
+            <List Des="11DB" Value="11"/>
+            <List Des="12DB" Value="12"/>
+            <List Des="13DB" Value="13"/>
+            <List Des="14DB" Value="14"/>
+            <List Des="15DB" Value="15"/>
+            <List Des="16DB" Value="16"/>
+            <List Des="17DB" Value="17"/>
+            <List Des="18DB" Value="18"/>
+            <List Des="19DB" Value="19"/>
+            <List Des="20DB" Value="20"/>
+            <List Des="21DB" Value="21"/>
+            <List Des="22DB" Value="22"/>
+            <List Des="23DB" Value="23"/>
+            <List Des="24DB" Value="24"/>
+            <List Des="25DB" Value="25"/>
+            <List Des="26DB" Value="26"/>
+            <List Des="27DB" Value="27"/>
+            <List Des="28DB" Value="28"/>
+            <List Des="29DB" Value="29"/>
+            <List Des="30DB" Value="30"/>
+            <List Des="31DB" Value="31"/>
+            <List Des="32DB" Value="32"/>
+          </TreeItem>
+          <TreeItem Type="PropTreeItemCombo" Des="Write" StartBitPos="10.7.0" EndBitPos="10.7.7">
+            <List Des="1DB" Value="1"/>
+            <List Des="2DB" Value="2"/>
+            <List Des="3DB" Value="3"/>
+            <List Des="4DB" Value="4"/>
+            <List Des="5DB" Value="5"/>
+            <List Des="6DB" Value="6"/>
+            <List Des="7DB" Value="7"/>
+            <List Des="8DB" Value="8"/>
+            <List Des="9DB" Value="9"/>
+            <List Des="10DB" Value="10"/>
+            <List Des="11DB" Value="11"/>
+            <List Des="12DB" Value="12"/>
+            <List Des="13DB" Value="13"/>
+            <List Des="14DB" Value="14"/>
+            <List Des="15DB" Value="15"/>
+            <List Des="16DB" Value="16"/>
+            <List Des="17DB" Value="17"/>
+            <List Des="18DB" Value="18"/>
+            <List Des="19DB" Value="19"/>
+            <List Des="20DB" Value="20"/>
+            <List Des="21DB" Value="21"/>
+            <List Des="22DB" Value="22"/>
+            <List Des="23DB" Value="23"/>
+            <List Des="24DB" Value="24"/>
+            <List Des="25DB" Value="25"/>
+            <List Des="26DB" Value="26"/>
+            <List Des="27DB" Value="27"/>
+            <List Des="28DB" Value="28"/>
+            <List Des="29DB" Value="29"/>
+            <List Des="30DB" Value="30"/>
+            <List Des="31DB" Value="31"/>
+            <List Des="32DB" Value="32"/>
+          </TreeItem>
+        </TreeItem>
+
+        <TreeItem Type="PropTreeItem" IsAntenna="true" AntennaID="18" Des="Antenna-18">
+          <TreeItem Type="PropTreeItemCombo" Des="Read" StartBitPos="10.8.0" EndBitPos="10.8.7">
+            <List Des="1DB" Value="1"/>
+            <List Des="2DB" Value="2"/>
+            <List Des="3DB" Value="3"/>
+            <List Des="4DB" Value="4"/>
+            <List Des="5DB" Value="5"/>
+            <List Des="6DB" Value="6"/>
+            <List Des="7DB" Value="7"/>
+            <List Des="8DB" Value="8"/>
+            <List Des="9DB" Value="9"/>
+            <List Des="10DB" Value="10"/>
+            <List Des="11DB" Value="11"/>
+            <List Des="12DB" Value="12"/>
+            <List Des="13DB" Value="13"/>
+            <List Des="14DB" Value="14"/>
+            <List Des="15DB" Value="15"/>
+            <List Des="16DB" Value="16"/>
+            <List Des="17DB" Value="17"/>
+            <List Des="18DB" Value="18"/>
+            <List Des="19DB" Value="19"/>
+            <List Des="20DB" Value="20"/>
+            <List Des="21DB" Value="21"/>
+            <List Des="22DB" Value="22"/>
+            <List Des="23DB" Value="23"/>
+            <List Des="24DB" Value="24"/>
+            <List Des="25DB" Value="25"/>
+            <List Des="26DB" Value="26"/>
+            <List Des="27DB" Value="27"/>
+            <List Des="28DB" Value="28"/>
+            <List Des="29DB" Value="29"/>
+            <List Des="30DB" Value="30"/>
+            <List Des="31DB" Value="31"/>
+            <List Des="32DB" Value="32"/>
+          </TreeItem>
+          <TreeItem Type="PropTreeItemCombo" Des="Write" StartBitPos="10.9.0" EndBitPos="10.9.7">
+            <List Des="1DB" Value="1"/>
+            <List Des="2DB" Value="2"/>
+            <List Des="3DB" Value="3"/>
+            <List Des="4DB" Value="4"/>
+            <List Des="5DB" Value="5"/>
+            <List Des="6DB" Value="6"/>
+            <List Des="7DB" Value="7"/>
+            <List Des="8DB" Value="8"/>
+            <List Des="9DB" Value="9"/>
+            <List Des="10DB" Value="10"/>
+            <List Des="11DB" Value="11"/>
+            <List Des="12DB" Value="12"/>
+            <List Des="13DB" Value="13"/>
+            <List Des="14DB" Value="14"/>
+            <List Des="15DB" Value="15"/>
+            <List Des="16DB" Value="16"/>
+            <List Des="17DB" Value="17"/>
+            <List Des="18DB" Value="18"/>
+            <List Des="19DB" Value="19"/>
+            <List Des="20DB" Value="20"/>
+            <List Des="21DB" Value="21"/>
+            <List Des="22DB" Value="22"/>
+            <List Des="23DB" Value="23"/>
+            <List Des="24DB" Value="24"/>
+            <List Des="25DB" Value="25"/>
+            <List Des="26DB" Value="26"/>
+            <List Des="27DB" Value="27"/>
+            <List Des="28DB" Value="28"/>
+            <List Des="29DB" Value="29"/>
+            <List Des="30DB" Value="30"/>
+            <List Des="31DB" Value="31"/>
+            <List Des="32DB" Value="32"/>
+          </TreeItem>
+        </TreeItem>
+
+        <TreeItem Type="PropTreeItem" IsAntenna="true" AntennaID="19" Des="Antenna-19">
+          <TreeItem Type="PropTreeItemCombo" Des="Read" StartBitPos="10.10.0" EndBitPos="10.10.7">
+            <List Des="1DB" Value="1"/>
+            <List Des="2DB" Value="2"/>
+            <List Des="3DB" Value="3"/>
+            <List Des="4DB" Value="4"/>
+            <List Des="5DB" Value="5"/>
+            <List Des="6DB" Value="6"/>
+            <List Des="7DB" Value="7"/>
+            <List Des="8DB" Value="8"/>
+            <List Des="9DB" Value="9"/>
+            <List Des="10DB" Value="10"/>
+            <List Des="11DB" Value="11"/>
+            <List Des="12DB" Value="12"/>
+            <List Des="13DB" Value="13"/>
+            <List Des="14DB" Value="14"/>
+            <List Des="15DB" Value="15"/>
+            <List Des="16DB" Value="16"/>
+            <List Des="17DB" Value="17"/>
+            <List Des="18DB" Value="18"/>
+            <List Des="19DB" Value="19"/>
+            <List Des="20DB" Value="20"/>
+            <List Des="21DB" Value="21"/>
+            <List Des="22DB" Value="22"/>
+            <List Des="23DB" Value="23"/>
+            <List Des="24DB" Value="24"/>
+            <List Des="25DB" Value="25"/>
+            <List Des="26DB" Value="26"/>
+            <List Des="27DB" Value="27"/>
+            <List Des="28DB" Value="28"/>
+            <List Des="29DB" Value="29"/>
+            <List Des="30DB" Value="30"/>
+            <List Des="31DB" Value="31"/>
+            <List Des="32DB" Value="32"/>
+          </TreeItem>
+          <TreeItem Type="PropTreeItemCombo" Des="Write" StartBitPos="10.11.0" EndBitPos="10.11.7">
+            <List Des="1DB" Value="1"/>
+            <List Des="2DB" Value="2"/>
+            <List Des="3DB" Value="3"/>
+            <List Des="4DB" Value="4"/>
+            <List Des="5DB" Value="5"/>
+            <List Des="6DB" Value="6"/>
+            <List Des="7DB" Value="7"/>
+            <List Des="8DB" Value="8"/>
+            <List Des="9DB" Value="9"/>
+            <List Des="10DB" Value="10"/>
+            <List Des="11DB" Value="11"/>
+            <List Des="12DB" Value="12"/>
+            <List Des="13DB" Value="13"/>
+            <List Des="14DB" Value="14"/>
+            <List Des="15DB" Value="15"/>
+            <List Des="16DB" Value="16"/>
+            <List Des="17DB" Value="17"/>
+            <List Des="18DB" Value="18"/>
+            <List Des="19DB" Value="19"/>
+            <List Des="20DB" Value="20"/>
+            <List Des="21DB" Value="21"/>
+            <List Des="22DB" Value="22"/>
+            <List Des="23DB" Value="23"/>
+            <List Des="24DB" Value="24"/>
+            <List Des="25DB" Value="25"/>
+            <List Des="26DB" Value="26"/>
+            <List Des="27DB" Value="27"/>
+            <List Des="28DB" Value="28"/>
+            <List Des="29DB" Value="29"/>
+            <List Des="30DB" Value="30"/>
+            <List Des="31DB" Value="31"/>
+            <List Des="32DB" Value="32"/>
+          </TreeItem>
+        </TreeItem>
+
+        <TreeItem Type="PropTreeItem" IsAntenna="true" AntennaID="20" Des="Antenna-20">
+          <TreeItem Type="PropTreeItemCombo" Des="Read" StartBitPos="10.12.0" EndBitPos="10.12.7">
+            <List Des="1DB" Value="1"/>
+            <List Des="2DB" Value="2"/>
+            <List Des="3DB" Value="3"/>
+            <List Des="4DB" Value="4"/>
+            <List Des="5DB" Value="5"/>
+            <List Des="6DB" Value="6"/>
+            <List Des="7DB" Value="7"/>
+            <List Des="8DB" Value="8"/>
+            <List Des="9DB" Value="9"/>
+            <List Des="10DB" Value="10"/>
+            <List Des="11DB" Value="11"/>
+            <List Des="12DB" Value="12"/>
+            <List Des="13DB" Value="13"/>
+            <List Des="14DB" Value="14"/>
+            <List Des="15DB" Value="15"/>
+            <List Des="16DB" Value="16"/>
+            <List Des="17DB" Value="17"/>
+            <List Des="18DB" Value="18"/>
+            <List Des="19DB" Value="19"/>
+            <List Des="20DB" Value="20"/>
+            <List Des="21DB" Value="21"/>
+            <List Des="22DB" Value="22"/>
+            <List Des="23DB" Value="23"/>
+            <List Des="24DB" Value="24"/>
+            <List Des="25DB" Value="25"/>
+            <List Des="26DB" Value="26"/>
+            <List Des="27DB" Value="27"/>
+            <List Des="28DB" Value="28"/>
+            <List Des="29DB" Value="29"/>
+            <List Des="30DB" Value="30"/>
+            <List Des="31DB" Value="31"/>
+            <List Des="32DB" Value="32"/>
+          </TreeItem>
+          <TreeItem Type="PropTreeItemCombo" Des="Write" StartBitPos="10.13.0" EndBitPos="10.13.7">
+            <List Des="1DB" Value="1"/>
+            <List Des="2DB" Value="2"/>
+            <List Des="3DB" Value="3"/>
+            <List Des="4DB" Value="4"/>
+            <List Des="5DB" Value="5"/>
+            <List Des="6DB" Value="6"/>
+            <List Des="7DB" Value="7"/>
+            <List Des="8DB" Value="8"/>
+            <List Des="9DB" Value="9"/>
+            <List Des="10DB" Value="10"/>
+            <List Des="11DB" Value="11"/>
+            <List Des="12DB" Value="12"/>
+            <List Des="13DB" Value="13"/>
+            <List Des="14DB" Value="14"/>
+            <List Des="15DB" Value="15"/>
+            <List Des="16DB" Value="16"/>
+            <List Des="17DB" Value="17"/>
+            <List Des="18DB" Value="18"/>
+            <List Des="19DB" Value="19"/>
+            <List Des="20DB" Value="20"/>
+            <List Des="21DB" Value="21"/>
+            <List Des="22DB" Value="22"/>
+            <List Des="23DB" Value="23"/>
+            <List Des="24DB" Value="24"/>
+            <List Des="25DB" Value="25"/>
+            <List Des="26DB" Value="26"/>
+            <List Des="27DB" Value="27"/>
+            <List Des="28DB" Value="28"/>
+            <List Des="29DB" Value="29"/>
+            <List Des="30DB" Value="30"/>
+            <List Des="31DB" Value="31"/>
+            <List Des="32DB" Value="32"/>
+          </TreeItem>
+        </TreeItem>
+
+        <TreeItem Type="PropTreeItem" IsAntenna="true" AntennaID="21" Des="Antenna-21">
+          <TreeItem Type="PropTreeItemCombo" Des="Read" StartBitPos="11.0.0" EndBitPos="11.0.7">
+            <List Des="1DB" Value="1"/>
+            <List Des="2DB" Value="2"/>
+            <List Des="3DB" Value="3"/>
+            <List Des="4DB" Value="4"/>
+            <List Des="5DB" Value="5"/>
+            <List Des="6DB" Value="6"/>
+            <List Des="7DB" Value="7"/>
+            <List Des="8DB" Value="8"/>
+            <List Des="9DB" Value="9"/>
+            <List Des="10DB" Value="10"/>
+            <List Des="11DB" Value="11"/>
+            <List Des="12DB" Value="12"/>
+            <List Des="13DB" Value="13"/>
+            <List Des="14DB" Value="14"/>
+            <List Des="15DB" Value="15"/>
+            <List Des="16DB" Value="16"/>
+            <List Des="17DB" Value="17"/>
+            <List Des="18DB" Value="18"/>
+            <List Des="19DB" Value="19"/>
+            <List Des="20DB" Value="20"/>
+            <List Des="21DB" Value="21"/>
+            <List Des="22DB" Value="22"/>
+            <List Des="23DB" Value="23"/>
+            <List Des="24DB" Value="24"/>
+            <List Des="25DB" Value="25"/>
+            <List Des="26DB" Value="26"/>
+            <List Des="27DB" Value="27"/>
+            <List Des="28DB" Value="28"/>
+            <List Des="29DB" Value="29"/>
+            <List Des="30DB" Value="30"/>
+            <List Des="31DB" Value="31"/>
+            <List Des="32DB" Value="32"/>
+          </TreeItem>
+          <TreeItem Type="PropTreeItemCombo" Des="Write" StartBitPos="11.1.0" EndBitPos="11.1.7">
+            <List Des="1DB" Value="1"/>
+            <List Des="2DB" Value="2"/>
+            <List Des="3DB" Value="3"/>
+            <List Des="4DB" Value="4"/>
+            <List Des="5DB" Value="5"/>
+            <List Des="6DB" Value="6"/>
+            <List Des="7DB" Value="7"/>
+            <List Des="8DB" Value="8"/>
+            <List Des="9DB" Value="9"/>
+            <List Des="10DB" Value="10"/>
+            <List Des="11DB" Value="11"/>
+            <List Des="12DB" Value="12"/>
+            <List Des="13DB" Value="13"/>
+            <List Des="14DB" Value="14"/>
+            <List Des="15DB" Value="15"/>
+            <List Des="16DB" Value="16"/>
+            <List Des="17DB" Value="17"/>
+            <List Des="18DB" Value="18"/>
+            <List Des="19DB" Value="19"/>
+            <List Des="20DB" Value="20"/>
+            <List Des="21DB" Value="21"/>
+            <List Des="22DB" Value="22"/>
+            <List Des="23DB" Value="23"/>
+            <List Des="24DB" Value="24"/>
+            <List Des="25DB" Value="25"/>
+            <List Des="26DB" Value="26"/>
+            <List Des="27DB" Value="27"/>
+            <List Des="28DB" Value="28"/>
+            <List Des="29DB" Value="29"/>
+            <List Des="30DB" Value="30"/>
+            <List Des="31DB" Value="31"/>
+            <List Des="32DB" Value="32"/>
+          </TreeItem>
+        </TreeItem>
+
+        <TreeItem Type="PropTreeItem" IsAntenna="true" AntennaID="22" Des="Antenna-22">
+          <TreeItem Type="PropTreeItemCombo" Des="Read" StartBitPos="11.2.0" EndBitPos="11.2.7">
+            <List Des="1DB" Value="1"/>
+            <List Des="2DB" Value="2"/>
+            <List Des="3DB" Value="3"/>
+            <List Des="4DB" Value="4"/>
+            <List Des="5DB" Value="5"/>
+            <List Des="6DB" Value="6"/>
+            <List Des="7DB" Value="7"/>
+            <List Des="8DB" Value="8"/>
+            <List Des="9DB" Value="9"/>
+            <List Des="10DB" Value="10"/>
+            <List Des="11DB" Value="11"/>
+            <List Des="12DB" Value="12"/>
+            <List Des="13DB" Value="13"/>
+            <List Des="14DB" Value="14"/>
+            <List Des="15DB" Value="15"/>
+            <List Des="16DB" Value="16"/>
+            <List Des="17DB" Value="17"/>
+            <List Des="18DB" Value="18"/>
+            <List Des="19DB" Value="19"/>
+            <List Des="20DB" Value="20"/>
+            <List Des="21DB" Value="21"/>
+            <List Des="22DB" Value="22"/>
+            <List Des="23DB" Value="23"/>
+            <List Des="24DB" Value="24"/>
+            <List Des="25DB" Value="25"/>
+            <List Des="26DB" Value="26"/>
+            <List Des="27DB" Value="27"/>
+            <List Des="28DB" Value="28"/>
+            <List Des="29DB" Value="29"/>
+            <List Des="30DB" Value="30"/>
+            <List Des="31DB" Value="31"/>
+            <List Des="32DB" Value="32"/>
+          </TreeItem>
+          <TreeItem Type="PropTreeItemCombo" Des="Write" StartBitPos="11.3.0" EndBitPos="11.3.7">
+            <List Des="1DB" Value="1"/>
+            <List Des="2DB" Value="2"/>
+            <List Des="3DB" Value="3"/>
+            <List Des="4DB" Value="4"/>
+            <List Des="5DB" Value="5"/>
+            <List Des="6DB" Value="6"/>
+            <List Des="7DB" Value="7"/>
+            <List Des="8DB" Value="8"/>
+            <List Des="9DB" Value="9"/>
+            <List Des="10DB" Value="10"/>
+            <List Des="11DB" Value="11"/>
+            <List Des="12DB" Value="12"/>
+            <List Des="13DB" Value="13"/>
+            <List Des="14DB" Value="14"/>
+            <List Des="15DB" Value="15"/>
+            <List Des="16DB" Value="16"/>
+            <List Des="17DB" Value="17"/>
+            <List Des="18DB" Value="18"/>
+            <List Des="19DB" Value="19"/>
+            <List Des="20DB" Value="20"/>
+            <List Des="21DB" Value="21"/>
+            <List Des="22DB" Value="22"/>
+            <List Des="23DB" Value="23"/>
+            <List Des="24DB" Value="24"/>
+            <List Des="25DB" Value="25"/>
+            <List Des="26DB" Value="26"/>
+            <List Des="27DB" Value="27"/>
+            <List Des="28DB" Value="28"/>
+            <List Des="29DB" Value="29"/>
+            <List Des="30DB" Value="30"/>
+            <List Des="31DB" Value="31"/>
+            <List Des="32DB" Value="32"/>
+          </TreeItem>
+        </TreeItem>
+
+        <TreeItem Type="PropTreeItem" IsAntenna="true" AntennaID="23" Des="Antenna-23">
+          <TreeItem Type="PropTreeItemCombo" Des="Read" StartBitPos="11.4.0" EndBitPos="11.4.7">
+            <List Des="1DB" Value="1"/>
+            <List Des="2DB" Value="2"/>
+            <List Des="3DB" Value="3"/>
+            <List Des="4DB" Value="4"/>
+            <List Des="5DB" Value="5"/>
+            <List Des="6DB" Value="6"/>
+            <List Des="7DB" Value="7"/>
+            <List Des="8DB" Value="8"/>
+            <List Des="9DB" Value="9"/>
+            <List Des="10DB" Value="10"/>
+            <List Des="11DB" Value="11"/>
+            <List Des="12DB" Value="12"/>
+            <List Des="13DB" Value="13"/>
+            <List Des="14DB" Value="14"/>
+            <List Des="15DB" Value="15"/>
+            <List Des="16DB" Value="16"/>
+            <List Des="17DB" Value="17"/>
+            <List Des="18DB" Value="18"/>
+            <List Des="19DB" Value="19"/>
+            <List Des="20DB" Value="20"/>
+            <List Des="21DB" Value="21"/>
+            <List Des="22DB" Value="22"/>
+            <List Des="23DB" Value="23"/>
+            <List Des="24DB" Value="24"/>
+            <List Des="25DB" Value="25"/>
+            <List Des="26DB" Value="26"/>
+            <List Des="27DB" Value="27"/>
+            <List Des="28DB" Value="28"/>
+            <List Des="29DB" Value="29"/>
+            <List Des="30DB" Value="30"/>
+            <List Des="31DB" Value="31"/>
+            <List Des="32DB" Value="32"/>
+          </TreeItem>
+          <TreeItem Type="PropTreeItemCombo" Des="Write" StartBitPos="11.5.0" EndBitPos="11.5.7">
+            <List Des="1DB" Value="1"/>
+            <List Des="2DB" Value="2"/>
+            <List Des="3DB" Value="3"/>
+            <List Des="4DB" Value="4"/>
+            <List Des="5DB" Value="5"/>
+            <List Des="6DB" Value="6"/>
+            <List Des="7DB" Value="7"/>
+            <List Des="8DB" Value="8"/>
+            <List Des="9DB" Value="9"/>
+            <List Des="10DB" Value="10"/>
+            <List Des="11DB" Value="11"/>
+            <List Des="12DB" Value="12"/>
+            <List Des="13DB" Value="13"/>
+            <List Des="14DB" Value="14"/>
+            <List Des="15DB" Value="15"/>
+            <List Des="16DB" Value="16"/>
+            <List Des="17DB" Value="17"/>
+            <List Des="18DB" Value="18"/>
+            <List Des="19DB" Value="19"/>
+            <List Des="20DB" Value="20"/>
+            <List Des="21DB" Value="21"/>
+            <List Des="22DB" Value="22"/>
+            <List Des="23DB" Value="23"/>
+            <List Des="24DB" Value="24"/>
+            <List Des="25DB" Value="25"/>
+            <List Des="26DB" Value="26"/>
+            <List Des="27DB" Value="27"/>
+            <List Des="28DB" Value="28"/>
+            <List Des="29DB" Value="29"/>
+            <List Des="30DB" Value="30"/>
+            <List Des="31DB" Value="31"/>
+            <List Des="32DB" Value="32"/>
+          </TreeItem>
+        </TreeItem>
+
+        <TreeItem Type="PropTreeItem" IsAntenna="true" AntennaID="24" Des="Antenna-24">
+          <TreeItem Type="PropTreeItemCombo" Des="Read" StartBitPos="11.6.0" EndBitPos="11.6.7">
+            <List Des="1DB" Value="1"/>
+            <List Des="2DB" Value="2"/>
+            <List Des="3DB" Value="3"/>
+            <List Des="4DB" Value="4"/>
+            <List Des="5DB" Value="5"/>
+            <List Des="6DB" Value="6"/>
+            <List Des="7DB" Value="7"/>
+            <List Des="8DB" Value="8"/>
+            <List Des="9DB" Value="9"/>
+            <List Des="10DB" Value="10"/>
+            <List Des="11DB" Value="11"/>
+            <List Des="12DB" Value="12"/>
+            <List Des="13DB" Value="13"/>
+            <List Des="14DB" Value="14"/>
+            <List Des="15DB" Value="15"/>
+            <List Des="16DB" Value="16"/>
+            <List Des="17DB" Value="17"/>
+            <List Des="18DB" Value="18"/>
+            <List Des="19DB" Value="19"/>
+            <List Des="20DB" Value="20"/>
+            <List Des="21DB" Value="21"/>
+            <List Des="22DB" Value="22"/>
+            <List Des="23DB" Value="23"/>
+            <List Des="24DB" Value="24"/>
+            <List Des="25DB" Value="25"/>
+            <List Des="26DB" Value="26"/>
+            <List Des="27DB" Value="27"/>
+            <List Des="28DB" Value="28"/>
+            <List Des="29DB" Value="29"/>
+            <List Des="30DB" Value="30"/>
+            <List Des="31DB" Value="31"/>
+            <List Des="32DB" Value="32"/>
+          </TreeItem>
+          <TreeItem Type="PropTreeItemCombo" Des="Write" StartBitPos="11.7.0" EndBitPos="11.7.7">
+            <List Des="1DB" Value="1"/>
+            <List Des="2DB" Value="2"/>
+            <List Des="3DB" Value="3"/>
+            <List Des="4DB" Value="4"/>
+            <List Des="5DB" Value="5"/>
+            <List Des="6DB" Value="6"/>
+            <List Des="7DB" Value="7"/>
+            <List Des="8DB" Value="8"/>
+            <List Des="9DB" Value="9"/>
+            <List Des="10DB" Value="10"/>
+            <List Des="11DB" Value="11"/>
+            <List Des="12DB" Value="12"/>
+            <List Des="13DB" Value="13"/>
+            <List Des="14DB" Value="14"/>
+            <List Des="15DB" Value="15"/>
+            <List Des="16DB" Value="16"/>
+            <List Des="17DB" Value="17"/>
+            <List Des="18DB" Value="18"/>
+            <List Des="19DB" Value="19"/>
+            <List Des="20DB" Value="20"/>
+            <List Des="21DB" Value="21"/>
+            <List Des="22DB" Value="22"/>
+            <List Des="23DB" Value="23"/>
+            <List Des="24DB" Value="24"/>
+            <List Des="25DB" Value="25"/>
+            <List Des="26DB" Value="26"/>
+            <List Des="27DB" Value="27"/>
+            <List Des="28DB" Value="28"/>
+            <List Des="29DB" Value="29"/>
+            <List Des="30DB" Value="30"/>
+            <List Des="31DB" Value="31"/>
+            <List Des="32DB" Value="32"/>
+          </TreeItem>
+        </TreeItem>
+
+      </TreeItem>
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="Inventory parameters">
+      <TreeItem Type="PropTreeItem" Des="Basic parameters">
+
+        <TreeItem Type="PropTreeItemCombo" Des="Inventory mode" StartBitPos="4.12.0" EndBitPos="4.12.7">
+          <List Des="Buffer mode" Value="0"/>
+          <List Des="Asynchronous mode" Value="1"/>
+        </TreeItem>
+
+        <TreeItem Type="PropTreeItem" Des="Frequency hopping parameters">
+          <TreeItem Type="PropTreeItemCombo" Des="Hopping type" StartBitPos="4.5.0" EndBitPos="4.5.7">
+            <List Des="timeout" Value="1"/>
+            <List Des="try multiple frequency within a inventory round" Value="2"/>
+            <List Des="switch frequency before every inventory round" Value="3"/>
+          </TreeItem>
+          <TreeItem Type="PropTreeItemCheckBox" Des="Close RF before hopping" StartBitPos="4.7.0" EndBitPos="4.7.0" CheckValue="0x01" UnCheckValue="0x00"/>
+          <TreeItem Type="PropTreeItem" Des="Hopping settings[timeout]">
+            <TreeItem Type="PropTreeItemCombo" Des="Hopping interval" StartBitPos="4.8.0" EndBitPos="4.9.7">
+              <List Des="100MS" Value="100"/>
+              <List Des="200MS" Value="200"/>
+              <List Des="300MS" Value="300"/>
+              <List Des="400MS" Value="400"/>
+              <List Des="500MS" Value="500"/>
+              <List Des="600MS" Value="600"/>
+              <List Des="700MS" Value="700"/>
+              <List Des="800MS" Value="800"/>
+              <List Des="900MS" Value="900"/>
+              <List Des="1000MS" Value="1000"/>
+              <List Des="1500MS" Value="1500"/>
+              <List Des="2000MS" Value="2000"/>
+              <List Des="2500MS" Value="2500"/>
+              <List Des="3000MS" Value="3000"/>
+              <List Des="3500MS" Value="3500"/>
+              <List Des="4000MS" Value="4000"/>
+            </TreeItem>
+            <TreeItem Type="PropTreeItemCombo" Des="Antenna group" StartBitPos="4.11.0" EndBitPos="4.11.7">
+              <List Des="switch antenna without hopping" Value="0"/>
+              <List Des="hopping with each antenna" Value="1"/>
+              <List Des="hopping with 2 antennas" Value="2"/>
+              <List Des="hopping with 3 antennas" Value="3"/>
+              <List Des="hopping with 4 antennas" Value="4"/>
+              <List Des="hopping with 5 antennas" Value="5"/>
+            </TreeItem>
+          </TreeItem>
+          <TreeItem Type="PropTreeItem" Des="Hopping settings[try multiple frequency within a inventory round]">
+            <TreeItem Type="PropTreeItemCombo" Des="Frequency count" StartBitPos="4.10.0" EndBitPos="4.10.7">
+              <List Des="1" Value="0"/>
+              <List Des="2" Value="1"/>
+              <List Des="3" Value="2"/>
+              <List Des="4" Value="3"/>
+              <List Des="5" Value="4"/>
+              <List Des="6" Value="5"/>
+              <List Des="7" Value="6"/>
+              <List Des="8" Value="7"/>
+              <List Des="9" Value="8"/>
+              <List Des="10" Value="9"/>
+              <List Des="11" Value="10"/>
+              <List Des="12" Value="11"/>
+            </TreeItem>
+
+          </TreeItem>
+        </TreeItem>
+
+        <TreeItem Type="PropTreeItem" Des="Stop trigger">
+          <TreeItem Type="PropTreeItemCombo" Des="Trigger type" StartBitPos="4.0.0" EndBitPos="4.0.7">
+            <List Des="timeout" Value="0x00"/>
+            <List Des="try N times to find new tags" Value="0x01"/>
+          </TreeItem>
+          <TreeItem Type="PropTreeItemCombo" Des="The value of 'N' in a inventory roud" StartBitPos="4.1.0" EndBitPos="4.1.7">
+            <List Des="0" Value="0"/>
+            <List Des="1" Value="1"/>
+            <List Des="2" Value="2"/>
+            <List Des="3" Value="3"/>
+            <List Des="4" Value="4"/>
+            <List Des="5" Value="5"/>
+            <List Des="6" Value="6"/>
+            <List Des="7" Value="7"/>
+            <List Des="8" Value="8"/>
+            <List Des="9" Value="9"/>
+            <List Des="10" Value="10"/>
+            <List Des="11" Value="11"/>
+            <List Des="12" Value="12"/>
+            <List Des="13" Value="13"/>
+            <List Des="14" Value="14"/>
+            <List Des="15" Value="15"/>
+          </TreeItem>
+          <TreeItem Type="PropTreeItemCombo" Des="Repeat count of inventory loop" StartBitPos="4.6.0" EndBitPos="4.6.7">
+            <List Des="0" Value="0"/>
+            <List Des="1" Value="1"/>
+            <List Des="2" Value="2"/>
+            <List Des="3" Value="3"/>
+            <List Des="4" Value="4"/>
+            <List Des="5" Value="5"/>
+            <List Des="6" Value="6"/>
+            <List Des="7" Value="7"/>
+            <List Des="8" Value="8"/>
+            <List Des="9" Value="9"/>
+            <List Des="10" Value="10"/>
+            <List Des="11" Value="11"/>
+            <List Des="12" Value="12"/>
+            <List Des="13" Value="13"/>
+            <List Des="14" Value="14"/>
+            <List Des="15" Value="15"/>
+          </TreeItem>
+
+        </TreeItem>
+
+        <TreeItem Type="PropTreeItem" Des="Filter options">
+          <TreeItem Type="PropTreeItemCheckBox" Des="Filter duplicate tags" StartBitPos="1.4.1" EndBitPos="1.4.1" CheckValue="0x01" UnCheckValue="0x00"/>
+          <TreeItem Type="PropTreeItemCheckBox" Des="Antenna as unique identifier" StartBitPos="1.4.0" EndBitPos="1.4.0" CheckValue="0x01" UnCheckValue="0x00"/>
+        </TreeItem>
+      </TreeItem>
+      <TreeItem Type="PropTreeItem" Des="Special application parameters">
+        <TreeItem Type="PropTreeItem" Des="Reset tags">
+          <TreeItem Type="PropTreeItemCheckBox" Des="Reset before inventory" StartBitPos="4.3.0" EndBitPos="4.3.0" CheckValue="0x01" UnCheckValue="0x00"/>
+          <TreeItem Type="PropTreeItemCheckBox" Des="Reset after inventory" StartBitPos="4.3.1" EndBitPos="4.3.1" CheckValue="0x01" UnCheckValue="0x00"/>
+          <TreeItem Type="PropTreeItemCombo" Des="Reset times" StartBitPos="4.4.0" EndBitPos="4.4.7">
+            <List Des="1" Value="1"/>
+            <List Des="2" Value="2"/>
+            <List Des="3" Value="3"/>
+            <List Des="4" Value="4"/>
+            <List Des="5" Value="5"/>
+            <List Des="6" Value="6"/>
+            <List Des="7" Value="7"/>
+            <List Des="8" Value="8"/>
+            <List Des="9" Value="9"/>
+            <List Des="10" Value="10"/>
+            <List Des="11" Value="11"/>
+            <List Des="12" Value="12"/>
+            <List Des="13" Value="13"/>
+            <List Des="14" Value="14"/>
+            <List Des="15" Value="15"/>
+          </TreeItem>
+        </TreeItem>
+        <TreeItem Type="PropTreeItem" Des="Fast check before inventory">
+          <TreeItem Type="PropTreeItemCheckBox" Des="Enable" StartBitPos="4.13.7" EndBitPos="4.13.7" CheckValue="0x01" UnCheckValue="0x00"/>
+          <TreeItem Type="PropTreeItemCombo" Des="Check times" StartBitPos="4.13.0" EndBitPos="4.13.3">
+            <List Des="1" Value="0"/>
+            <List Des="2" Value="1"/>
+            <List Des="3" Value="2"/>
+            <List Des="4" Value="3"/>
+            <List Des="5" Value="4"/>
+            <List Des="6" Value="5"/>
+            <List Des="7" Value="6"/>
+            <List Des="8" Value="7"/>
+            <List Des="9" Value="8"/>
+            <List Des="10" Value="9"/>
+            <List Des="11" Value="10"/>
+            <List Des="12" Value="11"/>
+            <List Des="13" Value="12"/>
+            <List Des="14" Value="13"/>
+            <List Des="15" Value="14"/>
+            <List Des="16" Value="15"/>
+          </TreeItem>
+        </TreeItem>
+      </TreeItem>
+    </TreeItem>
+
+  </PropTreeCfg>
+</Cfg>

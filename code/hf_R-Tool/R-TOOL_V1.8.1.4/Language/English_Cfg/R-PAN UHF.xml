@@ -1,0 +1,527 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Cfg Version="1.0">
+  <BlockCfg Size="14">
+    <Address From="1" To="24"/>
+  </BlockCfg>
+
+  <PropTreeCfg>
+    <TreeItem Type="PropTreeItem" Des="Network port">
+      <TreeItem Type="PropTreeItemCheckBox" Des="Wifi" StartBitPos="6.1.0" EndBitPos="6.1.7" CheckValue="0x01" UnCheckValue="0x00"/>
+      <TreeItem Type="PropTreeItemCombo" Des="Wifi work mode" StartBitPos="6.3.0" EndBitPos="6.3.7">
+        <List Des="STA" Value="0x00"/>
+        <List Des="AP" Value="0x01"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemCheckBox" Des="DHCP" StartBitPos="6.2.0" EndBitPos="6.2.7" CheckValue="0x01" UnCheckValue="0x00"/>
+      <TreeItem Type="PropTreeItemEdit"  Des="Wifi name" ValueFormat="ValueFormatText" StartBitPos="1.0.0" EndBitPos="2.5.7"/>
+      <TreeItem Type="PropTreeItemEdit"  Des="Password" ValueFormat="ValueFormatText" Password="True"  StartBitPos="3.0.0" EndBitPos="4.5.7"/>
+      <TreeItem Type="PropTreeItemIPAddr" Des="IP" StartBitPos="5.0.0" EndBitPos="5.3.7"/>
+      <TreeItem Type="PropTreeItemIPAddr" Des="Mask" StartBitPos="5.4.0" EndBitPos="5.7.7"/>
+      <TreeItem Type="PropTreeItemIPAddr" Des="Gateway" StartBitPos="5.8.0" EndBitPos="5.11.7"/>
+      <TreeItem Type="PropTreeItemEdit"  Des="Port" ValueFormat="ValueFormatNumber" MaxValue="0xFFFF" StartBitPos="5.12.0" EndBitPos="5.13.7"/>
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="Bluetooth">
+      <TreeItem Type="PropTreeItemCheckBox" Des="Bluetooth 2.1" StartBitPos="6.0.0" EndBitPos="6.0.0" CheckValue="0x01" UnCheckValue="0x00"/>
+      <TreeItem Type="PropTreeItemCheckBox" Des="Bluetooth 4.0" StartBitPos="6.0.4" EndBitPos="6.0.4" CheckValue="0x01" UnCheckValue="0x00"/>
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="RF module">
+      <TreeItem Type="PropTreeItemCombo" Des="Reading power" StartBitPos="7.0.0" EndBitPos="7.1.7">
+        <List Des="0" Value="0"/>
+        <List Des="1" Value="100"/>
+        <List Des="2" Value="200"/>
+        <List Des="3" Value="300"/>
+        <List Des="4" Value="400"/>
+        <List Des="5" Value="500"/>
+        <List Des="6" Value="600"/>
+        <List Des="7" Value="700"/>
+        <List Des="8" Value="800"/>
+        <List Des="9" Value="900"/>
+        <List Des="10" Value="1000"/>
+        <List Des="11" Value="1100"/>
+        <List Des="12" Value="1200"/>
+        <List Des="13" Value="1300"/>
+        <List Des="14" Value="1400"/>
+        <List Des="15" Value="1500"/>
+        <List Des="16" Value="1600"/>
+        <List Des="17" Value="1700"/>
+        <List Des="18" Value="1800"/>
+        <List Des="19" Value="1900"/>
+        <List Des="20" Value="2000"/>
+        <List Des="21" Value="2100"/>
+        <List Des="22" Value="2200"/>
+        <List Des="23" Value="2300"/>
+        <List Des="24" Value="2400"/>
+        <List Des="25" Value="2500"/>
+        <List Des="26" Value="2600"/>
+        <List Des="27" Value="2700"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemCombo" Des="Written power" StartBitPos="7.2.0" EndBitPos="7.3.7">
+        <List Des="0" Value="0"/>
+        <List Des="1" Value="100"/>
+        <List Des="2" Value="200"/>
+        <List Des="3" Value="300"/>
+        <List Des="4" Value="400"/>
+        <List Des="5" Value="500"/>
+        <List Des="6" Value="600"/>
+        <List Des="7" Value="700"/>
+        <List Des="8" Value="800"/>
+        <List Des="9" Value="900"/>
+        <List Des="10" Value="1000"/>
+        <List Des="11" Value="1100"/>
+        <List Des="12" Value="1200"/>
+        <List Des="13" Value="1300"/>
+        <List Des="14" Value="1400"/>
+        <List Des="15" Value="1500"/>
+        <List Des="16" Value="1600"/>
+        <List Des="17" Value="1700"/>
+        <List Des="18" Value="1800"/>
+        <List Des="19" Value="1900"/>
+        <List Des="20" Value="2000"/>
+        <List Des="21" Value="2100"/>
+        <List Des="22" Value="2200"/>
+        <List Des="23" Value="2300"/>
+        <List Des="24" Value="2400"/>
+        <List Des="25" Value="2500"/>
+        <List Des="26" Value="2600"/>
+        <List Des="27" Value="2700"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemEdit"  Des="Max inventory timeout(10ms)" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="7.4.0" EndBitPos="7.4.7"/>
+      <TreeItem Type="PropTreeItemCombo" Des="Session" StartBitPos="7.5.0" EndBitPos="7.5.7">
+        <List Des="S0" Value="0x00"/>
+        <List Des="S1" Value="0x01"/>
+        <List Des="S2" Value="0x02"/>
+        <List Des="S3" Value="0x03"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemCombo" Des="Target" StartBitPos="7.6.0" EndBitPos="7.6.7">
+        <List Des="A" Value="0"/>
+        <List Des="B" Value="1"/>
+        <List Des="A->B" Value="2"/>
+        <List Des="B->A" Value="3"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemCombo" Des="Encode" StartBitPos="7.7.0" EndBitPos="7.7.7">
+        <List Des="FM0" Value="0x00"/>
+        <List Des="FM2" Value="0x01"/>
+        <List Des="FM4" Value="0x02"/>
+        <List Des="FM8" Value="0x03"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemCombo" Des="Q value" StartBitPos="7.8.0" EndBitPos="7.8.7">
+        <List Des="Auto" Value="0xFF"/>
+        <List Des="0x00" Value="0x00"/>
+        <List Des="0x01" Value="0x01"/>
+        <List Des="0x02" Value="0x02"/>
+        <List Des="0x03" Value="0x03"/>
+        <List Des="0x04" Value="0x04"/>
+        <List Des="0x05" Value="0x05"/>
+        <List Des="0x06" Value="0x06"/>
+        <List Des="0x07" Value="0x07"/>
+        <List Des="0x08" Value="0x08"/>
+        <List Des="0x09" Value="0x09"/>
+        <List Des="0x0A" Value="0x0A"/>
+        <List Des="0x0B" Value="0x0B"/>
+        <List Des="0x0C" Value="0x0C"/>
+        <List Des="0x0D" Value="0x0D"/>
+        <List Des="0x0E" Value="0x0E"/>
+        <List Des="0x0F" Value="0x0F"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemCombo" Des="Frequency of connection " StartBitPos="7.9.0" EndBitPos="7.9.7">
+        <List Des="250KHZ" Value="0"/>
+        <List Des="320KHZ" Value="1"/>
+        <List Des="640KHZ" Value="2"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemCombo" Des="Intervals" StartBitPos="7.10.0" EndBitPos="7.10.7">
+        <List Des="25us" Value="0"/>
+        <List Des="12.5us" Value="1"/>
+        <List Des="6.25us" Value="2"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemCombo" Des="Area" StartBitPos="7.11.0" EndBitPos="7.11.7">
+        <List Des="IN     865~867MHz" Value="0x04"/>
+        <List Des="JP     916.8~923.4MHz" Value="0x05"/>
+        <List Des="PRC    920~925MHz" Value="0x06"/>
+        <List Des="EU3    865.6~867.6MHz" Value="0x08"/>
+        <List Des="KR2    917~923.5MHz" Value="0x09"/>
+        <List Des="AU     920~926MHz" Value="0x0A"/>
+        <List Des="NZ    922~927.5MHz" Value="0x0C"/>
+        <List Des="NA2   917.4~927.2MHz" Value="0x0D"/>
+        <List Des="NA3   917.5~922.5MHz" Value="0x0E"/>
+        <List Des="OPEN   859~873MHz 915~930MHz" Value="0xFF"/>
+      </TreeItem>
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="Mode setting">
+      <TreeItem Type="PropTreeItemCombo" Des="Work mode" StartBitPos="6.4.0" EndBitPos="6.4.7">
+        <List Des="Host mode" Value="0x00"/>
+        <List Des="Scan mode" Value="0x01"/>
+        <List Des="Search mode" Value="0x02"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemCombo" Des="Record store location" StartBitPos="8.4.0" EndBitPos="8.4.7">
+        <List Des="RAM" Value="0x00"/>
+        <List Des="Flash" Value="0x01"/>
+      </TreeItem>
+
+      <TreeItem Type="PropTreeItem" Des="Scan mode setting">
+        <TreeItem Type="PropTreeItem" Des="Basic area">
+          <TreeItem Type="PropTreeItemCombo" Des="Memory bank" StartBitPos="8.3.0" EndBitPos="8.3.7">
+            <List Des="EPC" Value="1"/>
+            <List Des="TID" Value="2"/>
+            <List Des="USER" Value="3"/>
+          </TreeItem>
+          <TreeItem Type="PropTreeItemEdit"  Des="Start word" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="8.1.0" EndBitPos="8.1.7"/>
+          <TreeItem Type="PropTreeItemCombo" Des="Word count" StartBitPos="8.2.0" EndBitPos="8.2.7">
+            <List Des="0" Value="0"/>
+            <List Des="1" Value="1"/>
+            <List Des="2" Value="2"/>
+            <List Des="3" Value="3"/>
+            <List Des="4" Value="4"/>
+            <List Des="5" Value="5"/>
+            <List Des="6" Value="6"/>
+            <List Des="7" Value="7"/>
+            <List Des="8" Value="8"/>
+            <List Des="9" Value="9"/>
+            <List Des="10" Value="10"/>
+            <List Des="11" Value="11"/>
+            <List Des="12" Value="12"/>
+            <List Des="13" Value="13"/>
+            <List Des="14" Value="14"/>
+            <List Des="15" Value="15"/>
+            <List Des="16" Value="16"/>
+            <List Des="17" Value="17"/>
+            <List Des="18" Value="18"/>
+            <List Des="19" Value="19"/>
+            <List Des="20" Value="20"/>
+          </TreeItem>
+        </TreeItem>
+        <TreeItem Type="PropTreeItem" Des="Expanded area">
+          <TreeItem Type="PropTreeItemCheckBox" Des="Expand area memory bank" StartBitPos="8.7.7" EndBitPos="8.7.7" CheckValue="0x01" UnCheckValue="0x00"/>
+          <TreeItem Type="PropTreeItemCombo" Des="Memory bank" StartBitPos="8.6.0" EndBitPos="8.6.3">
+            <List Des="USER" Value="1"/>
+          </TreeItem>
+          <TreeItem Type="PropTreeItemEdit"  Des="Start word" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="8.5.0" EndBitPos="8.5.7"/>
+          <TreeItem Type="PropTreeItemCombo" Des="word count" StartBitPos="8.6.0" EndBitPos="8.6.7">
+            <List Des="0" Value="0"/>
+            <List Des="1" Value="1"/>
+            <List Des="2" Value="2"/>
+            <List Des="3" Value="3"/>
+            <List Des="4" Value="4"/>
+            <List Des="5" Value="5"/>
+            <List Des="6" Value="6"/>
+            <List Des="7" Value="7"/>
+            <List Des="8" Value="8"/>
+            <List Des="9" Value="9"/>
+            <List Des="10" Value="10"/>
+            <List Des="11" Value="11"/>
+            <List Des="12" Value="12"/>
+            <List Des="13" Value="13"/>
+            <List Des="14" Value="14"/>
+            <List Des="15" Value="15"/>
+            <List Des="16" Value="16"/>
+            <List Des="17" Value="17"/>
+            <List Des="18" Value="18"/>
+            <List Des="19" Value="19"/>
+            <List Des="20" Value="20"/>
+          </TreeItem>
+
+        </TreeItem>
+      </TreeItem>
+
+      <TreeItem Type="PropTreeItem" Des="Search mode configuartion">
+        <TreeItem Type="PropTreeItem" Des="Basic area">
+          <TreeItem Type="PropTreeItemCombo" Des="Operation area" StartBitPos="8.10.0" EndBitPos="8.10.7">
+            <List Des="EPC" Value="1"/>
+            <List Des="TID" Value="2"/>
+            <List Des="USER" Value="3"/>
+          </TreeItem>
+          <TreeItem Type="PropTreeItemEdit"  Des="Byte address" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="8.8.0" EndBitPos="8.8.7"/>
+          <TreeItem Type="PropTreeItemCombo" Des="Byte count" StartBitPos="8.9.0" EndBitPos="8.9.7">
+            <List Des="1" Value="1"/>
+            <List Des="2" Value="2"/>
+            <List Des="3" Value="3"/>
+            <List Des="4" Value="4"/>
+            <List Des="5" Value="5"/>
+            <List Des="6" Value="6"/>
+            <List Des="7" Value="7"/>
+            <List Des="8" Value="8"/>
+            <List Des="9" Value="9"/>
+            <List Des="10" Value="10"/>
+            <List Des="11" Value="11"/>
+            <List Des="12" Value="12"/>
+            <List Des="13" Value="13"/>
+            <List Des="14" Value="14"/>
+            <List Des="15" Value="15"/>
+            <List Des="16" Value="16"/>
+            <List Des="17" Value="17"/>
+            <List Des="18" Value="18"/>
+            <List Des="19" Value="19"/>
+            <List Des="20" Value="20"/>
+            <List Des="21" Value="21"/>
+            <List Des="22" Value="22"/>
+            <List Des="23" Value="23"/>
+            <List Des="24" Value="24"/>
+            <List Des="25" Value="25"/>
+            <List Des="26" Value="26"/>
+            <List Des="27" Value="27"/>
+            <List Des="28" Value="28"/>
+            <List Des="29" Value="29"/>
+            <List Des="30" Value="30"/>
+            <List Des="31" Value="31"/>
+            <List Des="32" Value="32"/>
+            <List Des="33" Value="33"/>
+            <List Des="34" Value="34"/>
+            <List Des="35" Value="35"/>
+            <List Des="36" Value="36"/>
+            <List Des="37" Value="37"/>
+            <List Des="38" Value="38"/>
+            <List Des="39" Value="39"/>
+            <List Des="40" Value="40"/>
+          </TreeItem>
+        </TreeItem>
+
+        <TreeItem Type="PropTreeItem" Des="Tag 1">
+          <TreeItem Type="PropTreeItemCombo" Des="Match length" StartBitPos="10.0.0" EndBitPos="10.0.7">
+            <List Des="None" Value="0"/>
+            <List Des="1" Value="1"/>
+            <List Des="2" Value="2"/>
+            <List Des="3" Value="3"/>
+            <List Des="4" Value="4"/>
+            <List Des="5" Value="5"/>
+            <List Des="6" Value="6"/>
+            <List Des="7" Value="7"/>
+            <List Des="8" Value="8"/>
+            <List Des="9" Value="9"/>
+            <List Des="10" Value="10"/>
+            <List Des="11" Value="11"/>
+            <List Des="12" Value="12"/>
+            <List Des="13" Value="13"/>
+            <List Des="14" Value="14"/>
+            <List Des="15" Value="15"/>
+            <List Des="16" Value="16"/>
+            <List Des="17" Value="17"/>
+            <List Des="18" Value="18"/>
+            <List Des="19" Value="19"/>
+            <List Des="20" Value="20"/>
+            <List Des="21" Value="21"/>
+            <List Des="22" Value="22"/>
+            <List Des="23" Value="23"/>
+            <List Des="24" Value="24"/>
+            <List Des="25" Value="25"/>
+            <List Des="26" Value="26"/>
+            <List Des="27" Value="27"/>
+            <List Des="28" Value="28"/>
+            <List Des="29" Value="29"/>
+            <List Des="30" Value="30"/>
+            <List Des="31" Value="31"/>
+            <List Des="32" Value="32"/>
+            <List Des="33" Value="33"/>
+            <List Des="34" Value="34"/>
+            <List Des="35" Value="35"/>
+            <List Des="36" Value="36"/>
+            <List Des="37" Value="37"/>
+            <List Des="38" Value="38"/>
+            <List Des="39" Value="39"/>
+            <List Des="40" Value="40"/>
+          </TreeItem>
+          <TreeItem Type="PropTreeItermByteEdit" Des="Match data" ByteCount="40"  StartBitPos="10.1.0" EndBitPos="12.13.7"/>
+        </TreeItem>
+
+        <TreeItem Type="PropTreeItem" Des="Tag 2">
+          <TreeItem Type="PropTreeItemCombo" Des="Match lenght" StartBitPos="13.0.0" EndBitPos="13.0.7">
+            <List Des="None" Value="0"/>
+            <List Des="1" Value="1"/>
+            <List Des="2" Value="2"/>
+            <List Des="3" Value="3"/>
+            <List Des="4" Value="4"/>
+            <List Des="5" Value="5"/>
+            <List Des="6" Value="6"/>
+            <List Des="7" Value="7"/>
+            <List Des="8" Value="8"/>
+            <List Des="9" Value="9"/>
+            <List Des="10" Value="10"/>
+            <List Des="11" Value="11"/>
+            <List Des="12" Value="12"/>
+            <List Des="13" Value="13"/>
+            <List Des="14" Value="14"/>
+            <List Des="15" Value="15"/>
+            <List Des="16" Value="16"/>
+            <List Des="17" Value="17"/>
+            <List Des="18" Value="18"/>
+            <List Des="19" Value="19"/>
+            <List Des="20" Value="20"/>
+            <List Des="21" Value="21"/>
+            <List Des="22" Value="22"/>
+            <List Des="23" Value="23"/>
+            <List Des="24" Value="24"/>
+            <List Des="25" Value="25"/>
+            <List Des="26" Value="26"/>
+            <List Des="27" Value="27"/>
+            <List Des="28" Value="28"/>
+            <List Des="29" Value="29"/>
+            <List Des="30" Value="30"/>
+            <List Des="31" Value="31"/>
+            <List Des="32" Value="32"/>
+            <List Des="33" Value="33"/>
+            <List Des="34" Value="34"/>
+            <List Des="35" Value="35"/>
+            <List Des="36" Value="36"/>
+            <List Des="37" Value="37"/>
+            <List Des="38" Value="38"/>
+            <List Des="39" Value="39"/>
+            <List Des="40" Value="40"/>
+          </TreeItem>
+          <TreeItem Type="PropTreeItermByteEdit" Des="Math data" ByteCount="40"  StartBitPos="13.1.0" EndBitPos="15.13.7"/>
+        </TreeItem>
+
+        <TreeItem Type="PropTreeItem" Des="Tag 3">
+          <TreeItem Type="PropTreeItemCombo" Des="Match length" StartBitPos="16.0.0" EndBitPos="16.0.7">
+            <List Des="None" Value="0"/>
+            <List Des="1" Value="1"/>
+            <List Des="2" Value="2"/>
+            <List Des="3" Value="3"/>
+            <List Des="4" Value="4"/>
+            <List Des="5" Value="5"/>
+            <List Des="6" Value="6"/>
+            <List Des="7" Value="7"/>
+            <List Des="8" Value="8"/>
+            <List Des="9" Value="9"/>
+            <List Des="10" Value="10"/>
+            <List Des="11" Value="11"/>
+            <List Des="12" Value="12"/>
+            <List Des="13" Value="13"/>
+            <List Des="14" Value="14"/>
+            <List Des="15" Value="15"/>
+            <List Des="16" Value="16"/>
+            <List Des="17" Value="17"/>
+            <List Des="18" Value="18"/>
+            <List Des="19" Value="19"/>
+            <List Des="20" Value="20"/>
+            <List Des="21" Value="21"/>
+            <List Des="22" Value="22"/>
+            <List Des="23" Value="23"/>
+            <List Des="24" Value="24"/>
+            <List Des="25" Value="25"/>
+            <List Des="26" Value="26"/>
+            <List Des="27" Value="27"/>
+            <List Des="28" Value="28"/>
+            <List Des="29" Value="29"/>
+            <List Des="30" Value="30"/>
+            <List Des="31" Value="31"/>
+            <List Des="32" Value="32"/>
+            <List Des="33" Value="33"/>
+            <List Des="34" Value="34"/>
+            <List Des="35" Value="35"/>
+            <List Des="36" Value="36"/>
+            <List Des="37" Value="37"/>
+            <List Des="38" Value="38"/>
+            <List Des="39" Value="39"/>
+            <List Des="40" Value="40"/>
+          </TreeItem>
+          <TreeItem Type="PropTreeItermByteEdit" Des="Match data" ByteCount="40"  StartBitPos="16.1.0" EndBitPos="18.13.7"/>
+        </TreeItem>
+
+        <TreeItem Type="PropTreeItem" Des="Tag 4">
+          <TreeItem Type="PropTreeItemCombo" Des="Match length" StartBitPos="19.0.0" EndBitPos="19.0.7">
+            <List Des="None" Value="0"/>
+            <List Des="1" Value="1"/>
+            <List Des="2" Value="2"/>
+            <List Des="3" Value="3"/>
+            <List Des="4" Value="4"/>
+            <List Des="5" Value="5"/>
+            <List Des="6" Value="6"/>
+            <List Des="7" Value="7"/>
+            <List Des="8" Value="8"/>
+            <List Des="9" Value="9"/>
+            <List Des="10" Value="10"/>
+            <List Des="11" Value="11"/>
+            <List Des="12" Value="12"/>
+            <List Des="13" Value="13"/>
+            <List Des="14" Value="14"/>
+            <List Des="15" Value="15"/>
+            <List Des="16" Value="16"/>
+            <List Des="17" Value="17"/>
+            <List Des="18" Value="18"/>
+            <List Des="19" Value="19"/>
+            <List Des="20" Value="20"/>
+            <List Des="21" Value="21"/>
+            <List Des="22" Value="22"/>
+            <List Des="23" Value="23"/>
+            <List Des="24" Value="24"/>
+            <List Des="25" Value="25"/>
+            <List Des="26" Value="26"/>
+            <List Des="27" Value="27"/>
+            <List Des="28" Value="28"/>
+            <List Des="29" Value="29"/>
+            <List Des="30" Value="30"/>
+            <List Des="31" Value="31"/>
+            <List Des="32" Value="32"/>
+            <List Des="33" Value="33"/>
+            <List Des="34" Value="34"/>
+            <List Des="35" Value="35"/>
+            <List Des="36" Value="36"/>
+            <List Des="37" Value="37"/>
+            <List Des="38" Value="38"/>
+            <List Des="39" Value="39"/>
+            <List Des="40" Value="40"/>
+          </TreeItem>
+          <TreeItem Type="PropTreeItermByteEdit" Des="Match data" ByteCount="40"  StartBitPos="19.1.0" EndBitPos="21.13.7"/>
+        </TreeItem>
+
+        <TreeItem Type="PropTreeItem" Des="Tag 5">
+          <TreeItem Type="PropTreeItemCombo" Des="Match length" StartBitPos="22.0.0" EndBitPos="22.0.7">
+            <List Des="None" Value="0"/>
+            <List Des="1" Value="1"/>
+            <List Des="2" Value="2"/>
+            <List Des="3" Value="3"/>
+            <List Des="4" Value="4"/>
+            <List Des="5" Value="5"/>
+            <List Des="6" Value="6"/>
+            <List Des="7" Value="7"/>
+            <List Des="8" Value="8"/>
+            <List Des="9" Value="9"/>
+            <List Des="10" Value="10"/>
+            <List Des="11" Value="11"/>
+            <List Des="12" Value="12"/>
+            <List Des="13" Value="13"/>
+            <List Des="14" Value="14"/>
+            <List Des="15" Value="15"/>
+            <List Des="16" Value="16"/>
+            <List Des="17" Value="17"/>
+            <List Des="18" Value="18"/>
+            <List Des="19" Value="19"/>
+            <List Des="20" Value="20"/>
+            <List Des="21" Value="21"/>
+            <List Des="22" Value="22"/>
+            <List Des="23" Value="23"/>
+            <List Des="24" Value="24"/>
+            <List Des="25" Value="25"/>
+            <List Des="26" Value="26"/>
+            <List Des="27" Value="27"/>
+            <List Des="28" Value="28"/>
+            <List Des="29" Value="29"/>
+            <List Des="30" Value="30"/>
+            <List Des="31" Value="31"/>
+            <List Des="32" Value="32"/>
+            <List Des="33" Value="33"/>
+            <List Des="34" Value="34"/>
+            <List Des="35" Value="35"/>
+            <List Des="36" Value="36"/>
+            <List Des="37" Value="37"/>
+            <List Des="38" Value="38"/>
+            <List Des="39" Value="39"/>
+            <List Des="40" Value="40"/>
+          </TreeItem>
+          <TreeItem Type="PropTreeItermByteEdit" Des="Match data" ByteCount="40"  StartBitPos="22.1.0" EndBitPos="24.13.7"/>
+        </TreeItem>
+
+      </TreeItem>
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="System setting">
+      <TreeItem Type="PropTreeItemCombo" Des="Language" StartBitPos="6.5.0" EndBitPos="6.5.7">
+        <List Des="Chinese" Value="0x00"/>
+        <List Des="English" Value="0x01"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemCombo" Des="Auto shutdown time(min)" ListStart="0"  ListEnd="60" StartBitPos="6.6.0" EndBitPos="6.6.7"/>
+    </TreeItem>
+
+
+  </PropTreeCfg>
+</Cfg>

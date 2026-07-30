@@ -1,0 +1,253 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Cfg Version="1.0">
+
+  <BlockCfg Size="14">
+    <Address From="2" To="18"/>
+  </BlockCfg>
+
+  <PropTreeCfg>
+    <!-- 通信接口参数-->
+    <TreeItem Type="PropTreeItem" Des="通信设置">
+
+      <TreeItem Type="PropTreeItem" Des="串口设置">
+        <TreeItem Type="PropTreeItemEdit"  Des="总线地址" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="2.0.0" EndBitPos="2.0.7"/>
+        <TreeItem Type="PropTreeItemCombo" Des="串口波特率" StartBitPos="2.1.0" EndBitPos="2.1.7">
+          <List Des="9600" Value="0x00"/>
+          <List Des="19200" Value="0x01"/>
+          <List Des="38400" Value="0x02"/>
+          <List Des="57600" Value="0x03"/>
+          <List Des="115200" Value="0x04"/>
+          <List Des="230400" Value="0x05"/>
+        </TreeItem>
+        <TreeItem Type="PropTreeItemCombo" Des="奇偶校验" StartBitPos="2.2.0" EndBitPos="2.2.1">
+          <List Des="无校验" Value="0x00"/>
+          <List Des="奇校验" Value="0x01"/>
+          <List Des="偶校验" Value="0x02"/>
+        </TreeItem>
+      </TreeItem>
+
+      <TreeItem Type="PropTreeItem" Des="网络通信">
+        <TreeItem Type="PropTreeItem" Des="以太网">
+          <TreeItem Type="PropTreeItemCheckBox" Des="使能DHCP" StartBitPos="2.3.0" EndBitPos="2.3.0" CheckValue="0x01" UnCheckValue="0x00"/>
+          <TreeItem Type="PropTreeItem" Des="静态地址">
+            <TreeItem Type="PropTreeItemIPAddr" Des="IP地址" StartBitPos="3.0.0" EndBitPos="3.3.7"/>
+            <TreeItem Type="PropTreeItemIPAddr" Des="子网掩码" StartBitPos="3.4.0" EndBitPos="3.7.7"/>
+            <TreeItem Type="PropTreeItemIPAddr" Des="网关" StartBitPos="3.8.0" EndBitPos="3.11.7"/>
+          </TreeItem>
+        </TreeItem>
+
+        <TreeItem Type="PropTreeItem" Des="WIFI STA">
+          <TreeItem Type="PropTreeItemEdit"  Des="目标SSID" ValueFormat="ValueFormatText" StartBitPos="5.0.0" EndBitPos="6.13.7"/>
+          <TreeItem Type="PropTreeItemEdit"  Des="连接密码" ValueFormat="ValueFormatText" StartBitPos="7.0.0" EndBitPos="8.13.7"/>
+          <TreeItem Type="PropTreeItemCheckBox" Des="使能DHCP" StartBitPos="2.3.1" EndBitPos="2.3.1" CheckValue="0x01" UnCheckValue="0x00"/>
+          <TreeItem Type="PropTreeItem" Des="静态地址">
+            <TreeItem Type="PropTreeItemIPAddr" Des="IP地址" StartBitPos="4.0.0" EndBitPos="4.3.7"/>
+            <TreeItem Type="PropTreeItemIPAddr" Des="子网掩码" StartBitPos="4.4.0" EndBitPos="4.7.7"/>
+            <TreeItem Type="PropTreeItemIPAddr" Des="网关" StartBitPos="4.8.0" EndBitPos="4.11.7"/>
+          </TreeItem>
+        </TreeItem>
+      </TreeItem>
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="防盗报警参数">
+
+      <TreeItem Type="PropTreeItemCombo" Des="在馆检测方式" StartBitPos="11.0.0" EndBitPos="11.0.7">
+        <List Des="检测标签EPC位" Value="0x00"/>
+        <List Des="检测标签USER位" Value="0x01"/>
+        <List Des="检测标签EAS位" Value="0x02"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItem" Des="EPC">
+        <TreeItem Type="PropTreeItemCombo" Des="EPC匹配条件" StartBitPos="11.1.0" EndBitPos="11.1.7">
+          <List Des="只匹配第一块EPC区" Value="0x00"/>
+          <List Des="同时匹配第一块EPC区和第二块EPC区" Value="0x01"/>
+          　 <List Des="同时匹配第一块EPC区，第二块EPC区和第三块EPC区" Value="0x02"/>
+        </TreeItem>
+        <TreeItem Type="PropTreeItem" Des="EPC 1">
+          <TreeItem Type="PropTreeItemEdit"  Des="位开始地址" ValueFormat="ValueFormatNumber" MaxValue="0xFFFF" StartBitPos="11.2.0" EndBitPos="11.3.7"/>
+          <TreeItem Type="PropTreeItemEdit"  Des="位匹配长度" ValueFormat="ValueFormatNumber" MaxValue="48" StartBitPos="11.4.0" EndBitPos="11.4.7"/>
+          <TreeItem Type="PropTreeItermByteEdit" Des="匹配值(hex)" ByteCount="6"  StartBitPos="11.5.0" EndBitPos="11.10.7"/>
+        </TreeItem>
+        <TreeItem Type="PropTreeItem" Des="EPC 2">
+          <TreeItem Type="PropTreeItemEdit"  Des="位开始地址" ValueFormat="ValueFormatNumber" MaxValue="0xFFFF" StartBitPos="12.0.0" EndBitPos="12.1.7"/>
+          <TreeItem Type="PropTreeItemEdit"  Des="位匹配长度" ValueFormat="ValueFormatNumber" MaxValue="48" StartBitPos="12.2.0" EndBitPos="12.2.7"/>
+          <TreeItem Type="PropTreeItermByteEdit" Des="匹配值(hex)" ByteCount="6"  StartBitPos="12.3.0" EndBitPos="12.8.7"/>
+        </TreeItem>
+        <TreeItem Type="PropTreeItem" Des="EPC 3">
+          <TreeItem Type="PropTreeItemEdit"  Des="位开始地址" ValueFormat="ValueFormatNumber" MaxValue="0xFFFF" StartBitPos="13.0.0" EndBitPos="13.1.7"/>
+          <TreeItem Type="PropTreeItemEdit"  Des="位匹配长度" ValueFormat="ValueFormatNumber" MaxValue="48" StartBitPos="13.2.0" EndBitPos="13.2.7"/>
+          <TreeItem Type="PropTreeItermByteEdit" Des="匹配值(hex)" ByteCount="6"  StartBitPos="13.3.0" EndBitPos="13.8.7"/>
+        </TreeItem>
+      </TreeItem>
+      <TreeItem Type="PropTreeItem" Des="USER">
+        <TreeItem Type="PropTreeItemEdit"  Des="位开始地址" ValueFormat="ValueFormatNumber" MaxValue="0xFFFF" StartBitPos="14.0.0" EndBitPos="14.1.7"/>
+        <TreeItem Type="PropTreeItemEdit"  Des="位匹配长度" ValueFormat="ValueFormatNumber" MaxValue="48" StartBitPos="14.2.0" EndBitPos="14.2.7"/>
+        <TreeItem Type="PropTreeItermByteEdit" Des="匹配值(hex)" ByteCount="6"  StartBitPos="14.3.0" EndBitPos="14.8.7"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItem" Des="EAS">
+        <TreeItem Type="PropTreeItemCombo" Des="EAS Command 1" StartBitPos="15.1.0" EndBitPos="15.1.7">
+          <List Des="NXP Command" Value="0x00"/>
+        </TreeItem>
+        <TreeItem Type="PropTreeItem" Des="EAS Command 2">
+          <TreeItem Type="PropTreeItemCheckBox" Des="使能" StartBitPos="15.0.0" EndBitPos="15.0.0" CheckValue="0x01" UnCheckValue="0x00"/>
+          <TreeItem Type="PropTreeItemCombo" Des="类型" StartBitPos="15.2.0" EndBitPos="15.2.7">
+            <List Des="NXP Command" Value="0x00"/>
+          </TreeItem>
+        </TreeItem>
+        <TreeItem Type="PropTreeItem" Des="EAS Command 3">
+          <TreeItem Type="PropTreeItemCheckBox" Des="使能" StartBitPos="15.0.1" EndBitPos="15.0.1" CheckValue="0x01" UnCheckValue="0x00"/>
+          <TreeItem Type="PropTreeItemCombo" Des="类型" StartBitPos="15.3.0" EndBitPos="15.3.7">
+            <List Des="NXP Command" Value="0x00"/>
+          </TreeItem>
+        </TreeItem>
+      </TreeItem>
+
+      <TreeItem Type="PropTreeItem" Des="标签内存读取">
+        <TreeItem Type="PropTreeItemCombo" Des="读取区域" StartBitPos="15.5.0" EndBitPos="15.5.7">
+          <List Des="EPC区" Value="0x01"/>
+          <List Des="EPC区和USER区" Value="0x02"/>
+          <List Des="EPC区和TID区" Value="0x03"/>
+        </TreeItem>
+        <TreeItem Type="PropTreeItem" Des="USER/TID区">
+          <TreeItem Type="PropTreeItemEdit"  Des="开始字节" ValueFormat="ValueFormatNumber"  MaxValue="0xFF" StartBitPos="15.6.0" EndBitPos="15.7.7"/>
+          <TreeItem Type="PropTreeItemEdit"  Des="长度" ValueFormat="ValueFormatNumber" MaxValue="0xFF"  StartBitPos="15.8.0" EndBitPos="15.8.7"/>
+          <TreeItem Type="PropTreeItermByteEdit" Des="密码(hex)" ByteCount="4"  StartBitPos="15.9.0" EndBitPos="15.12.7"/>
+        </TreeItem>
+      </TreeItem>
+
+      <TreeItem Type="PropTreeItem" Des="声光报警">
+        <TreeItem Type="PropTreeItemCombo" Des="触发报警条件" StartBitPos="16.2.0" EndBitPos="16.2.3">
+          <List Des="不触发声光报警" Value="0x00"/>
+          <List Des="检测到图书就报警" Value="0x01"/>
+        </TreeItem>
+        <TreeItem Type="PropTreeItemCheckBox" Des="是否广播报警" StartBitPos="16.2.7" EndBitPos="16.2.7" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItem" Des="报警输出参数">
+          <TreeItem Type="PropTreeItemEdit"  Des="闪烁频率" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="16.3.0" EndBitPos="16.3.7"/>
+          <TreeItem Type="PropTreeItemEdit"  Des="激活时间" ValueFormat="ValueFormatNumber" MaxValue="0xFFFF" StartBitPos="16.4.0" EndBitPos="16.5.7"/>
+          <TreeItem Type="PropTreeItemEdit"  Des="停止时间" ValueFormat="ValueFormatNumber" MaxValue="0xFFFF" StartBitPos="16.6.0" EndBitPos="16.7.7"/>
+        </TreeItem>
+        <TreeItem Type="PropTreeItemCheckBox" Des="是否关闭蜂鸣器" StartBitPos="16.2.6" EndBitPos="16.2.6" CheckValue="0x01" UnCheckValue="0x00"/>
+      </TreeItem>
+
+      <TreeItem Type="PropTreeItem" Des="数据存储">
+        <TreeItem Type="PropTreeItemCombo" Des="报警记录保存位置" StartBitPos="16.0.0" EndBitPos="16.0.7">
+          <List Des="FLASH" Value="0x00"/>
+          <List Des="RAM" Value="0x01"/>
+        </TreeItem>
+        <TreeItem Type="PropTreeItemEdit"  Des="同一张标签多少秒内只存入一条记录" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="16.1.0" EndBitPos="16.1.7"/>
+        <TreeItem Type="PropTreeItemEdit"  Des="最大支持的EPC长度" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="10.12.0" EndBitPos="10.12.7"/>
+      </TreeItem>
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="读卡参数">
+      <TreeItem Type="PropTreeItemCombo" Des="读卡触发方式" StartBitPos="18.11.0" EndBitPos="18.11.7">
+        <List Des="命令触发读卡" Value="0x00"/>
+        <List Des="红外触发本机独立读卡" Value="0x01"/>
+        <List Des="红外触发多机同步读卡" Value="0x02"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemCombo" Des="工作频率" StartBitPos="17.0.0" EndBitPos="17.0.7">
+        <List Des="Open 860-960MHz" Value="0x00"/>
+        <List Des="NA 902-926MHz" Value="0x01"/>
+        <List Des="EU 865-867MHz" Value="0x02"/>
+        <List Des="KR 910-913MHz" Value="0x03"/>
+        <List Des="IN 865-867MHz" Value="0x04"/>
+        <List Des="JP 916.8-923.4MHz" Value="0x05"/>
+        <List Des="PRC 920-925MHz" Value="0x06"/>
+        <List Des="EU2 869-872MHz" Value="0x07"/>
+        <List Des="EU3 865.6-867.6MHz" Value="0x08"/>
+        <List Des="KR2 917-923.5MHz" Value="0x09"/>
+        <List Des="PRC2 840-845MH" Value="0x0A"/>
+        <List Des="AU 920-926MHz" Value="0x0B"/>
+        <List Des="NZ 922-927.5MHz" Value="0x0C"/>
+        <List Des="NA2 917.4-927.2MHz" Value="0x0D"/>
+        <List Des="NA3 917.5-922.5MHz" Value="0x0E"/>
+        <List Des="自定义频率" Value="0xff"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItem" Des="自定义频率">
+        <TreeItem Type="PropTreeItemEdit"  Des="开始频点" ValueFormat="ValueFormatNumber" MaxValue="0xFFFFFFFF" StartBitPos="17.2.0" EndBitPos="17.5.7"/>
+        <TreeItem Type="PropTreeItemEdit"  Des="结束频点" ValueFormat="ValueFormatNumber" MaxValue="0xFFFFFFFF" StartBitPos="17.6.0" EndBitPos="17.9.7"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemCombo" Des="跳频方式" StartBitPos="17.10.0" EndBitPos="17.10.7">
+        <List Des="天线内跳频" Value="0x00"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemEdit"  Des="跳频点数N+1" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="17.11.0" EndBitPos="17.11.7"/>
+      <TreeItem Type="PropTreeItemEdit"  Des="盘点失败尝试次数" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="17.12.0" EndBitPos="17.12.7"/>
+      <TreeItem Type="PropTreeItemCombo" Des="射频功率" StartBitPos="17.1.0" EndBitPos="17.1.7">
+        <List Des="1dbm" Value="0"/>
+        <List Des="2dbm" Value="1"/>
+        <List Des="3dbm" Value="2"/>
+        <List Des="4dbm" Value="3"/>
+        <List Des="5dbm" Value="4"/>
+        <List Des="6dbm" Value="5"/>
+        <List Des="7dbm" Value="6"/>
+        <List Des="8dbm" Value="7"/>
+        <List Des="9dbm" Value="8"/>
+        <List Des="10dbm" Value="9"/>
+        <List Des="11dbm" Value="10"/>
+        <List Des="12dbm" Value="11"/>
+        <List Des="13dbm" Value="12"/>
+        <List Des="14dbm" Value="13"/>
+        <List Des="15dbm" Value="14"/>
+        <List Des="16dbm" Value="15"/>
+        <List Des="17dbm" Value="16"/>
+        <List Des="18dbm" Value="17"/>
+        <List Des="19dbm" Value="18"/>
+        <List Des="20dbm" Value="19"/>
+        <List Des="21dbm" Value="20"/>
+        <List Des="22dbm" Value="21"/>
+        <List Des="23dbm" Value="22"/>
+        <List Des="24dbm" Value="23"/>
+        <List Des="25dbm" Value="24"/>
+        <List Des="26dbm" Value="25"/>
+        <List Des="27dbm" Value="26"/>
+        <List Des="28dbm" Value="27"/>
+        <List Des="29dbm" Value="28"/>
+        <List Des="30dbm" Value="29"/>
+        <List Des="31dbm" Value="30"/>
+        <List Des="32dbm" Value="31"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItem" Des="协议参数">
+        <TreeItem Type="PropTreeItemCombo" Des="标签数据编码" StartBitPos="17.13.0" EndBitPos="17.13.1">
+          <List Des="FM0" Value="0x00"/>
+          <List Des="Miller M2" Value="0x01"/>
+          <List Des="Miller M4" Value="0x02"/>
+          <List Des="Miller M8" Value="0x03"/>
+        </TreeItem>
+      </TreeItem>
+    </TreeItem>
+    <TreeItem Type="PropTreeItem" Des="其他参数">
+      <TreeItem Type="PropTreeItemCombo" Des="红外解析方向" StartBitPos="18.12.0" EndBitPos="18.12.7">
+        <List Des="1->2 进, 2->1出" Value="0x00"/>
+        <List Des="1->2 出, 2->1进" Value="0x01"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemCombo" Des="蜂鸣器音量调节" StartBitPos="18.13.0" EndBitPos="18.13.7">
+        <List Des="第一档" Value="0x00"/>
+        <List Des="第二档" Value="0x01"/>
+        <List Des="第三档" Value="0x02"/>
+        <List Des="第四档" Value="0x03"/>
+      </TreeItem>
+
+      <TreeItem Type="PropTreeItemCheckBox" Des="是否支持门上显示屏" StartBitPos="10.13.0" EndBitPos="10.13.0" CheckValue="0x01" UnCheckValue="0x00"/>
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="主动通知配置">
+      <TreeItem Type="PropTreeItem" Des="使能选项">
+        <TreeItem Type="PropTreeItemCheckBox" Des="使能主动通知" StartBitPos="9.7.0" EndBitPos="9.7.0" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="使能服务端应答" StartBitPos="9.7.1" EndBitPos="9.7.1" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="使能Keepalive" StartBitPos="9.7.2" EndBitPos="9.7.2" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemEdit"  Des="Keepalive间隔时间=(n+1) * 1s" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="12.7.0" EndBitPos="12.7.7"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItem" Des="服务端">
+        <TreeItem Type="PropTreeItemIPAddr" Des="IP" StartBitPos="9.0.0" EndBitPos="9.3.7"/>
+        <TreeItem Type="PropTreeItemEdit"  Des="端口" ValueFormat="ValueFormatNumber" MaxValue="0xFFFF" StartBitPos="9.4.0" EndBitPos="9.5.7"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItem" Des="发送内容">
+        <TreeItem Type="PropTreeItemCheckBox" Des="报警记录" StartBitPos="9.6.0" EndBitPos="9.6.0" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="进出总人流量" StartBitPos="9.6.1" EndBitPos="9.6.1" CheckValue="0x01" UnCheckValue="0x00"/>
+      </TreeItem>
+
+    </TreeItem>
+
+
+  </PropTreeCfg>
+
+</Cfg>

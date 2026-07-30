@@ -1,0 +1,229 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Cfg Version="1.0">
+  <BlockCfg Size="8">
+    <Address From="0" To="19"/>
+  </BlockCfg>
+
+  <PropTreeCfg>
+    <TreeItem Type="PropTreeItem" Des="Network">
+      <TreeItem Type="PropTreeItemIPAddr" Des="IP" StartBitPos="0.0.0" EndBitPos="0.3.7"/>
+      <TreeItem Type="PropTreeItemIPAddr" Des="Mask" StartBitPos="0.4.0" EndBitPos="0.7.7"/>
+      <TreeItem Type="PropTreeItemIPAddr" Des="Gate" StartBitPos="1.0.0" EndBitPos="1.3.7"/>
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="Basic configuration">
+      <TreeItem Type="PropTreeItemCombo" Des="Frequency" StartBitPos="15.0.0" EndBitPos="15.0.7">
+        <List Des="NA   902000-928000KHZ" Value="0x01"/>
+        <List Des="IN   865000-867000KHZ" Value="0x04"/>
+        <List Des="PRC  920000-925000KHZ" Value="0x06"/>
+        <List Des="EU3  865600-867600KHZ" Value="0x08"/>
+        <List Des="KR2  917000-923500KHZ" Value="0x09"/>
+        <List Des="AU  920000-926000KHZ" Value="0x0B"/>
+        <List Des="NZ  922000-927500KHZ" Value="0x0C"/>
+        <List Des="OPEN 865000-869000KHZ 920000-925000KHZ" Value="0xFF"/>
+      </TreeItem>
+
+      <TreeItem Type="PropTreeItem" Des="Synchronization configuration of multiple sides gate">
+        <TreeItem Type="PropTreeItemCombo" Des="Role of single side" StartBitPos="2.0.0" EndBitPos="2.0.7">
+          <List Des="Master" Value="0x00"/>
+          <List Des="Slave 1" Value="0x01"/>
+          <List Des="Slave 2" Value="0x02"/>
+          <List Des="Slave 3" Value="0x03"/>
+          <List Des="Slave 4" Value="0x04"/>
+          <List Des="Slave 5" Value="0x05"/>
+          <List Des="Slave 6" Value="0x06"/>
+          <List Des="Slave 7" Value="0x07"/>
+          <List Des="Slave 8" Value="0x08"/>
+        </TreeItem>
+
+        <TreeItem Type="PropTreeItemCombo" Des="Number of synchronous side" StartBitPos="2.1.0" EndBitPos="2.1.7">
+          <List Des="1" Value="0x01"/>
+          <List Des="2" Value="0x02"/>
+          <List Des="3" Value="0x03"/>
+          <List Des="4" Value="0x04"/>
+          <List Des="5" Value="0x05"/>
+          <List Des="6" Value="0x06"/>
+          <List Des="7" Value="0x07"/>
+          <List Des="8" Value="0x08"/>
+        </TreeItem>
+
+      </TreeItem>
+
+      <TreeItem Type="PropTreeItem" Des="Default output options of alarm">
+        <TreeItem Type="PropTreeItemEdit"  Des="Active duration(100ms)" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="3.0.0" EndBitPos="3.0.7"/>
+        <TreeItem Type="PropTreeItemEdit"  Des="Frequency" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="3.1.0" EndBitPos="3.1.7"/>
+        <TreeItem Type="PropTreeItemEdit"  Des="Inactive(100ms)" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="3.2.0" EndBitPos="3.2.7"/>
+      </TreeItem>
+
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="Alarm condition">
+      <TreeItem Type="PropTreeItemCombo" Des="Alarm type" StartBitPos="8.1.0" EndBitPos="8.1.7">
+        <List Des="Match EPC" Value="0x00"/>
+        <List Des="Match USER" Value="0x01"/>
+      </TreeItem>
+
+        <TreeItem Type="PropTreeItem" Des="EPC bit matched condition">
+        <TreeItem Type="PropTreeItemCombo" Des="Regional selection" StartBitPos="15.1.0" EndBitPos="15.1.1">
+        		<List Des="EPC region 1" Value="0x00"/>
+		<List Des="EPC region 1 + EPC region 2" Value="0x01"/>
+		<List Des="EPC region 1 + EPC region 3" Value="0x02"/>
+		<List Des="EPC region 1 + EPC region 2 + EPC region 3" Value="0x03"/>
+        </TreeItem>
+        <TreeItem Type="PropTreeItem" Des="EPC region 1">
+          <TreeItem Type="PropTreeItemEdit"  Des="Address of EPC(bit)" ValueFormat="ValueFormatNumber" MaxValue="96" StartBitPos="4.0.0" EndBitPos="4.1.7"/>
+          <TreeItem Type="PropTreeItemEdit"  Des="Length(bit)" ValueFormat="ValueFormatNumber" MaxValue="96" StartBitPos="4.2.0" EndBitPos="4.2.7"/>
+          <TreeItem Type="PropTreeItermByteEdit" Des="Matched value(hex)" ByteCount="12"  StartBitPos="4.3.0" EndBitPos="5.6.7"/>
+        </TreeItem>
+
+        <TreeItem Type="PropTreeItem" Des="EPC region 2">
+          <TreeItem Type="PropTreeItemEdit"  Des="Address of EPC(bit)" ValueFormat="ValueFormatNumber" MaxValue="96" StartBitPos="6.0.0" EndBitPos="6.1.7"/>
+          <TreeItem Type="PropTreeItemEdit"  Des="Length(bit)" ValueFormat="ValueFormatNumber" MaxValue="96" StartBitPos="6.2.0" EndBitPos="6.2.7"/>
+          <TreeItem Type="PropTreeItermByteEdit" Des="Matched value(hex)" ByteCount="12"  StartBitPos="6.3.0" EndBitPos="7.6.7"/>
+        </TreeItem>
+
+        <TreeItem Type="PropTreeItem" Des="EPC region 3">
+          <TreeItem Type="PropTreeItemEdit"  Des="Address of EPC(bit)" ValueFormat="ValueFormatNumber" MaxValue="96" StartBitPos="16.0.0" EndBitPos="16.1.7"/>
+          <TreeItem Type="PropTreeItemEdit"  Des="Length(bit)" ValueFormat="ValueFormatNumber" MaxValue="96" StartBitPos="16.2.0" EndBitPos="16.2.7"/>
+          <TreeItem Type="PropTreeItermByteEdit" Des="Matched value(hex)" ByteCount="12"  StartBitPos="16.3.0" EndBitPos="17.6.7"/>
+        </TreeItem>
+      </TreeItem>
+
+          <TreeItem Type="PropTreeItem" Des="USER bit matched condition">
+            <TreeItem Type="PropTreeItemEdit"  Des="Address of USER(bit)" ValueFormat="ValueFormatNumber" MaxValue="96" StartBitPos="18.0.0" EndBitPos="18.1.7"/>
+            <TreeItem Type="PropTreeItemEdit"  Des="Length(bit)" ValueFormat="ValueFormatNumber" MaxValue="96" StartBitPos="18.2.0" EndBitPos="18.2.7"/>
+            <TreeItem Type="PropTreeItermByteEdit" Des="Matched value(hex)" ByteCount="12"  StartBitPos="18.3.0" EndBitPos="19.6.7"/>
+          </TreeItem>
+
+        <TreeItem Type="PropTreeItem" Des="Alarm action">
+          <TreeItem Type="PropTreeItemCheckBox" Des="Alarm" StartBitPos="8.0.0" EndBitPos="8.0.0" CheckValue="0x01" UnCheckValue="0x00"/>
+          <TreeItem Type="PropTreeItemCheckBox" Des="Save record" StartBitPos="8.0.1" EndBitPos="8.0.1" CheckValue="0x01" UnCheckValue="0x00"/>
+        </TreeItem>
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="Basic output">
+      <TreeItem Type="PropTreeItem" Des="Output of relay">
+        <TreeItem Type="PropTreeItemCombo" Des="Type" StartBitPos="9.4.0" EndBitPos="9.4.7">
+          <List Des="No" Value="0x00"/>
+          <List Des="Illegal alarm" Value="0x01"/>
+          <List Des="Enter legally" Value="0x02"/>
+          <List Des="Leave legally" Value="0x03"/>
+          <List Des="Enter and leave legally" Value="0x04"/>
+          <List Des="Infrared trigger" Value="0x05"/>
+        </TreeItem>
+        <TreeItem Type="PropTreeItemEdit"  Des="Active duration(100ms)" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="9.5.0" EndBitPos="9.5.7"/>
+        <TreeItem Type="PropTreeItemEdit"  Des="Frequency" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="9.6.0" EndBitPos="9.6.7"/>
+        <TreeItem Type="PropTreeItemEdit"  Des="Inactive(100ms)" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="9.7.0" EndBitPos="9.7.7"/>
+      </TreeItem>
+
+      <TreeItem Type="PropTreeItem" Des="Output of MOS">
+        <TreeItem Type="PropTreeItemCombo" Des="Type" StartBitPos="10.0.0" EndBitPos="10.0.7">
+          <List Des="No" Value="0x00"/>
+          <List Des="Illegal alarm" Value="0x01"/>
+          <List Des="Enter legally" Value="0x02"/>
+          <List Des="Leave legally" Value="0x03"/>
+          <List Des="Enter and leave legally" Value="0x04"/>
+          <List Des="Infrared trigger" Value="0x05"/>
+        </TreeItem>
+        <TreeItem Type="PropTreeItemEdit"  Des="Active duration(100ms)" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="10.1.0" EndBitPos="10.1.7"/>
+        <TreeItem Type="PropTreeItemEdit"  Des="Frequency" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="10.2.0" EndBitPos="10.2.7"/>
+        <TreeItem Type="PropTreeItemEdit"  Des="Inactive(100ms)" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="10.3.0" EndBitPos="10.3.7"/>
+      </TreeItem>
+
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="Extended output">
+      <TreeItem Type="PropTreeItem" Des="Extended relay 1">
+        <TreeItem Type="PropTreeItemCombo" Des="Type" StartBitPos="11.0.0" EndBitPos="11.0.7">
+          <List Des="No" Value="0x00"/>
+          <List Des="Illegal alarm" Value="0x01"/>
+          <List Des="Enter legally" Value="0x02"/>
+          <List Des="Leave legally" Value="0x03"/>
+          <List Des="Enter and leave legally" Value="0x04"/>
+          <List Des="Infrared trigger" Value="0x05"/>
+        </TreeItem>
+        <TreeItem Type="PropTreeItemEdit"  Des="Active duration(100ms)" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="11.1.0" EndBitPos="11.1.7"/>
+        <TreeItem Type="PropTreeItemEdit"  Des="Frequency" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="11.2.0" EndBitPos="11.2.7"/>
+        <TreeItem Type="PropTreeItemEdit"  Des="Inactive(100ms)" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="11.3.0" EndBitPos="11.3.7"/>
+      </TreeItem>
+
+      <TreeItem Type="PropTreeItem" Des="Extended relay 2">
+        <TreeItem Type="PropTreeItemCombo" Des="Type" StartBitPos="11.4.0" EndBitPos="11.4.7">
+          <List Des="No" Value="0x00"/>
+          <List Des="Illegal alarm" Value="0x01"/>
+          <List Des="Enter legally" Value="0x02"/>
+          <List Des="Leave legally" Value="0x03"/>
+          <List Des="Enter and leave legally" Value="0x04"/>
+          <List Des="Infrared trigger" Value="0x05"/>
+        </TreeItem>
+        <TreeItem Type="PropTreeItemEdit"  Des="Active duration(100ms)" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="11.5.0" EndBitPos="11.5.7"/>
+        <TreeItem Type="PropTreeItemEdit"  Des="Frequency" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="11.6.0" EndBitPos="11.6.7"/>
+        <TreeItem Type="PropTreeItemEdit"  Des="Inactive(100ms)" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="11.7.0" EndBitPos="11.7.7"/>
+      </TreeItem>
+
+      <TreeItem Type="PropTreeItem" Des="Extended MOS">
+        <TreeItem Type="PropTreeItemCombo" Des="Type" StartBitPos="12.0.0" EndBitPos="12.0.7">
+            <List Des="No" Value="0x00"/>
+            <List Des="Illegal alarm" Value="0x01"/>
+            <List Des="Enter legally" Value="0x02"/>
+            <List Des="Leave legally" Value="0x03"/>
+            <List Des="Enter and leave legally" Value="0x04"/>
+            <List Des="Infrared trigger" Value="0x05"/>
+        </TreeItem>
+        <TreeItem Type="PropTreeItemEdit"  Des="Active duration(100ms)" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="12.1.0" EndBitPos="12.1.7"/>
+        <TreeItem Type="PropTreeItemEdit"  Des="Frequency" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="12.2.0" EndBitPos="12.2.7"/>
+        <TreeItem Type="PropTreeItemEdit"  Des="Inactive(100ms)" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="12.3.0" EndBitPos="12.3.7"/>
+      </TreeItem>
+
+    </TreeItem>
+      
+    <TreeItem Type="PropTreeItem" Des="RF power">
+      <TreeItem Type="PropTreeItemCombo" Des="RF power level" StartBitPos="13.0.0" EndBitPos="13.0.7">
+        <List Des="1DB" Value="1"/>
+        <List Des="2DB" Value="2"/>
+        <List Des="3DB" Value="3"/>
+        <List Des="4DB" Value="4"/>
+        <List Des="5DB" Value="5"/>
+        <List Des="6DB" Value="6"/>
+        <List Des="7DB" Value="7"/>
+        <List Des="8DB" Value="8"/>
+        <List Des="9DB" Value="9"/>
+        <List Des="10DB" Value="10"/>
+        <List Des="11DB" Value="11"/>
+        <List Des="12DB" Value="12"/>
+        <List Des="13DB" Value="13"/>
+        <List Des="14DB" Value="14"/>
+        <List Des="15DB" Value="15"/>
+        <List Des="16DB" Value="16"/>
+        <List Des="17DB" Value="17"/>
+        <List Des="18DB" Value="18"/>
+        <List Des="19DB" Value="19"/>
+        <List Des="20DB" Value="20"/>
+        <List Des="21DB" Value="21"/>
+        <List Des="22DB" Value="22"/>
+        <List Des="23DB" Value="23"/>
+        <List Des="24DB" Value="24"/>
+        <List Des="25DB" Value="25"/>
+        <List Des="26DB" Value="26"/>
+        <List Des="27DB" Value="27"/>
+        <List Des="28DB" Value="28"/>
+        <List Des="29DB" Value="29"/>
+        <List Des="30DB" Value="30"/>
+      </TreeItem>
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="Advanced configuration">
+      <TreeItem Type="PropTreeItemCombo" Des="Synchronization system mode" StartBitPos="14.0.0" EndBitPos="14.0.0">
+        <List Des="Each side alarms independently" Value="0x00"/>
+        <List Des="Each side alarms concentratedly" Value="0x01"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemEdit"  Des="Max time of read tags(50ms)" ValueFormat="ValueFormatNumber" MaxValue="100" StartBitPos="14.2.0" EndBitPos="14.2.7"/>
+      <TreeItem Type="PropTreeItemCombo" Des="Work mode" StartBitPos="14.3.0" EndBitPos="14.3.0">
+        <List Des="Read card autonomously" Value="0x00"/>
+        <List Des="Read card when infrared triggers" Value="0x01"/>
+      </TreeItem>
+    </TreeItem>
+
+  </PropTreeCfg>
+
+</Cfg>

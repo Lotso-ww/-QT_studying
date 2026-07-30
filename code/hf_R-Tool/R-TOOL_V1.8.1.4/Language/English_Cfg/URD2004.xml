@@ -1,0 +1,154 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Cfg Version="1.0">
+  <BlockCfg Size="14">
+    <Address From="0" To="3"/>
+  </BlockCfg>
+
+  <PropTreeCfg>
+    <TreeItem Type="PropTreeItem" Des="Interface information">
+      <TreeItem Type="PropTreeItemEdit"  Des="Bus address" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="1.0.0" EndBitPos="1.0.7"/>
+      <TreeItem Type="PropTreeItemCombo" Des="Baud" StartBitPos="1.1.0" EndBitPos="1.1.7">
+        <List Des="9600" Value="0"/>
+        <List Des="19200" Value="1"/>
+        <List Des="38400" Value="2"/>
+        <List Des="57600" Value="3"/>
+        <List Des="115200" Value="4"/>
+        <List Des="230400" Value="5"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemCombo" Des="Parity" StartBitPos="1.2.0" EndBitPos="1.2.1">
+        <List Des="None" Value="0"/>
+        <List Des="Odd" Value="1"/>
+        <List Des="Even" Value="2"/>
+      </TreeItem>
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="Basic configuration">
+      <TreeItem Type="PropTreeItemCombo" Des="Area" StartBitPos="2.6.0" EndBitPos="2.6.7">
+        <List Des="IN     865~867MHz" Value="0x04"/>
+        <List Des="JP     916.8~923.4MHz" Value="0x05"/>
+        <List Des="PRC    920~925MHz" Value="0x06"/>
+        <List Des="EU3    865.6~867.6MHz" Value="0x08"/>
+        <List Des="KR2    917~923.5MHz" Value="0x09"/>
+        <List Des="AU     920~926MHz" Value="0x0A"/>
+        <List Des="NZ     922~927.5MHz" Value="0x0C"/>
+        <List Des="NA2    917.4~927.2MHz" Value="0x0D"/>
+        <List Des="NA3    917.5~922.5MHz" Value="0x0E"/>
+        <List Des="OPEN   859~873MHz 915~930MHz" Value="0xFF"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemCheckBox" Des="Use antenna as the unique indentifier of the buffer" StartBitPos="1.4.0" EndBitPos="1.4.7" CheckValue="0x00" UnCheckValue="0x01"/>
+      <TreeItem Type="PropTreeItemCheckBox" Des="Use tag's data as the unique indentifier of the buffer" StartBitPos="1.6.0" EndBitPos="1.6.7" CheckValue="0x00" UnCheckValue="0x01"/>
+      <TreeItem Type="PropTreeItemCheckBox" Des="Check antenna connection" StartBitPos="1.5.0" EndBitPos="1.5.7" CheckValue="0x01" UnCheckValue="0x00"/>
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="EPC Gen2 protocol parameter">
+      <TreeItem Type="PropTreeItemCombo" Des="Session" StartBitPos="2.0.0" EndBitPos="2.0.1">
+        <List Des="S0" Value="0x00"/>
+        <List Des="S1" Value="0x01"/>
+        <List Des="S2" Value="0x02"/>
+        <List Des="S3" Value="0x03"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemCombo" Des="Target" StartBitPos="2.1.0" EndBitPos="2.1.1">
+        <List Des="A" Value="0x00"/>
+        <List Des="B" Value="0x01"/>
+        <List Des="A->B" Value="0x02"/>
+        <List Des="B->A" Value="0x03"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemCombo" Des="Encode" StartBitPos="2.2.0" EndBitPos="2.2.7">
+        <List Des="FM0" Value="0x00"/>
+        <List Des="FM2" Value="0x01"/>
+        <List Des="FM4" Value="0x02"/>
+        <List Des="FM8" Value="0x03"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemCombo" Des="Q value" StartBitPos="2.3.0" EndBitPos="2.3.7">
+        <List Des="Dynamic" Value="0xFF"/>
+        <List Des="0" Value="0x00"/>
+        <List Des="1" Value="0x01"/>
+        <List Des="2" Value="0x02"/>
+        <List Des="3" Value="0x03"/>
+        <List Des="4" Value="0x04"/>
+        <List Des="5" Value="0x05"/>
+        <List Des="6" Value="0x06"/>
+        <List Des="7" Value="0x07"/>
+        <List Des="8" Value="0x08"/>
+        <List Des="9" Value="0x09"/>
+        <List Des="10" Value="0x0A"/>
+        <List Des="11" Value="0x0B"/>
+        <List Des="12" Value="0x0C"/>
+        <List Des="13" Value="0x0D"/>
+        <List Des="14" Value="0x0E"/>
+        <List Des="15" Value="0x0F"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemCombo" Des="Frequency of connection" StartBitPos="2.4.0" EndBitPos="2.4.7">
+        <List Des="250KHz" Value="0x00"/>
+        <List Des="320KHz" Value="0x01"/>
+        <List Des="640KHz" Value="0x02"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemCombo" Des="Tari" StartBitPos="2.5.0" EndBitPos="2.5.7">
+        <List Des="25us" Value="0x00"/>
+        <List Des="12.5us" Value="0x01"/>
+        <List Des="6.25us" Value="0x02"/>
+      </TreeItem>
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="Antenna parameter">
+      <TreeItem Type="PropTreeItemCombo" Des="Power of read" StartBitPos="3.0.0" EndBitPos="3.1.7">
+        <List Des="1DB" Value="100"/>
+        <List Des="2DB" Value="200"/>
+        <List Des="3DB" Value="300"/>
+        <List Des="4DB" Value="400"/>
+        <List Des="5DB" Value="500"/>
+        <List Des="6DB" Value="600"/>
+        <List Des="7DB" Value="700"/>
+        <List Des="8DB" Value="800"/>
+        <List Des="9DB" Value="900"/>
+        <List Des="10DB" Value="1000"/>
+        <List Des="11DB" Value="1100"/>
+        <List Des="12DB" Value="1200"/>
+        <List Des="13DB" Value="1300"/>
+        <List Des="14DB" Value="1400"/>
+        <List Des="15DB" Value="1500"/>
+        <List Des="16DB" Value="1600"/>
+        <List Des="17DB" Value="1700"/>
+        <List Des="18DB" Value="1800"/>
+        <List Des="19DB" Value="1900"/>
+        <List Des="20DB" Value="2000"/>
+        <List Des="21DB" Value="2100"/>
+        <List Des="22DB" Value="2200"/>
+        <List Des="23DB" Value="2300"/>
+        <List Des="24DB" Value="2400"/>
+        <List Des="25DB" Value="2500"/>
+        <List Des="26DB" Value="2600"/>
+        <List Des="27DB" Value="2700"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemCombo" Des="Power of write" StartBitPos="3.2.0" EndBitPos="3.3.7">
+        <List Des="1DB" Value="100"/>
+        <List Des="2DB" Value="200"/>
+        <List Des="3DB" Value="300"/>
+        <List Des="4DB" Value="400"/>
+        <List Des="5DB" Value="500"/>
+        <List Des="6DB" Value="600"/>
+        <List Des="7DB" Value="700"/>
+        <List Des="8DB" Value="800"/>
+        <List Des="9DB" Value="900"/>
+        <List Des="10DB" Value="1000"/>
+        <List Des="11DB" Value="1100"/>
+        <List Des="12DB" Value="1200"/>
+        <List Des="13DB" Value="1300"/>
+        <List Des="14DB" Value="1400"/>
+        <List Des="15DB" Value="1500"/>
+        <List Des="16DB" Value="1600"/>
+        <List Des="17DB" Value="1700"/>
+        <List Des="18DB" Value="1800"/>
+        <List Des="19DB" Value="1900"/>
+        <List Des="20DB" Value="2000"/>
+        <List Des="21DB" Value="2100"/>
+        <List Des="22DB" Value="2200"/>
+        <List Des="23DB" Value="2300"/>
+        <List Des="24DB" Value="2400"/>
+        <List Des="25DB" Value="2500"/>
+        <List Des="26DB" Value="2600"/>
+        <List Des="27DB" Value="2700"/>
+      </TreeItem>
+    </TreeItem>
+  </PropTreeCfg>
+</Cfg>

@@ -1,0 +1,164 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Cfg Version="1.0">
+  <BlockCfg Size="14">
+    <Address From="1" To="21"/>
+  </BlockCfg>
+
+  <PropTreeCfg>
+    <TreeItem Type="PropTreeItem" Des="Network">
+      <TreeItem Type="PropTreeItemCheckBox" Des="Wifi" StartBitPos="6.1.0" EndBitPos="6.1.7" CheckValue="0x01" UnCheckValue="0x00"/>
+      <TreeItem Type="PropTreeItemCombo" Des="Wifi mode" StartBitPos="6.3.0" EndBitPos="6.3.7">
+        <List Des="STA" Value="0x00"/>
+        <List Des="AP" Value="0x01"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemCheckBox" Des="DHCP" StartBitPos="6.2.0" EndBitPos="6.2.7" CheckValue="0x01" UnCheckValue="0x00"/>
+      <TreeItem Type="PropTreeItemEdit"  Des="Wifi name" ValueFormat="ValueFormatText" StartBitPos="1.0.0" EndBitPos="2.5.7"/>
+      <TreeItem Type="PropTreeItemEdit"  Des="Password" ValueFormat="ValueFormatText" Password="True"  StartBitPos="3.0.0" EndBitPos="4.5.7"/>
+      <TreeItem Type="PropTreeItemIPAddr" Des="IP address" StartBitPos="5.0.0" EndBitPos="5.3.7"/>
+      <TreeItem Type="PropTreeItemIPAddr" Des="Mask" StartBitPos="5.4.0" EndBitPos="5.7.7"/>
+      <TreeItem Type="PropTreeItemIPAddr" Des="Gateway" StartBitPos="5.8.0" EndBitPos="5.11.7"/>
+      <TreeItem Type="PropTreeItemEdit"  Des="Port" ValueFormat="ValueFormatNumber" MaxValue="0xFFFF" StartBitPos="5.12.0" EndBitPos="5.13.7"/>
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="Bluetooth">
+      <TreeItem Type="PropTreeItemCheckBox" Des="Bluetooth 2.1" StartBitPos="6.0.0" EndBitPos="6.0.0" CheckValue="0x01" UnCheckValue="0x00"/>
+      <TreeItem Type="PropTreeItemCheckBox" Des="Bluetooth 4.0" StartBitPos="6.0.4" EndBitPos="6.0.4" CheckValue="0x01" UnCheckValue="0x00"/>
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="RF module">
+      <TreeItem Type="PropTreeItemCombo" Des="Power" StartBitPos="7.0.0" EndBitPos="7.0.7">
+        <List Des="0.25W" Value="0x01"/>
+        <List Des="0.50W" Value="0x02"/>
+        <List Des="0.75W" Value="0x03"/>
+        <List Des="1.00W" Value="0x04"/>
+        <List Des="1.25W" Value="0x05"/>
+        <List Des="1.50W" Value="0x06"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemCombo" Des="Modulation depth" StartBitPos="7.1.0" EndBitPos="7.1.7">
+        <List Des="OOK 100%" Value="0x00"/>
+        <List Des="ASK 10%" Value="0x80"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemCombo" Des="Slot" StartBitPos="7.4.0" EndBitPos="7.4.7">
+        <List Des="16 slot" Value="0x01"/>
+        <List Des="1 slot" Value="0x00"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemCombo" Des="Inventory mode" StartBitPos="7.8.0" EndBitPos="7.8.0">
+        <List Des="Standard mode" Value="0x00"/>
+        <List Des="Fast mode" Value="0x01"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemCheckBox" Des="Math AFI" StartBitPos="7.8.1" EndBitPos="7.8.1" CheckValue="0x01" UnCheckValue="0x00"/>
+      <TreeItem Type="PropTreeItemCheckBox" Des="Auto close RF" StartBitPos="7.8.2" EndBitPos="7.8.2" CheckValue="0x01" UnCheckValue="0x00"/>
+      <TreeItem Type="PropTreeItemCheckBox" Des="Only read new tags" StartBitPos="7.8.3" EndBitPos="7.8.3" CheckValue="0x01" UnCheckValue="0x00"/>
+      <TreeItem Type="PropTreeItemEdit"  Des="AFI" ValueFormat="ValueFormatHex" StartBitPos="7.9.0" EndBitPos="7.9.7"/>
+      <TreeItem Type="PropTreeItemEdit"  Des="Max inventory timeout" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="7.10.0" EndBitPos="7.10.7"/>
+    </TreeItem>
+
+
+    <TreeItem Type="PropTreeItem" Des="System setting">
+      <TreeItem Type="PropTreeItemCombo" Des="Language" StartBitPos="6.5.0" EndBitPos="6.5.7">
+        <List Des="Chinese" Value="0x00"/>
+        <List Des="English" Value="0x01"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemCombo" Des="Shut down when idle time continue (min)" ListStart="0"  ListEnd="60" StartBitPos="6.6.0" EndBitPos="6.6.7"/>
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="Work mode setting">
+      <TreeItem Type="PropTreeItemCombo" Des="Work mode" StartBitPos="6.4.0" EndBitPos="6.4.7">
+        <List Des="Host mode" Value="0x00"/>
+        <List Des="Scan mode" Value="0x01"/>
+        <List Des="Anti theft" Value="0x02"/>
+        <List Des="Search mode" Value="0x03"/>
+        <List Des="Book mode" Value="0x04"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemCombo" Des="Data storage area" StartBitPos="8.6.0" EndBitPos="8.6.7">
+        <List Des="In RAM" Value="0x00"/>
+        <List Des="In Flash" Value="0x01"/>
+      </TreeItem>
+      <TreeItem Type="PropTreeItemCheckBox" Des="Get DSFID when reading UID" StartBitPos="8.10.0" EndBitPos="8.10.7" CheckValue="0x01" UnCheckValue="0x00"/>
+
+      <TreeItem Type="PropTreeItem" Des="Scan mode setting">
+        <TreeItem Type="PropTreeItemCombo" Des="Scan content" StartBitPos="8.0.0" EndBitPos="8.0.7">
+          <List Des="UID" Value="0x00"/>
+          <List Des="Barcode" Value="0x01"/>
+          <List Des="UID+Barcode" Value="0x02"/>
+        </TreeItem>
+        <TreeItem Type="PropTreeItemEdit"  Des="Address" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="8.1.0" EndBitPos="8.1.7"/>
+        <TreeItem Type="PropTreeItemEdit"  Des="Lenght" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="8.2.0" EndBitPos="8.2.7"/>
+
+        <TreeItem Type="PropTreeItem" Des="Function enable">
+          <TreeItem Type="PropTreeItemCheckBox" Des="Enable EAS" StartBitPos="8.3.0" EndBitPos="8.3.0" CheckValue="0x01" UnCheckValue="0x00"/>
+          <TreeItem Type="PropTreeItemCheckBox" Des="Disable EAS" StartBitPos="8.3.1" EndBitPos="8.3.1" CheckValue="0x01" UnCheckValue="0x00"/>
+          <TreeItem Type="PropTreeItemCheckBox" Des="Check EAS" StartBitPos="8.3.2" EndBitPos="8.3.2" CheckValue="0x01" UnCheckValue="0x00"/>
+          <TreeItem Type="PropTreeItemCheckBox" Des="Modify AFI" StartBitPos="8.3.3" EndBitPos="8.3.3" CheckValue="0x01" UnCheckValue="0x00"/>
+          <TreeItem Type="PropTreeItemCheckBox" Des="Modify DSFID" StartBitPos="8.3.4" EndBitPos="8.3.4" CheckValue="0x01" UnCheckValue="0x00"/>
+        </TreeItem>
+        <TreeItem Type="PropTreeItemEdit"  Des="AFI" ValueFormat="ValueFormatHex" StartBitPos="8.4.0" EndBitPos="8.4.7"/>
+        <TreeItem Type="PropTreeItemEdit"  Des="DSFID" ValueFormat="ValueFormatHex" StartBitPos="8.5.0" EndBitPos="8.5.7"/>
+      </TreeItem>
+
+
+      <TreeItem Type="PropTreeItem" Des="Book mode configuration">
+        <TreeItem Type="PropTreeItem" Des="Bookshelf tag">
+          <TreeItem Type="PropTreeItemCombo" Des="Scan content" StartBitPos="9.0.0" EndBitPos="9.0.7">
+            <List Des="UID" Value="0x00"/>
+            <List Des="Barcode" Value="0x01"/>
+            <List Des="UID+Barcode" Value="0x02"/>
+          </TreeItem>
+          <TreeItem Type="PropTreeItemEdit"  Des="Address" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="9.1.0" EndBitPos="9.1.7"/>
+          <TreeItem Type="PropTreeItemCombo" Des="Length" ListStart="0"  ListEnd="20" StartBitPos="9.2.0" EndBitPos="9.2.7"/>
+          <TreeItem Type="PropTreeItemEdit"  Des="AFI" ValueFormat="ValueFormatHex" StartBitPos="9.3.0" EndBitPos="9.3.7"/>
+        </TreeItem>
+        <TreeItem Type="PropTreeItem" Des="Book tag">
+          <TreeItem Type="PropTreeItemCombo" Des="Scan content" StartBitPos="9.7.0" EndBitPos="9.7.7">
+            <List Des="UID" Value="0x00"/>
+            <List Des="Barcode" Value="0x01"/>
+            <List Des="UID+Barcode" Value="0x02"/>
+          </TreeItem>
+          <TreeItem Type="PropTreeItemEdit"  Des="Address" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="9.8.0" EndBitPos="9.8.7"/>
+          <TreeItem Type="PropTreeItemCombo" Des="Length" ListStart="0"  ListEnd="20" StartBitPos="9.9.0" EndBitPos="9.9.7"/>
+          <TreeItem Type="PropTreeItemEdit"  Des="AFI" ValueFormat="ValueFormatHex" StartBitPos="9.10.0" EndBitPos="9.10.7"/>
+        </TreeItem>
+      </TreeItem>
+
+      <TreeItem Type="PropTreeItem" Des="Anti theft mode configuration">
+        <TreeItem Type="PropTreeItemCombo" Des="Check type" StartBitPos="8.8.0" EndBitPos="8.8.7">
+          <List Des="EAS" Value="0x00"/>
+          <List Des="AFI" Value="0x01"/>
+        </TreeItem>
+        <TreeItem Type="PropTreeItemEdit"  Des="AFI" ValueFormat="ValueFormatHex" StartBitPos="8.9.0" EndBitPos="8.9.7"/>
+      </TreeItem>
+
+      <TreeItem Type="PropTreeItem" Des="Search mode configuration">
+        <TreeItem Type="PropTreeItemCombo" Des="Scan content" StartBitPos="8.11.0" EndBitPos="8.11.7">
+          <List Des="UID" Value="0x00"/>
+          <List Des="Barcode" Value="0x01"/>
+        </TreeItem>
+        <TreeItem Type="PropTreeItemEdit"  Des="Address" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="8.12.0" EndBitPos="8.12.7"/>
+        <TreeItem Type="PropTreeItemCombo" Des="Length" ListStart="0"  ListEnd="41" StartBitPos="8.13.0" EndBitPos="8.13.7"/>
+        
+        <TreeItem Type="PropTreeItem" Des="Tag#1">
+          <TreeItem Type="PropTreeItemCombo" Des="Match length" ListStart="0"  ListEnd="41" StartBitPos="10.0.0" EndBitPos="10.0.7"/>
+          <TreeItem Type="PropTreeItermByteEdit" Des="Math data" ByteCount="41"  StartBitPos="10.1.0" EndBitPos="12.13.7"/>
+        </TreeItem>
+
+        <TreeItem Type="PropTreeItem" Des="Tag#2">
+          <TreeItem Type="PropTreeItemCombo" Des="Match length" ListStart="0"  ListEnd="41" StartBitPos="13.0.0" EndBitPos="13.0.7"/>
+          <TreeItem Type="PropTreeItermByteEdit" Des="Math data" ByteCount="41"  StartBitPos="13.1.0" EndBitPos="15.13.7"/>
+        </TreeItem>
+
+        <TreeItem Type="PropTreeItem" Des="Tag#3">
+          <TreeItem Type="PropTreeItemCombo" Des="Match length" ListStart="0"  ListEnd="41" StartBitPos="16.0.0" EndBitPos="16.0.7"/>
+          <TreeItem Type="PropTreeItermByteEdit" Des="Match data" ByteCount="41"  StartBitPos="16.1.0" EndBitPos="18.13.7"/>
+        </TreeItem>
+
+        <TreeItem Type="PropTreeItem" Des="Tag#4">
+          <TreeItem Type="PropTreeItemCombo" Des="Match length" ListStart="0"  ListEnd="41" StartBitPos="19.0.0" EndBitPos="19.0.7"/>
+          <TreeItem Type="PropTreeItermByteEdit" Des="Match data" ByteCount="41"  StartBitPos="19.1.0" EndBitPos="21.13.7"/>
+        </TreeItem>
+        
+      </TreeItem>
+    </TreeItem>
+
+
+  </PropTreeCfg>
+</Cfg>

@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Cfg Version="1.0">
+  
+  <BlockCfg Size="14">
+    <Address From="0" To="14"/>
+  </BlockCfg>
+
+  <PropTreeCfg>
+    <TreeItem Type="PropTreeItem" Des="系统基本参数">
+		   <TreeItem Type="PropTreeItemCombo" Des="工作模式" StartBitPos="0.0.0" EndBitPos="0.0.7">
+			   <List Des="主机命令模式" Value="0x00"/>
+			   <List Des="主动读模式" Value="0x01"/>
+		   </TreeItem>
+		   <TreeItem Type="PropTreeItemCombo" Des="主动读的数据处理方式" StartBitPos="0.1.0" EndBitPos="0.1.7">
+		       <List Des="不存储，立刻输出到串行通信接口" Value="0x00"/>
+		   </TreeItem>
+	</TreeItem>
+    <TreeItem Type="PropTreeItem" Des="通信接口">
+          <TreeItem Type="PropTreeItem" Des="接口使能"> 
+				  <TreeItem Type="PropTreeItemCheckBox" Des="是否关闭USB接口" StartBitPos="1.0.0" EndBitPos="1.0.0" CheckValue="0x01" UnCheckValue="0x00"/>
+	
+		  </TreeItem>
+		  <TreeItem Type="PropTreeItemCombo" Des="USB接口复合类型" StartBitPos="1.0.1" EndBitPos="1.0.1" >
+					<List Des="HID Custom + Keyboard" Value="0x00"/>
+					<List Des="HID Custom + VCP" Value="0x01"/>
+		  </TreeItem>
+		  <TreeItem Type="PropTreeItem" Des="串口参数">
+                    <TreeItem Type="PropTreeItemEdit"  Des="总线地址" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="1.2.0" EndBitPos="1.2.7"/>
+					<TreeItem Type="PropTreeItemCombo" Des="波特率" StartBitPos="1.3.0" EndBitPos="1.3.7">
+					  <List Des="9600" Value="0x00"/>
+					  <List Des="19200" Value="0x01"/>
+					  <List Des="38400" Value="0x02"/>
+					  <List Des="57600" Value="0x03"/>
+					  <List Des="115200" Value="0x04"/>
+					  <List Des="230400" Value="0x05"/>
+					</TreeItem>
+
+					<TreeItem Type="PropTreeItemCombo" Des="校验类型" StartBitPos="1.4.0" EndBitPos="1.4.7">
+					  <List Des="无校验" Value="0x00"/>
+					  <List Des="奇校验" Value="0x01"/>
+					  <List Des="偶校验" Value="0x02"/>
+					</TreeItem>
+
+		  </TreeItem>
+
+    </TreeItem>
+	
+    <TreeItem Type="PropTreeItem" Des="IO端口参数">
+		  <TreeItem Type="PropTreeItemCombo" Des="GPIO 1" StartBitPos="2.0.0" EndBitPos="2.0.3">
+			<List Des="不使用该IO接口" Value="0x00"/>
+			<List Des="定义为输入端口 1" Value="0x01"/>
+			<List Des="定义为输出端口 1" Value="0x02"/>
+			<List Des="用作工作指示灯的控制IO" Value="0x03"/>
+			<List Des="用作发现标签指示灯" Value="0x04"/>
+			<List Des="用作错误指示灯" Value="0x05"/>
+		  </TreeItem>
+
+		  <TreeItem Type="PropTreeItemCombo" Des="GPIO 2" StartBitPos="2.0.4" EndBitPos="2.0.7">
+			<List Des="不使用该IO接口" Value="0x00"/>
+			<List Des="定义为输入端口 2" Value="0x01"/>
+			<List Des="定义为输出端口 2" Value="0x02"/>
+			<List Des="用作工作指示灯的控制IO" Value="0x03"/>
+			<List Des="用作发现标签指示灯" Value="0x04"/>
+			<List Des="用作错误指示灯" Value="0x05"/>
+		  </TreeItem>
+
+		  <TreeItem Type="PropTreeItemCombo" Des="GPIO 3" StartBitPos="2.1.0" EndBitPos="2.1.3">
+			<List Des="不使用该IO接口" Value="0x00"/>
+			<List Des="定义为输入端口 3" Value="0x01"/>
+			<List Des="定义为输出端口 3" Value="0x02"/>
+			<List Des="用作工作指示灯的控制IO" Value="0x03"/>
+			<List Des="用作发现标签指示灯" Value="0x04"/>
+			<List Des="用作错误指示灯" Value="0x05"/>
+		  </TreeItem>
+
+		  <TreeItem Type="PropTreeItemCombo" Des="GPIO 4" StartBitPos="2.1.4" EndBitPos="2.1.7">
+			<List Des="不使用该IO接口" Value="0x00"/>
+			<List Des="定义为输入端口 4" Value="0x01"/>
+			<List Des="定义为输出端口 4" Value="0x02"/>
+			<List Des="用作工作指示灯的控制IO" Value="0x03"/>
+			<List Des="用作发现标签指示灯" Value="0x04"/>
+			<List Des="用作错误指示灯" Value="0x05"/>
+		  </TreeItem>
+
+		  <TreeItem Type="PropTreeItemCombo" Des="GPIO 5" StartBitPos="2.2.0" EndBitPos="2.2.3">
+			<List Des="不使用该IO接口" Value="0x00"/>
+			<List Des="定义为输入端口 5" Value="0x01"/>
+			<List Des="定义为输出端口 5" Value="0x02"/>
+			<List Des="用作工作指示灯的控制IO" Value="0x03"/>
+			<List Des="用作发现标签指示灯" Value="0x04"/>
+			<List Des="用作错误指示灯" Value="0x05"/>
+		  </TreeItem>
+          <TreeItem Type="PropTreeItem" Des="输出端口的初始电平状态">
+		     <TreeItem Type="PropTreeItemCombo" Des="输出端口 1" StartBitPos="2.4.0" EndBitPos="2.4.0">
+			      <List Des="低电平" Value="0x00"/>
+				  <List Des="高电平" Value="0x01"/>
+			 </TreeItem>
+		     <TreeItem Type="PropTreeItemCombo" Des="输出端口 2" StartBitPos="2.4.1" EndBitPos="2.4.1">
+			      <List Des="低电平" Value="0x00"/>
+				  <List Des="高电平" Value="0x01"/>
+			 </TreeItem>
+		     <TreeItem Type="PropTreeItemCombo" Des="输出端口 3" StartBitPos="2.4.2" EndBitPos="2.4.2">
+			      <List Des="低电平" Value="0x00"/>
+				  <List Des="高电平" Value="0x01"/>
+			 </TreeItem>
+		     <TreeItem Type="PropTreeItemCombo" Des="输出端口 4" StartBitPos="2.4.3" EndBitPos="2.4.3">
+			      <List Des="低电平" Value="0x00"/>
+				  <List Des="高电平" Value="0x01"/>
+			 </TreeItem>
+		     <TreeItem Type="PropTreeItemCombo" Des="输出端口 5" StartBitPos="2.4.4" EndBitPos="2.4.4">
+			      <List Des="低电平" Value="0x00"/>
+				  <List Des="高电平" Value="0x01"/>
+			 </TreeItem>
+          </TreeItem>
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="射频和协议">
+	      <TreeItem Type="PropTreeItem" Des="射频参数">
+			  <TreeItem Type="PropTreeItemCombo" Des="射频功率" StartBitPos="4.0.0" EndBitPos="4.0.7">
+				<List Des="250mW" Value="0x00"/>
+				<List Des="500mW" Value="0x01"/>
+				<List Des="750mW" Value="0x02"/>
+				<List Des="1000mW" Value="0x03"/>
+				<List Des="1250mW" Value="0x04"/>
+				<List Des="1500mW" Value="0x05"/>
+			  </TreeItem>
+          </TreeItem> 
+		  <TreeItem Type="PropTreeItem" Des="空中接口参数">
+			  <TreeItem Type="PropTreeItemCombo" Des="CMD调制深度" StartBitPos="4.1.0" EndBitPos="4.1.0">
+				<List Des="ASK 100%" Value="0x00"/>
+				<List Des="ASK 10%" Value="0x01"/>
+			  </TreeItem>
+			  <TreeItem Type="PropTreeItemCombo" Des="EOF调制深度" StartBitPos="4.1.1" EndBitPos="4.1.1">
+				<List Des="ASK 100%" Value="0x00"/>
+				<List Des="ASK 10%" Value="0x01"/>
+			  </TreeItem>
+
+		  </TreeItem>
+
+    </TreeItem>
+
+    <TreeItem Type="PropTreeItem" Des="盘点参数">
+      <TreeItem Type="PropTreeItem" Des="基本参数">
+	      <TreeItem Type="PropTreeItemCheckBox" Des="发现标签蜂鸣器是否鸣叫" StartBitPos="5.0.4" EndBitPos="5.0.4" CheckValue="0x01" UnCheckValue="0x00"/>
+		  <TreeItem Type="PropTreeItemCheckBox" Des="匹配AFI" StartBitPos="5.0.1" EndBitPos="5.0.1" CheckValue="0x01" UnCheckValue="0x00"/>
+
+		  <TreeItem Type="PropTreeItemEdit"  Des="AFI值" ValueFormat="ValueFormatHex" MaxValue="0xFF" StartBitPos="5.7.0" EndBitPos="5.7.7"/>
+		  <TreeItem Type="PropTreeItemCombo" Des="时隙" StartBitPos="5.8.0" EndBitPos="5.8.3">
+			  <List Des="1 slot" Value="0x00"/>
+			  <List Des="16 slot" Value="0x01"/>
+		  </TreeItem>
+          <TreeItem Type="PropTreeItem" Des="停止触发器">
+                <TreeItem Type="PropTreeItemCombo" Des="天线退出条件" StartBitPos="5.8.4" EndBitPos="5.8.7">
+                     <List Des="尝试N次未发现新标签则退出" Value="0x00"/>
+                     <List Des="超时时间超时则退出" Value="0x01"/>
+                </TreeItem>
+                <TreeItem Type="PropTreeItemCombo" Des="未发现新标签尝试次数" StartBitPos="5.2.0" EndBitPos="5.2.7">
+                     <List Des="0" Value="0x00"/>
+                     <List Des="1" Value="0x01"/>
+                     <List Des="2" Value="0x02"/>
+                     <List Des="3" Value="0x03"/>
+                     <List Des="4" Value="0x04"/>
+					 <List Des="5" Value="0x05"/>
+					 <List Des="6" Value="0x06"/>
+					 <List Des="7" Value="0x07"/>
+					 <List Des="8" Value="0x08"/>
+					 <List Des="9" Value="0x09"/>
+					 <List Des="10" Value="0x0A"/>
+					 <List Des="11" Value="0x0B"/>
+					 <List Des="12" Value="0x0C"/>
+                </TreeItem>
+				<TreeItem Type="PropTreeItemEdit"  Des="超时时间(ms)" ValueFormat="ValueFormatNumber" MaxValue="0xFFFFFFFF" StartBitPos="5.3.0" EndBitPos="5.6.7"/>
+         </TreeItem>
+
+    </TreeItem>	
+	<TreeItem Type="PropTreeItem" Des="特殊应用参数">
+	    <TreeItem Type="PropTreeItemCheckBox" Des="是否关闭防冲突" StartBitPos="5.0.0" EndBitPos="5.0.0" CheckValue="0x01" UnCheckValue="0x00"/>
+		<TreeItem Type="PropTreeItemCheckBox" Des="是否关闭休眠命令" StartBitPos="5.0.2" EndBitPos="5.0.2" CheckValue="0x01" UnCheckValue="0x00"/>
+        <TreeItem Type="PropTreeItemCheckBox" Des="是否先发探测命令" StartBitPos="5.0.3" EndBitPos="5.0.3" CheckValue="0x01" UnCheckValue="0x00"/>
+		<TreeItem Type="PropTreeItemEdit"  Des="t3(us)" ValueFormat="ValueFormatNumber" MaxValue="0xFFFF" StartBitPos="5.9.0" EndBitPos="5.10.7"/>
+        <TreeItem Type="PropTreeItemCombo" Des="ISO15693协议盘点方式" StartBitPos="5.11.0" EndBitPos="5.11.7">
+          <List Des="ISO15693 标准盘点方式" Value="0x00"/>
+       </TreeItem>
+	</TreeItem>
+  </TreeItem>
+
+  <TreeItem Type="PropTreeItem" Des="标签读写参数">
+      <TreeItem Type="PropTreeItemEdit"  Des="命令重试次数" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="7.0.0" EndBitPos="7.0.7"/>
+      <TreeItem Type="PropTreeItem" Des="无法识别型号的标签的信息">
+        <TreeItem Type="PropTreeItemEdit"  Des="数据块长度" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="7.1.0" EndBitPos="7.1.7"/>
+        <TreeItem Type="PropTreeItemCombo"  Des="读数据块" StartBitPos="7.4.0" EndBitPos="7.4.3">
+          <List Des="使用ISO15693读单块指令" Value="0x00"/>
+          <List Des="使用ISO15693读多块指令" Value="0x01"/>
+        </TreeItem>
+        <TreeItem Type="PropTreeItem" Des="写数据块">
+			<TreeItem Type="PropTreeItemCombo"  Des="命令" StartBitPos="7.4.4" EndBitPos="7.4.7">
+			  <List Des="使用ISO15693写单块指令" Value="0x00"/>
+			  <List Des="使用ISO15693写多块指令" Value="0x01"/>
+			</TreeItem>
+			<TreeItem Type="PropTreeItemCombo" Des="Write Option" StartBitPos="8.3.0" EndBitPos="8.3.0">
+			  <List Des="=0" Value="0x00"/>
+			  <List Des="=1" Value="0x01"/>
+			</TreeItem>
+			<TreeItem Type="PropTreeItemEdit"  Des="Write Option=0时的等待时间(302us)" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="7.2.0" EndBitPos="7.2.7"/>
+			<TreeItem Type="PropTreeItemEdit"  Des="Write Option=1时的等待时间(ms)" ValueFormat="ValueFormatNumber" MaxValue="0x7F" StartBitPos="7.3.1" EndBitPos="7.3.7"/>
+		</TreeItem>
+      </TreeItem>
+   </TreeItem>
+ 
+    <TreeItem Type="PropTreeItem" Des="主动读模式">
+	   <TreeItem Type="PropTreeItem"  Des="基本参数">
+	       <TreeItem Type="PropTreeItemCheckBox" Des="盘点完成后是否关闭射频" StartBitPos="9.0.0" EndBitPos="9.0.0" CheckValue="0x01" UnCheckValue="0x00"/>
+	   </TreeItem>
+	   
+	   <TreeItem Type="PropTreeItem" Des="数据源">
+			<TreeItem Type="PropTreeItem" Des="字段选择"> 
+					  <TreeItem Type="PropTreeItemCheckBox" Des="序列号" StartBitPos="10.0.0" EndBitPos="10.0.0" CheckValue="0x01" UnCheckValue="0x00"/>
+					  <TreeItem Type="PropTreeItemCheckBox" Des="数据块" StartBitPos="10.0.1" EndBitPos="10.0.1" CheckValue="0x01" UnCheckValue="0x00"/>
+					  <TreeItem Type="PropTreeItemCheckBox" Des="天线ID" StartBitPos="10.0.2" EndBitPos="10.0.2" CheckValue="0x01" UnCheckValue="0x00"/>
+					  <TreeItem Type="PropTreeItemCheckBox" Des="输入状态" StartBitPos="10.0.3" EndBitPos="10.0.3" CheckValue="0x01" UnCheckValue="0x00"/>
+		    </TreeItem>
+		    <TreeItem Type="PropTreeItem" Des="字段参数"> 
+					   <TreeItem Type="PropTreeItemCombo" Des="序列号输出长度" ListStart="1"  ListEnd="8" StartBitPos="10.3.4" EndBitPos="10.3.7"/>
+					   <TreeItem Type="PropTreeItem" Des="读数据块参数">
+							   <TreeItem Type="PropTreeItemEdit"  Des="偏移字节" ValueFormat="ValueFormatNumber" MaxValue="0xFFFF" StartBitPos="10.5.0" EndBitPos="10.6.7"/>
+							   <TreeItem Type="PropTreeItemEdit"  Des="字节数量" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="10.7.0" EndBitPos="10.7.7"/>
+							   <TreeItem Type="PropTreeItemEdit"  Des="密钥索引" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="10.8.0" EndBitPos="10.8.7"/>
+					   </TreeItem>
+					   <TreeItem Type="PropTreeItem" Des="输入端口选择">
+							  <TreeItem Type="PropTreeItemCheckBox" Des="输入端口 1" StartBitPos="10.9.0" EndBitPos="10.9.0" CheckValue="0x01" UnCheckValue="0x00"/>
+							  <TreeItem Type="PropTreeItemCheckBox" Des="输入端口 2" StartBitPos="10.9.1" EndBitPos="10.9.1" CheckValue="0x01" UnCheckValue="0x00"/>
+							  <TreeItem Type="PropTreeItemCheckBox" Des="输入端口 3" StartBitPos="10.9.2" EndBitPos="10.9.2" CheckValue="0x01" UnCheckValue="0x00"/>
+							  <TreeItem Type="PropTreeItemCheckBox" Des="输入端口 4" StartBitPos="10.9.3" EndBitPos="10.9.3" CheckValue="0x01" UnCheckValue="0x00"/>
+							  <TreeItem Type="PropTreeItemCheckBox" Des="输入端口 5" StartBitPos="10.9.4" EndBitPos="10.9.4" CheckValue="0x01" UnCheckValue="0x00"/>
+					   </TreeItem>
+			</TreeItem>
+			<TreeItem Type="PropTreeItem" Des="字段转换格式">
+					<TreeItem Type="PropTreeItemCombo" Des="序列号转换格式" StartBitPos="10.3.0" EndBitPos="10.3.3">
+					  <List Des="以原始字节输出" Value="0x00"/>
+					  <List Des="原卡号每个字节转16进制字符输出" Value="0x01"/>
+					  <List Des="低3个字节转整型字符输出" Value="0x02"/>
+					  <List Des="低4个字节转整型字符输出" Value="0x03"/>
+					  <List Des="微耕控制器转换输出" Value="0x04"/>
+					  <List Des="微耕控制器转换输出定长8位输出" Value="0x05"/>
+					</TreeItem>
+					<TreeItem Type="PropTreeItemCheckBox" Des="是否反转序列号" StartBitPos="10.2.0" EndBitPos="10.2.0" CheckValue="0x01" UnCheckValue="0x00"/>
+					<TreeItem Type="PropTreeItemCombo" Des="数据块转换格式" StartBitPos="10.4.0" EndBitPos="10.4.3">
+					  <List Des="以原始字节输出" Value="0x00"/>
+					  <List Des="每个字节转16进制字符输出" Value="0x01"/>
+					</TreeItem>
+					<TreeItem Type="PropTreeItemCombo" Des="其他数据项转换格式" StartBitPos="10.4.4" EndBitPos="10.4.7">
+					  <List Des="以原始字节输出" Value="0x00"/>
+					  <List Des="每个字节转16进制字符输出" Value="0x01"/>
+					</TreeItem>
+		   </TreeItem>
+	   </TreeItem>
+	   <TreeItem Type="PropTreeItem" Des="触发器">
+			<TreeItem Type="PropTreeItemCombo" Des="触发方式" StartBitPos="11.0.0" EndBitPos="11.0.7">
+			     <List Des="周期触发" Value="0x00"/>
+			</TreeItem>
+			<TreeItem Type="PropTreeItem" Des="周期触发参数">
+			     <TreeItem Type="PropTreeItemEdit"  Des="间隔时间ms" ValueFormat="ValueFormatNumber" MaxValue="0xFFFF" StartBitPos="11.1.0" EndBitPos="11.2.7"/>
+				 <TreeItem Type="PropTreeItemEdit"  Des="盘点(N+1)次,0表示1次" ValueFormat="ValueFormatNumber" MaxValue="0xFF" StartBitPos="11.3.0" EndBitPos="11.3.7"/>
+			</TreeItem>
+            
+	   </TreeItem>
+	   <TreeItem Type="PropTreeItem" Des="过滤器">
+	        <TreeItem Type="PropTreeItemEdit"  Des="有效时间(100ms)" ValueFormat="ValueFormatNumber" MaxValue="0xFFFF" StartBitPos="12.0.0" EndBitPos="12.1.7"/>
+	   </TreeItem>
+       <TreeItem Type="PropTreeItem" Des="串行输出参数">
+		  <TreeItem Type="PropTreeItemCombo" Des="输出接口" StartBitPos="13.0.0" EndBitPos="13.0.7">
+			    <List Des="无输出" Value="0x00"/>
+			    <List Des="串口输出" Value="0x01"/>
+			    <List Des="HID Custom" Value="0x02"/>
+			    <List Des="模拟按键输出" Value="0x03"/>
+		  </TreeItem>		 
+		  <TreeItem Type="PropTreeItem" Des="数据帧结构定义">
+			<TreeItem Type="PropTreeItem" Des="帧结构选项">
+			  <TreeItem Type="PropTreeItemCheckBox" Des="输出帧头字节" StartBitPos="13.1.0" EndBitPos="13.1.0" CheckValue="0x01" UnCheckValue="0x00"/>
+			  <TreeItem Type="PropTreeItemCheckBox" Des="输出分隔符" StartBitPos="13.1.1" EndBitPos="13.1.1" CheckValue="0x01" UnCheckValue="0x00"/>
+			  <TreeItem Type="PropTreeItemCheckBox" Des="输出结束符" StartBitPos="13.1.2" EndBitPos="13.1.2" CheckValue="0x01" UnCheckValue="0x00"/>
+
+			  <TreeItem Type="PropTreeItemCombo" Des="分隔符" StartBitPos="13.1.3" EndBitPos="13.1.3">
+				<List Des="系统分隔符" Value="0x00"/>
+				<List Des="自定义分隔符" Value="0x01"/>
+			  </TreeItem>
+
+			  <TreeItem Type="PropTreeItemCombo" Des="结束符" StartBitPos="13.1.4" EndBitPos="13.1.4">
+				<List Des="系统结束符" Value="0x00"/>
+				<List Des="自定义结束符" Value="0x01"/>
+			  </TreeItem>
+			</TreeItem>
+			<TreeItem Type="PropTreeItemCombo" Des="系统分隔符" StartBitPos="13.2.0" EndBitPos="13.2.7">
+              <List Des="回车换行 0x0D+0x0A" Value="0x00"/>
+              <List Des="换行 0x0A" Value="0x01"/>
+              <List Des="回车 0x0D " Value="0x02"/>
+              <List Des="TAB 0x07" Value="0x03"/>
+              <List Des="分号 0x3B" Value="0x04"/>
+              <List Des="逗号 0x2C" Value="0x05"/>
+              <List Des="空格 0x20" Value="0x06"/>
+			</TreeItem>
+			<TreeItem Type="PropTreeItemEdit"  Des="自定义分隔符" ValueFormat="ValueFormatHex" StartBitPos="13.3.0" EndBitPos="13.3.7"/>
+			<TreeItem Type="PropTreeItemCombo" Des="系统结束符" StartBitPos="13.3.0" EndBitPos="13.3.7">
+              <List Des="回车换行 0x0D+0x0A" Value="0x00"/>
+              <List Des="换行 0x0A" Value="0x01"/>
+              <List Des="回车 0x0D " Value="0x02"/>
+              <List Des="TAB 0x07" Value="0x03"/>
+              <List Des="分号 0x3B" Value="0x04"/>
+              <List Des="逗号 0x2C" Value="0x05"/>
+              <List Des="空格 0x20" Value="0x06"/>
+			</TreeItem>
+			<TreeItem Type="PropTreeItem" Des="用户自定义帧头">
+				<TreeItem Type="PropTreeItemCombo" Des="长度" StartBitPos="13.5.0" EndBitPos="13.5.3">
+				    <List Des="1" Value="0x00"/>
+				    <List Des="2" Value="0x01"/>
+				    <List Des="3 " Value="0x02"/>
+				    <List Des="4" Value="0x03"/>
+				</TreeItem>
+				<TreeItem Type="PropTreeItemEdit"  Des="字节1" ValueFormat="ValueFormatHex" StartBitPos="13.6.0" EndBitPos="13.6.7"/>
+				<TreeItem Type="PropTreeItemEdit"  Des="字节2" ValueFormat="ValueFormatHex" StartBitPos="13.7.0" EndBitPos="13.7.7"/>
+				<TreeItem Type="PropTreeItemEdit"  Des="字节3" ValueFormat="ValueFormatHex" StartBitPos="13.8.0" EndBitPos="13.8.7"/>
+				<TreeItem Type="PropTreeItemEdit"  Des="字节4" ValueFormat="ValueFormatHex" StartBitPos="13.9.0" EndBitPos="13.9.7"/>
+			</TreeItem>
+			<TreeItem Type="PropTreeItem" Des="用户自定义结束符">
+				<TreeItem Type="PropTreeItemCombo" Des="长度" StartBitPos="13.5.4" EndBitPos="13.5.7">
+				    <List Des="1" Value="0x00"/>
+				    <List Des="2" Value="0x01"/>
+				    <List Des="3 " Value="0x02"/>
+				</TreeItem>
+				<TreeItem Type="PropTreeItemEdit"  Des="字节1" ValueFormat="ValueFormatHex" StartBitPos="13.10.0" EndBitPos="13.10.7"/>
+				<TreeItem Type="PropTreeItemEdit"  Des="字节2" ValueFormat="ValueFormatHex" StartBitPos="13.11.0" EndBitPos="13.11.7"/>
+				<TreeItem Type="PropTreeItemEdit"  Des="字节3" ValueFormat="ValueFormatHex" StartBitPos="13.12.0" EndBitPos="13.12.7"/>
+			</TreeItem>
+		  </TreeItem>
+       </TreeItem>
+    </TreeItem>
+	<TreeItem Type="PropTreeItem" Des="主机命令模式">
+	    <TreeItem Type="PropTreeItem" Des="盘点命令">
+		    <TreeItem Type="PropTreeItemCheckBox" Des="是否反转序列号" StartBitPos="14.0.0" EndBitPos="14.0.0" CheckValue="0x01" UnCheckValue="0x00"/>
+			<TreeItem Type="PropTreeItemCheckBox" Des="是否使用缓冲模式" StartBitPos="14.0.1" EndBitPos="14.0.1" CheckValue="0x01" UnCheckValue="0x00"/>
+			<TreeItem Type="PropTreeItemCheckBox" Des="是否复位射频" StartBitPos="14.0.2" EndBitPos="14.0.2" CheckValue="0x01" UnCheckValue="0x00"/>
+			<TreeItem Type="PropTreeItemCheckBox" Des="是否天线号作为标签数据的唯一识别符" StartBitPos="14.0.4" EndBitPos="14.0.4" CheckValue="0x01" UnCheckValue="0x00"/>
+			
+			<TreeItem Type="PropTreeItem" Des="标签记录字段选择">
+			      <TreeItem Type="PropTreeItemCheckBox" Des="标签类型" StartBitPos="14.3.0" EndBitPos="14.3.0" CheckValue="0x01" UnCheckValue="0x00"/>
+				  <TreeItem Type="PropTreeItemCheckBox" Des="序列号" StartBitPos="14.3.1" EndBitPos="14.3.1" CheckValue="0x01" UnCheckValue="0x00"/>
+				  <TreeItem Type="PropTreeItemCheckBox" Des="RSSI_V" StartBitPos="14.3.2" EndBitPos="14.3.2" CheckValue="0x01" UnCheckValue="0x00"/>
+				  <TreeItem Type="PropTreeItemCheckBox" Des="天线号" StartBitPos="14.3.3" EndBitPos="14.3.3" CheckValue="0x01" UnCheckValue="0x00"/>
+				  <TreeItem Type="PropTreeItemCheckBox" Des="标签被读到次数" StartBitPos="14.3.4" EndBitPos="14.3.4" CheckValue="0x01" UnCheckValue="0x00"/>
+			</TreeItem>
+		</TreeItem>
+	    <TreeItem Type="PropTreeItem" Des="空闲关闭射频">
+			  <TreeItem Type="PropTreeItemCheckBox" Des="是否启用" StartBitPos="14.0.3" EndBitPos="14.0.3" CheckValue="0x01" UnCheckValue="0x00"/>
+			  <TreeItem Type="PropTreeItemEdit" Des="射频空闲超时时间(100ms)"  ValueFormat="ValueFormatNumber" MaxValue="0xFFFF" StartBitPos="14.5.0" EndBitPos="14.6.7" />
+	    </TreeItem>
+	</TreeItem>
+  </PropTreeCfg>
+</Cfg>
