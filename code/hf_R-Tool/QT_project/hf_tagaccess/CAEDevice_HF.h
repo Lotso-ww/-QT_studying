@@ -1,4 +1,4 @@
-#ifndef CAEDEVICE_HF_H
+﻿#ifndef CAEDEVICE_HF_H
 #define CAEDEVICE_HF_H
 
 #include "./c++_lib/inc/rfidlib_reader.h"
@@ -12,48 +12,58 @@
 using namespace std;
 
 
-//空中协议类型
-#define AIR_ISO14443A			1   //空中协议参数类型
-#define AIR_ISO15693			(1<<1)
-#define AIR_ISO18000p3m3		(1<<2)
-#define AIR_ISO180006C			(1<<3)
-#define AIR_ISO14443B           (1<<4)
-#define AIR_ST_ISO14443B        (1<<5)
-#define AIR_SONY_FELICA         (1<<6)
-#define AIR_NFC_FORUM_TYPE1     (1<<7)
+// 空中接口协议类型(用位掩码表示，每个协议占一位)
+#define AIR_ISO14443A			1       // ISO14443A 协议
+#define AIR_ISO15693			(1<<1)  // ISO15693 协议
+#define AIR_ISO18000p3m3		(1<<2)  // ISO18000-3 Mode3 协议
+#define AIR_ISO180006C			(1<<3)  // ISO18000-6C (UHF EPC Gen2) 协议
+#define AIR_ISO14443B           (1<<4)  // ISO14443B 协议
+#define AIR_ST_ISO14443B        (1<<5)  // ST 特殊的 ISO14443B 协议
+#define AIR_SONY_FELICA         (1<<6)  // Sony Felica 协议
+#define AIR_NFC_FORUM_TYPE1     (1<<7)  // NFC Forum Type1 标签
 
 
+// 高频(HF)读写器设备控制类
+// 运行在子线程中，负责执行标签盘点的循环逻辑
+// 通过信号和槽与主界面(MainWindow)通信，避免阻塞界面
 class CAEDevice_HF : public QObject
 {
     Q_OBJECT
 public slots:
+    // 盘点槽函数：在子线程中被调用，执行循环盘点
+    // hreader: 读写器句柄, antennas: 选中的天线数组, ant_cnt: 天线个数
     void Inventory(void* hreader,BYTE antennas[], BYTE ant_cnt) ;
+    // 盘点完成后的更新槽函数(由主界面更新完表格后触发，用于唤醒子线程继续下一轮)
     void onUpdateCompleted();
+
 signals:
-    void workFinished();
-    void sgnl_inventory_data_hf(int tag_count,vector<CTag_HF> tags,int use_time,int loop_count);
-    void sgnl_inventory_end_loop(int iret);
-    void updateConfirmed();
+    void workFinished();                                                          // 工作完成信号(预留)
+    void sgnl_inventory_data_hf(int tag_count,vector<CTag_HF> tags,int use_time,int loop_count); // 一次盘点完成信号：标签数、标签列表、耗时、轮数
+    void sgnl_inventory_end_loop(int iret);                                       // 整个盘点循环结束信号(带错误码)
+    void updateConfirmed();    // 内部信号，用于唤醒事件循环(loopEvt)
+
 public:
     explicit CAEDevice_HF(QObject *parent = nullptr);
     ~CAEDevice_HF();
 
-    err_t Start_Inventory();
-    err_t End_Inventory();
-    err_t func_Inventory();
+    err_t Start_Inventory();      // 启动盘点(预留)
+    err_t End_Inventory();        // 停止盘点：把 loop 置为 false，退出盘点循环
+    err_t func_Inventory();       // 执行一次盘点操作(核心盘点函数)
+    // 添加一张新发现的 ISO15693 标签到列表
     void AddNewISO15693Tag(UINT32 apl_tid,UINT32 picc_tid,UINT32 ant_id,UINT8 dsfid,UINT8 *uid,USHORT rssi);
+    // 添加一张新发现的 ISO14443A 标签到列表
     void AddNewISO14443ATag(UINT32 apl_tid,UINT32 picc_tid,UINT32 ant_id,UINT8 *uid,UINT8 uidlen);
 
 public:
-    vector<CTag_HF>  m_tags_hf;
-    bool loop;
-    BYTE antennas[64]={0};
-    BYTE ant_count=64;
-    RFID_READER_HANDLE hr=NULL;
+    vector<CTag_HF>  m_tags_hf;            // 本次盘点到的标签集合
+    bool loop;                             // 盘点循环控制标志：true=继续盘点, false=停止
+    BYTE antennas[64]={0};                  // 参与盘点的天线编号数组
+    BYTE ant_count=64;                      // 参与盘点的天线个数
+    RFID_READER_HANDLE hr=NULL;             // 读写器句柄(由主界面传入)
 
 private:
-    QEventLoop loopEvt;
-    bool waitSgl;
+    QEventLoop loopEvt;    // 事件循环，用于等待主界面更新完成后再进行下一轮盘点(实现同步)
+    bool waitSgl;          // 是否正在等待主界面更新完成的标志
 
 };
 
