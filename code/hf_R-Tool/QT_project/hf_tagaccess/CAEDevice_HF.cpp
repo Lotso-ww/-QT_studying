@@ -1,15 +1,15 @@
 ﻿#include "CAEDevice_HF.h"
 #include "gfunction.h"
 #include <QElapsedTimer>
+#include <QEventLoop>
+#include <QDebug>
+#include <QThread>
 
 
 // 构造函数
-// parent: 父对象(这里传入的是 QThread 线程对象，用于把本对象移到子线程运行)
+// parent: 父对象
 CAEDevice_HF::CAEDevice_HF(QObject *parent) : QObject(parent)
 {
-    // 把内部信号 updateConfirmed 连接到事件循环的 quit 槽
-    // 当主界面更新完成后触发 updateConfirmed，loopEvt 退出阻塞，继续下一轮盘点
-    connect(this, &CAEDevice_HF::updateConfirmed, &loopEvt, &QEventLoop::quit);
 }
 
 CAEDevice_HF::~CAEDevice_HF()
@@ -35,16 +35,20 @@ err_t CAEDevice_HF::End_Inventory()
 
 // 盘点主循环(槽函数，在子线程中执行)
 // hreader: 读写器句柄, antennasSrc: 参与盘点的天线数组, ant_cnt: 天线个数
-void CAEDevice_HF::Inventory(void* hreader,BYTE antennasSrc[], BYTE ant_cnt)
+void CAEDevice_HF::Inventory(void* hreader, QByteArray antennasSrc, int ant_cnt)
 {
     err_t iret;
     DWORD tagCount ;
 
     // 保存天线信息到成员变量，供 func_Inventory 使用
-    memset(antennas,0,ant_count);
-    memcpy(antennas,antennasSrc,ant_cnt);
-    ant_count=ant_cnt;
+    memset(antennas, 0, sizeof(antennas));
+    ant_count = static_cast<BYTE>(qMin(qMin(ant_cnt, antennasSrc.size()), static_cast<int>(sizeof(antennas))));
+    memcpy(antennas, reinterpret_cast<const BYTE*>(antennasSrc.constData()), ant_count);
     hr = hreader;        // 保存读写器句柄
+    qDebug() << "Inventory worker thread:" << QThread::currentThread()
+             << "hr:" << hr
+             << "ant_count:" << ant_count
+             << "ants:" << antennasSrc.toHex(' ');
 
     int loop_count=0;            // 盘点轮数计数
     m_tags_hf.clear();           // 清空标签集合
@@ -56,13 +60,6 @@ void CAEDevice_HF::Inventory(void* hreader,BYTE antennasSrc[], BYTE ant_cnt)
     // 盘点主循环：每次循环执行一轮盘点，直到 loop 被置为 false(用户点停止)
     while(loop)
     {
-        // 如果上一轮盘点后正在等待主界面更新完成，则阻塞在这里
-        // 直到主界面发来 signals_updateComplited 信号，触发 updateConfirmed 唤醒
-        if(waitSgl){
-
-            loopEvt.exec();      // 进入事件循环并阻塞，等待 updateConfirmed 信号唤醒
-            waitSgl = false;
-        }
         timer.start();           // 开始计时
         m_tags_hf.clear();       // 清空上一轮的标签，准备本轮盘点
 
@@ -75,7 +72,13 @@ void CAEDevice_HF::Inventory(void* hreader,BYTE antennasSrc[], BYTE ant_cnt)
             tagCount =m_tags_hf.size();  // 本轮盘点到的标签数量
             // 发送信号给主界面：标签数、标签列表、耗时、轮数
             emit sgnl_inventory_data_hf(tagCount,m_tags_hf,sec,loop_count);
-            waitSgl = true;      // 标记需要等待主界面更新完成后再继续下一轮
+            waitSgl = true;      // 等待主界面更新完成后再继续下一轮
+            QEventLoop waitLoop;
+            QMetaObject::Connection connection = connect(this, &CAEDevice_HF::updateConfirmed,
+                                                          &waitLoop, &QEventLoop::quit);
+            waitLoop.exec();
+            disconnect(connection);
+            waitSgl = false;
         }
         else
         {
@@ -96,7 +99,7 @@ void CAEDevice_HF::Inventory(void* hreader,BYTE antennasSrc[], BYTE ant_cnt)
 
 // 盘点完成后的更新槽函数
 // 由主界面更新完表格后发送 signals_updateComplited 信号触发
-// 作用: 转发一个内部信号 updateConfirmed，用于唤醒事件循环 loopEvt，让子线程继续下一轮盘点
+// 作用: 转发一个内部信号 updateConfirmed，用于唤醒局部事件循环，让子线程继续下一轮盘点
 void CAEDevice_HF::onUpdateCompleted() {
     emit updateConfirmed();   // 发送内部唤醒信号
     waitSgl = false;          // 清除等待标志
@@ -115,15 +118,21 @@ err_t CAEDevice_HF::func_Inventory()
     dnInvenParamList = RDR_CreateInvenParamSpecList();
     if(dnInvenParamList)
     {
-        // 添加要盘点的协议：ISO15693 和 ISO14443A
+        // RD2100 使用的 RD5200 驱动配置只声明支持 ISO15693。
+        // 向同一次盘点请求混入其它 HF/UHF 协议会导致设备返回 ERR_DEVICE (-17)。
         ISO15693_CreateInvenParam(dnInvenParamList,0,false,0,0x00);
-        ISO14443A_CreateInvenParam(dnInvenParamList,0);
     }
     else
         return -ERR_MEM;       // 创建失败，返回内存错误
 
     // 执行盘点：用指定的天线集合按指定的协议参数列表进行盘点
     iret = RDR_TagInventory(hr,newAI,ant_count,antennas,dnInvenParamList);
+    DWORD reportCount = RDR_GetTagDataReportCount(hr);
+    qDebug() << "RDR_TagInventory ret:" << iret
+             << "lastError:" << RDR_GetReaderLastReturnError(hr)
+             << "reportCount:" << reportCount
+             << "ant_count:" << ant_count;
+
     // 成功 或 停止触发(读到一定数量后自动停止)都视为可解析数据
     if(iret == NO_ERR || iret == -ERR_STOPTRRIGOCUR)
     {
@@ -133,22 +142,69 @@ err_t CAEDevice_HF::func_Inventory()
         {
             DWORD AIPtype,TagType,AntId,readCount;  // 协议类型、标签类型、天线ID、读次数
             BYTE dsfid;                             // 数据存储格式标识
-            WORD rssi;                              // 信号强度
+            WORD rssi = 0;                          // 信号强度
             BYTE uid[8];                            // 标签UID(8字节)
             BYTE uidlen;                            // UID长度
             // 尝试按 ISO15693 协议解析标签数据报告
             int rtn= ISO15693_ParseTagDataReportEx(dnhReport,&AIPtype,&TagType,&AntId,&dsfid,&rssi,&readCount,uid);
-            if(rtn == NO_ERR)
+            qDebug() << "ISO15693 parse ret:" << rtn;
+            if(rtn != NO_ERR)
             {
-                // 解析成功，添加到标签集合
+                BYTE rawReport[256] = {0};
+                DWORD rawReportLen = sizeof(rawReport);
+                int rawRet = RDR_ParseTagDataReportRaw(dnhReport, rawReport, &rawReportLen);
+                qDebug() << "Raw report parse ret:" << rawRet
+                         << "length:" << rawReportLen
+                         << "data:" << QByteArray(reinterpret_cast<const char*>(rawReport),
+                                                    qMin(rawReportLen, static_cast<DWORD>(sizeof(rawReport)))).toHex(' ');
+
+                // 某些旧版 ISO15693 DLL 不支持 Ex 接口，回退到基础解析接口。
+                // 基础接口不返回 RSSI 和读次数，但仍能得到标签类型和 UID。
+                rtn = ISO15693_ParseTagDataReport(dnhReport,
+                                                  &AIPtype,&TagType,&AntId,&dsfid,uid);
+                qDebug() << "ISO15693 basic parse ret:" << rtn;
+                if(rtn == NO_ERR)
+                {
+                    AddNewISO15693Tag(AIPtype,TagType,AntId,dsfid,uid,rssi);
+                }
+            }
+            else
+            {
                 AddNewISO15693Tag(AIPtype,TagType,AntId,dsfid,uid,rssi);
             }
             // 尝试按 ISO14443A 协议解析标签数据报告
             rtn = ISO14443A_ParseTagDataReport(dnhReport,&AIPtype,&TagType,&AntId,uid,&uidlen);
+            qDebug() << "ISO14443A parse ret:" << rtn;
             if(rtn  == NO_ERR)
             {
                 // 解析成功，添加到标签集合
                 AddNewISO14443ATag(AIPtype,TagType,AntId ,uid, uidlen);
+            }
+            DWORD metaFlags = 0;
+            DWORD dataLen = sizeof(uid);
+            rtn = ISO14443B_ParseTagDataReport(dnhReport,&AIPtype,&TagType,&AntId,&metaFlags,uid,&dataLen);
+            qDebug() << "ISO14443B parse ret:" << rtn;
+            if(rtn == NO_ERR)
+            {
+                AddNewGenericTag(AIPtype,TagType,AntId,uid,dataLen);
+            }
+
+            BYTE chipId = 0;
+            dataLen = sizeof(uid);
+            rtn = STISO14443B_ParseTagDataReport(dnhReport,&AIPtype,&TagType,&AntId,&chipId,uid,&dataLen);
+            qDebug() << "STISO14443B parse ret:" << rtn;
+            if(rtn == NO_ERR)
+            {
+                AddNewGenericTag(AIPtype,TagType,AntId,uid,dataLen);
+            }
+
+            BYTE tagData[64] = {0};
+            dataLen = sizeof(tagData);
+            rtn = ISO18000p3m3_ParseTagDataReport(dnhReport,&AIPtype,&TagType,&AntId,&metaFlags,tagData,&dataLen);
+            qDebug() << "ISO18000p3m3 parse ret:" << rtn;
+            if(rtn == NO_ERR)
+            {
+                AddNewGenericTag(AIPtype,TagType,AntId,tagData,dataLen);
             }
             // 获取下一张标签的数据报告
             dnhReport = RDR_GetTagDataReport(hr,RFID_SEEK_NEXT);
@@ -314,6 +370,50 @@ void CAEDevice_HF::AddNewISO14443ATag(UINT32 apl_tid,UINT32 picc_tid,UINT32 ant_
     {
         // 已存在则计数+1
         pTag->m_counter++;
+        if(pTag->m_counter>=500000)
+        {
+            pTag->m_counter = 1;
+        }
+    }
+}
+
+void CAEDevice_HF::AddNewGenericTag(UINT32 apl_tid,UINT32 picc_tid,UINT32 ant_id,UINT8 *uid,UINT32 uidlen,USHORT rssi)
+{
+    if(uidlen == 0)
+        return;
+
+    CHAR c_uid[128];
+    memset(c_uid,0,sizeof(c_uid));
+    int safeLen = qMin(static_cast<int>(uidlen), static_cast<int>((sizeof(c_uid) - 1) / 2));
+    BytesToHexStr(uid,safeLen,c_uid);
+    QString suid = QString("%1").arg(c_uid);
+
+    UINT32 i;
+    CTag_HF* pTag;
+    for(i=0;i<m_tags_hf.size();i++)
+    {
+        pTag=(CTag_HF*)&m_tags_hf.at(i);
+        if(pTag->m_uid == suid && pTag->m_antNo == ant_id)
+        {
+            break;
+        }
+    }
+
+    if(i>=m_tags_hf.size())
+    {
+        CTag_HF newtag;
+        newtag.m_counter = 1;
+        newtag.m_uid = suid;
+        newtag.m_type = picc_tid;
+        newtag.m_antNo = ant_id;
+        newtag.m_AIP = apl_tid;
+        newtag.m_rssi = rssi;
+        m_tags_hf.push_back(newtag);
+    }
+    else
+    {
+        pTag->m_counter++;
+        pTag->m_rssi = rssi;
         if(pTag->m_counter>=500000)
         {
             pTag->m_counter = 1;

@@ -2,6 +2,8 @@
 #define TAG_HF_H
 
 #include "qstring.h"
+#include <QMetaType>
+#include <vector>
 #include "../c++_lib/inc/rfidlib.h"
 // 高频(HF)标签类，保存一张RFID标签的盘点信息
 class CTag_HF
@@ -35,5 +37,8 @@ public:
         return false;
     }
 };
+
+Q_DECLARE_METATYPE(CTag_HF)
+Q_DECLARE_METATYPE(std::vector<CTag_HF>)
 
 #endif // TAG_HF_H

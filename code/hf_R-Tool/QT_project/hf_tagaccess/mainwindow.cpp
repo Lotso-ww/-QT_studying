@@ -5,7 +5,11 @@
 #include "gfunction.h"
 #include "./c++_lib/inc/rfidlib.h"
 
+#include <QMetaType>
 #include <QThread>
+#include <QDebug>
+#include <QCoreApplication>
+#include <QDir>
 
 using namespace Qt;
 // 把 TCHAR(宽字符)字符串转换为 QString
@@ -25,16 +29,21 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    qRegisterMetaType<std::vector<CTag_HF>>("vector<CTag_HF>");
+    qRegisterMetaType<std::vector<CTag_HF>>("std::vector<CTag_HF>");
 
     int iret = -1;     // 操作返回值
     int drvCnt = 0;   // 已加载的驱动个数
 
 
-    // 第1步：加载读写器驱动(从 "\Drivers" 目录)
-    QString connStr = "\\Drivers";
-    const wchar_t* connStrPtr = reinterpret_cast<const wchar_t*>(connStr.utf16());
+    // 第1步：从程序目录加载读写器驱动，避免依赖当前工作目录或系统根目录
+    QString driverPath = QDir(QCoreApplication::applicationDirPath()).filePath("Drivers");
+    const wchar_t* connStrPtr = reinterpret_cast<const wchar_t*>(driverPath.utf16());
     iret = RDR_LoadReaderDrivers(connStrPtr);
     drvCnt = RDR_GetLoadedReaderDriverCount();
+    qDebug() << "RDR_LoadReaderDrivers path:" << driverPath
+             << "ret:" << iret
+             << "driverCount:" << drvCnt;
 
     // 第2步：枚举本机所有可用的串口，填入"串口名"下拉框
     DWORD COMCount ;
@@ -105,7 +114,6 @@ MainWindow::MainWindow(QWidget *parent)
         ui->cmb_com_name->setCurrentIndex(0) ;
     }
 
-
 }
 
 // 获取天线数量，填充天线列表框(用 QListWidgetItem + 复选框表示)
@@ -164,23 +172,64 @@ void MainWindow::on_pushButton_clicked()
     getConnectString(pConn);
     wchar_t* conn = ANSIToUnicode(pConn);   // 转为宽字符
      LPCTSTR pconnStr =reinterpret_cast<LPCTSTR>(connStr.utf16());
+    qDebug() << "RDR_Open conn:" << pConn;
     int iret = RDR_Open(conn,&hr) ;          // 打开读写器
     free(conn);
-    if(iret == 0 ){                          // 打开成功
+    if(iret == 0 ){                          // 参数和通信句柄打开成功
+        // RDR_Open 可能只打开了 COM 句柄，并不保证读写器已经在线。
+        // 通过需要设备回应的接口验证真实硬件连接。
+        DWORD detectedAntCount = 0;
+        int detectRet = RDR_DetectAntennaCount(hr, &detectedAntCount);
+        int lastError = RDR_GetReaderLastReturnError(hr);
+        qDebug() << "RDR_DetectAntennaCount ret:" << detectRet
+                 << "lastError:" << lastError
+                 << "count:" << detectedAntCount;
+        // 部分读写器驱动不实现 RDR_DetectAntennaCount，会返回 -ERR_NOSYS。
+        // 这表示接口不支持，不表示读写器连接失败，应继续使用已打开的句柄。
+        const bool detectUnsupported = (detectRet == -ERR_NOSYS);
+        if(detectRet != NO_ERR && !detectUnsupported)
+        {
+            RDR_Close(hr);
+            hr = nullptr;
+            QString errorText = QString("Reader probe failed: detect=%1, lastError=%2, antennaCount=%3")
+                    .arg(detectRet).arg(lastError).arg(detectedAntCount);
+            set_info(errorText, false);
+            QMessageBox::warning(this, "Reader", errorText, QMessageBox::Ok);
+            return;
+        }
+
+        DWORD antennaCount = RDR_GetAntennaInterfaceCount(hr);
+        if(detectUnsupported)
+        {
+            set_info(QString("Reader opened; antenna probe is not supported"));
+            qDebug() << "Reader antenna probe unsupported, fallback antennaCount:" << antennaCount;
+        }
+        else
+        {
+            set_info(QString("Open reader success"));
+            qDebug() << "Reader antennaCount:" << antennaCount
+                     << "detectedAntennaCount:" << detectedAntCount;
+        }
         ui->pushButton_2->setEnabled(true);  // 启用"关闭"按钮
         ui->pushButton->setEnabled(false);   // 禁用"打开"按钮
         bind_antennas();                     // 填充天线列表
 
         // 创建子线程，并把 device 对象移到子线程运行(避免盘点阻塞界面)
         thread = new QThread();
-        device = new CAEDevice_HF(thread);
+        device = new CAEDevice_HF();
         device->moveToThread(thread);
+        connect(thread, &QThread::finished, device, &QObject::deleteLater);
         // 连接信号和槽：主界面 <-> 子线程设备对象
         connect(this,&MainWindow::signals_Inventory,device,&CAEDevice_HF::Inventory);              // 主界面发盘点信号->子线程盘点
         connect(device,&CAEDevice_HF::sgnl_inventory_data_hf,this,&MainWindow::slot_inventory_data_hf); // 子线程盘点数据->主界面更新
         connect(device,&CAEDevice_HF::sgnl_inventory_end_loop,this,&MainWindow::slot_inventory_end_loop); // 子线程盘点结束->主界面
         connect(this,&MainWindow::signals_updateComplited,device,&CAEDevice_HF::onUpdateCompleted);   // 主界面更新完成->子线程唤醒
         thread->start();
+    }
+    else
+    {
+        set_info(QString("Open reader failed! err=%1").arg(iret), false);
+        QMessageBox::warning(this, "Reader", QString("Open reader failed! err=%1").arg(iret), QMessageBox::Ok);
     }
 
 }
@@ -205,6 +254,11 @@ void MainWindow::on_pushButton_2_clicked()
         disconnect(device,&CAEDevice_HF::sgnl_inventory_data_hf,this,&MainWindow::slot_inventory_data_hf);
         disconnect(device,&CAEDevice_HF::sgnl_inventory_end_loop,this,&MainWindow::slot_inventory_end_loop);
         disconnect(this,&MainWindow::signals_updateComplited,device,&CAEDevice_HF::onUpdateCompleted);
+        thread->quit();
+        thread->wait();
+        delete thread;
+        thread = nullptr;
+        device = nullptr;
     }
 
 }
@@ -248,7 +302,7 @@ void MainWindow::getConnectString(char *&connStr)
     if(CommIndex==0)//COM 串口方式
     {
         QString COMName=ui->cmb_com_name->currentText();    // 串口名
-        int BaudRate=ui->cmb_com_baud->currentData().toInt(); // 波特率
+        int BaudRate=ui->cmb_com_baud->currentText().toInt(); // 波特率
         QString Frame=ui->cmb_com_frame->currentText();    // 校验位
 
         sprintf(connStr,"RDType=%s;CommType=%s;COMName=%s;BaudRate=%d;Frame=%s;BusAddr=255",
@@ -281,7 +335,7 @@ void MainWindow::getConnectString(char *&connStr)
     else if(CommIndex==2)//TCP 网络方式
     {
         QString RemoteIP=ui->txt_tcp_ip->text().trimmed();          // 远程IP
-        int RemotePort=ui->cmb_tcp_port->currentData().toInt();    // 远程端口
+        int RemotePort=ui->cmb_tcp_port->currentText().section(':', 0, 0).toInt();    // 远程端口
         QString LocalIP=ui->cmb_local_tcp_ip->currentText().trimmed(); // 本地IP
         sprintf(connStr,"RDType=%s;CommType=%s;RemoteIP=%s;RemotePort=%d;LocalIP=%s",
                 RDType.toStdString().c_str(),
@@ -489,7 +543,9 @@ void MainWindow::on_btn_inventory_start_clicked()
 
     running =true;
     // 发送盘点信号给子线程，触发盘点
-    emit MainWindow::signals_Inventory(hr,ants,ant_count);
+    QByteArray antennasData(reinterpret_cast<const char*>(ants), ant_count);
+    qDebug() << "Start inventory, ant_count:" << ant_count << "ants:" << antennasData.toHex(' ');
+    emit MainWindow::signals_Inventory(hr, antennasData, ant_count);
 
 }
 

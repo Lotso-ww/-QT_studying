@@ -4,10 +4,13 @@
 #include "./c++_lib/inc/rfidlib_reader.h"
 #include "./c++_lib/inc/rfidlib.h"
 #include "./c++_lib/inc/rfidlib_aip_iso14443A.h"
+#include "./c++_lib/inc/rfidlib_aip_iso14443b.h"
 #include "./c++_lib/inc/rfidlib_aip_iso15693.h"
+#include "./c++_lib/inc/rfidlib_aip_iso18000p3m3.h"
+#include "./c++_lib/inc/rfidlib_aip_st_iso14443b.h"
 #include <QObject>
+#include <QByteArray>
 #include "tag_hf.h"
-#include <QEventLoop>
 
 using namespace std;
 
@@ -32,7 +35,7 @@ class CAEDevice_HF : public QObject
 public slots:
     // 盘点槽函数：在子线程中被调用，执行循环盘点
     // hreader: 读写器句柄, antennas: 选中的天线数组, ant_cnt: 天线个数
-    void Inventory(void* hreader,BYTE antennas[], BYTE ant_cnt) ;
+    void Inventory(void* hreader, QByteArray antennasSrc, int ant_cnt) ;
     // 盘点完成后的更新槽函数(由主界面更新完表格后触发，用于唤醒子线程继续下一轮)
     void onUpdateCompleted();
 
@@ -40,7 +43,7 @@ signals:
     void workFinished();                                                          // 工作完成信号(预留)
     void sgnl_inventory_data_hf(int tag_count,vector<CTag_HF> tags,int use_time,int loop_count); // 一次盘点完成信号：标签数、标签列表、耗时、轮数
     void sgnl_inventory_end_loop(int iret);                                       // 整个盘点循环结束信号(带错误码)
-    void updateConfirmed();    // 内部信号，用于唤醒事件循环(loopEvt)
+    void updateConfirmed();    // 内部信号，用于唤醒等待主界面更新的局部事件循环
 
 public:
     explicit CAEDevice_HF(QObject *parent = nullptr);
@@ -53,6 +56,7 @@ public:
     void AddNewISO15693Tag(UINT32 apl_tid,UINT32 picc_tid,UINT32 ant_id,UINT8 dsfid,UINT8 *uid,USHORT rssi);
     // 添加一张新发现的 ISO14443A 标签到列表
     void AddNewISO14443ATag(UINT32 apl_tid,UINT32 picc_tid,UINT32 ant_id,UINT8 *uid,UINT8 uidlen);
+    void AddNewGenericTag(UINT32 apl_tid,UINT32 picc_tid,UINT32 ant_id,UINT8 *uid,UINT32 uidlen,USHORT rssi=0);
 
 public:
     vector<CTag_HF>  m_tags_hf;            // 本次盘点到的标签集合
@@ -62,7 +66,6 @@ public:
     RFID_READER_HANDLE hr=NULL;             // 读写器句柄(由主界面传入)
 
 private:
-    QEventLoop loopEvt;    // 事件循环，用于等待主界面更新完成后再进行下一轮盘点(实现同步)
     bool waitSgl;          // 是否正在等待主界面更新完成的标志
 
 };

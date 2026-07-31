@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QByteArray>
 #include "./c++_lib/inc/rfidlib.h"
 #include "./c++_lib/inc/rfidlib_reader.h"
 #include <vector>
@@ -37,7 +38,6 @@ public:
     }
 };
 
-
 // 主窗口类：整个程序的界面与控制中心
 // 负责: 连接读写器、启动/停止盘点、显示标签、对标签进行读写操作
 class MainWindow : public QMainWindow
@@ -50,7 +50,7 @@ public:
     ~MainWindow();
 signals:
     // 盘点信号：发送给子线程的 CAEDevice_HF，触发盘点
-    void signals_Inventory(void* hreader,BYTE antennasSrc[], BYTE ant_cnt);
+    void signals_Inventory(void* hreader, QByteArray antennasSrc, int ant_cnt);
     void signals_updateComplited();    // 表格更新完成信号：通知子线程可以继续下一轮盘点
 
 private slots:
@@ -94,12 +94,12 @@ private:
     bool loop=false;                // 盘点循环标志(主界面侧，未实际使用)
     QString RDType = QString("%1").arg(""); // 当前选中的读写器类型名称
     vector<CTag_HF> m_tags_hf;     // 盘点到的所有标签集合(累计，不重复)
-    QThread *thread;                // 子线程对象(运行盘点逻辑)
-    CAEDevice_HF *device;          // 盘点设备对象(运行在子线程)
+    QThread *thread = nullptr;      // 子线程对象(运行盘点逻辑)
+    CAEDevice_HF *device = nullptr; // 盘点设备对象(运行在子线程)
     bool loaded=false;              // 表格是否已初始化(防止重复创建)
     QSize formSize;                 // 上次记录的表格尺寸(用于判断是否需要重建)
-    bool running;                   // 是否正在盘点中
-    RFID_TAG_HANDLE ht;             // 当前已连接的标签句柄(用于读写操作)
+    bool running = false;           // 是否正在盘点中
+    RFID_TAG_HANDLE ht = nullptr;   // 当前已连接的标签句柄(用于读写操作)
 
     //BYTE air_type=AIR_ISO15693;
 

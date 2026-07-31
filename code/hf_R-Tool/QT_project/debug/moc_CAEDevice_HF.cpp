@@ -7,7 +7,7 @@
 *****************************************************************************/
 
 #include <memory>
-#include "../../hf_tagaccess/CAEDevice_HF.h"
+#include "../hf_tagaccess/CAEDevice_HF.h"
 #include <QtCore/qbytearray.h>
 #include <QtCore/qmetatype.h>
 #if !defined(Q_MOC_OUTPUT_REVISION)
