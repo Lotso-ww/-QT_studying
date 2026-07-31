@@ -100,9 +100,6 @@ INCLUDEPATH += $$PWD/lib_win32_debug/device_driver
 DEPENDPATH += $$PWD/lib_win32_debug/device_driver
 
 win32: LIBS += -L$$PWD/c++_lib/lib_win32_debug/ -lrfidlib_aip_iso14443A
-win32: LIBS += -L$$PWD/lib_win32_debug/ -lrfidlib_aip_iso14443B
-win32: LIBS += -L$$PWD/lib_win32_debug/ -lrfidlib_aip_st_iso14443B
-win32: LIBS += -L$$PWD/lib_win32_debug/ -lrfidlib_aip_iso18000p3m3
 
 INCLUDEPATH += $$PWD/c++_lib/lib_win32_debug
 DEPENDPATH += $$PWD/c++_lib/lib_win32_debug

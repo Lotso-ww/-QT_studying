@@ -19,7 +19,7 @@ CXXFLAGS      = -nologo -Zc:wchar_t -FS -Zc:rvalueCast -Zc:inline -Zc:strictStri
 INCPATH       = -I..\hf_tagaccess -I. -I..\hf_tagaccess\lib_win32_debug -I..\hf_tagaccess\lib_win32_debug -I..\hf_tagaccess\lib_win32_debug\device_driver -I..\hf_tagaccess\c++_lib\lib_win32_debug -ID:\QT5\5.14.2\msvc2017\include -ID:\QT5\5.14.2\msvc2017\include\QtWidgets -ID:\QT5\5.14.2\msvc2017\include\QtGui -ID:\QT5\5.14.2\msvc2017\include\QtANGLE -ID:\QT5\5.14.2\msvc2017\include\QtCore -Idebug -I. -I/include -ID:\QT5\5.14.2\msvc2017\mkspecs\win32-msvc 
 LINKER        = link
 LFLAGS        = /NOLOGO /DYNAMICBASE /NXCOMPAT /DEBUG /SUBSYSTEM:WINDOWS /MANIFEST:NO /DEBUG /SUBSYSTEM:WINDOWS
-LIBS          = /LIBPATH:D:\Gitee.code\qt-learning\code\hf_R-Tool\QT_project\hf_tagaccess\lib_win32_debug D:\Gitee.code\qt-learning\code\hf_R-Tool\QT_project\hf_tagaccess\lib_win32_debug\rfidlib_reader.lib D:\Gitee.code\qt-learning\code\hf_R-Tool\QT_project\hf_tagaccess\lib_win32_debug\rfidlib_aip_iso15693.lib /LIBPATH:D:\Gitee.code\qt-learning\code\hf_R-Tool\QT_project\hf_tagaccess\lib_win32_debug\device_driver D:\Gitee.code\qt-learning\code\hf_R-Tool\QT_project\hf_tagaccess\lib_win32_debug\device_driver\rfidlib_drv_RL8000.lib /LIBPATH:D:\Gitee.code\qt-learning\code\hf_R-Tool\QT_project\hf_tagaccess\c++_lib\lib_win32_debug D:\Gitee.code\qt-learning\code\hf_R-Tool\QT_project\hf_tagaccess\lib_win32_debug\rfidlib_aip_iso14443A.lib D:\Gitee.code\qt-learning\code\hf_R-Tool\QT_project\hf_tagaccess\lib_win32_debug\rfidlib_aip_iso14443B.lib D:\Gitee.code\qt-learning\code\hf_R-Tool\QT_project\hf_tagaccess\lib_win32_debug\rfidlib_aip_st_iso14443B.lib D:\Gitee.code\qt-learning\code\hf_R-Tool\QT_project\hf_tagaccess\lib_win32_debug\rfidlib_aip_iso18000p3m3.lib D:\QT5\5.14.2\msvc2017\lib\Qt5Widgetsd.lib D:\QT5\5.14.2\msvc2017\lib\Qt5Guid.lib D:\QT5\5.14.2\msvc2017\lib\Qt5Cored.lib  D:\QT5\5.14.2\msvc2017\lib\qtmaind.lib /LIBPATH:C:\opensslx86\lib /LIBPATH:C:\Utils\my_sql\mysql-5.7.25-win32\lib /LIBPATH:C:\Utils\postgresqlx86\pgsql\lib shell32.lib 
+LIBS          = /LIBPATH:D:\Gitee.code\qt-learning\code\hf_R-Tool\QT_project\hf_tagaccess\lib_win32_debug D:\Gitee.code\qt-learning\code\hf_R-Tool\QT_project\hf_tagaccess\lib_win32_debug\rfidlib_reader.lib D:\Gitee.code\qt-learning\code\hf_R-Tool\QT_project\hf_tagaccess\lib_win32_debug\rfidlib_aip_iso15693.lib /LIBPATH:D:\Gitee.code\qt-learning\code\hf_R-Tool\QT_project\hf_tagaccess\lib_win32_debug\device_driver D:\Gitee.code\qt-learning\code\hf_R-Tool\QT_project\hf_tagaccess\lib_win32_debug\device_driver\rfidlib_drv_RL8000.lib /LIBPATH:D:\Gitee.code\qt-learning\code\hf_R-Tool\QT_project\hf_tagaccess\c++_lib\lib_win32_debug D:\Gitee.code\qt-learning\code\hf_R-Tool\QT_project\hf_tagaccess\lib_win32_debug\rfidlib_aip_iso14443A.lib D:\QT5\5.14.2\msvc2017\lib\Qt5Widgetsd.lib D:\QT5\5.14.2\msvc2017\lib\Qt5Guid.lib D:\QT5\5.14.2\msvc2017\lib\Qt5Cored.lib  D:\QT5\5.14.2\msvc2017\lib\qtmaind.lib /LIBPATH:C:\opensslx86\lib /LIBPATH:C:\Utils\my_sql\mysql-5.7.25-win32\lib /LIBPATH:C:\Utils\postgresqlx86\pgsql\lib shell32.lib 
 QMAKE         = D:\QT5\5.14.2\msvc2017\bin\qmake.exe
 DEL_FILE      = del
 CHK_DIR_EXISTS= if not exist
@@ -238,10 +238,7 @@ debug\moc_CAEDevice_HF.cpp: ..\hf_tagaccess\CAEDevice_HF.h \
 		..\hf_tagaccess\c++_lib\inc\rfidlib_reader.h \
 		..\hf_tagaccess\c++_lib\inc\rfidlib.h \
 		..\hf_tagaccess\c++_lib\inc\rfidlib_aip_iso14443A.h \
-		..\hf_tagaccess\c++_lib\inc\rfidlib_aip_iso14443b.h \
 		..\hf_tagaccess\c++_lib\inc\rfidlib_aip_iso15693.h \
-		..\hf_tagaccess\c++_lib\inc\rfidlib_aip_iso18000p3m3.h \
-		..\hf_tagaccess\c++_lib\inc\rfidlib_aip_st_iso14443b.h \
 		D:\QT5\5.14.2\msvc2017\include\QtCore\QObject \
 		D:\QT5\5.14.2\msvc2017\include\QtCore\qobject.h \
 		D:\QT5\5.14.2\msvc2017\include\QtCore\qobjectdefs.h \
@@ -417,10 +414,7 @@ debug\moc_mainwindow.cpp: ..\hf_tagaccess\mainwindow.h \
 		D:\QT5\5.14.2\msvc2017\include\QtCore\QMetaType \
 		..\hf_tagaccess\CAEDevice_HF.h \
 		..\hf_tagaccess\c++_lib\inc\rfidlib_aip_iso14443A.h \
-		..\hf_tagaccess\c++_lib\inc\rfidlib_aip_iso14443b.h \
 		..\hf_tagaccess\c++_lib\inc\rfidlib_aip_iso15693.h \
-		..\hf_tagaccess\c++_lib\inc\rfidlib_aip_iso18000p3m3.h \
-		..\hf_tagaccess\c++_lib\inc\rfidlib_aip_st_iso14443b.h \
 		D:\QT5\5.14.2\msvc2017\include\QtCore\QObject \
 		debug\moc_predefs.h \
 		D:\QT5\5.14.2\msvc2017\bin\moc.exe
@@ -453,10 +447,7 @@ debug\CAEDevice_HF.obj: ..\hf_tagaccess\CAEDevice_HF.cpp ..\hf_tagaccess\CAEDevi
 		..\hf_tagaccess\c++_lib\inc\rfidlib_reader.h \
 		..\hf_tagaccess\c++_lib\inc\rfidlib.h \
 		..\hf_tagaccess\c++_lib\inc\rfidlib_aip_iso14443A.h \
-		..\hf_tagaccess\c++_lib\inc\rfidlib_aip_iso14443b.h \
 		..\hf_tagaccess\c++_lib\inc\rfidlib_aip_iso15693.h \
-		..\hf_tagaccess\c++_lib\inc\rfidlib_aip_iso18000p3m3.h \
-		..\hf_tagaccess\c++_lib\inc\rfidlib_aip_st_iso14443b.h \
 		D:\QT5\5.14.2\msvc2017\include\QtCore\QObject \
 		D:\QT5\5.14.2\msvc2017\include\QtCore\qobject.h \
 		D:\QT5\5.14.2\msvc2017\include\QtCore\qobjectdefs.h \
@@ -651,10 +642,7 @@ debug\main.obj: ..\hf_tagaccess\main.cpp ..\hf_tagaccess\mainwindow.h \
 		D:\QT5\5.14.2\msvc2017\include\QtCore\QMetaType \
 		..\hf_tagaccess\CAEDevice_HF.h \
 		..\hf_tagaccess\c++_lib\inc\rfidlib_aip_iso14443A.h \
-		..\hf_tagaccess\c++_lib\inc\rfidlib_aip_iso14443b.h \
 		..\hf_tagaccess\c++_lib\inc\rfidlib_aip_iso15693.h \
-		..\hf_tagaccess\c++_lib\inc\rfidlib_aip_iso18000p3m3.h \
-		..\hf_tagaccess\c++_lib\inc\rfidlib_aip_st_iso14443b.h \
 		D:\QT5\5.14.2\msvc2017\include\QtCore\QObject \
 		D:\QT5\5.14.2\msvc2017\include\QtWidgets\QApplication \
 		D:\QT5\5.14.2\msvc2017\include\QtWidgets\qapplication.h \
@@ -779,20 +767,19 @@ debug\mainwindow.obj: ..\hf_tagaccess\mainwindow.cpp ..\hf_tagaccess\mainwindow.
 		D:\QT5\5.14.2\msvc2017\include\QtCore\QMetaType \
 		..\hf_tagaccess\CAEDevice_HF.h \
 		..\hf_tagaccess\c++_lib\inc\rfidlib_aip_iso14443A.h \
-		..\hf_tagaccess\c++_lib\inc\rfidlib_aip_iso14443b.h \
 		..\hf_tagaccess\c++_lib\inc\rfidlib_aip_iso15693.h \
-		..\hf_tagaccess\c++_lib\inc\rfidlib_aip_iso18000p3m3.h \
-		..\hf_tagaccess\c++_lib\inc\rfidlib_aip_st_iso14443b.h \
 		D:\QT5\5.14.2\msvc2017\include\QtCore\QObject \
 		ui_mainwindow.h \
-		D:\QT5\5.14.2\msvc2017\include\QtWidgets\QListWidgetItem \
-		D:\QT5\5.14.2\msvc2017\include\QtWidgets\qlistwidget.h \
-		D:\QT5\5.14.2\msvc2017\include\QtWidgets\qlistview.h \
-		D:\QT5\5.14.2\msvc2017\include\QtWidgets\qabstractitemview.h \
-		D:\QT5\5.14.2\msvc2017\include\QtWidgets\qabstractscrollarea.h \
-		D:\QT5\5.14.2\msvc2017\include\QtWidgets\qframe.h \
-		D:\QT5\5.14.2\msvc2017\include\QtCore\qabstractitemmodel.h \
-		D:\QT5\5.14.2\msvc2017\include\QtCore\qitemselectionmodel.h \
+		D:\QT5\5.14.2\msvc2017\include\QtCore\QVariant \
+		D:\QT5\5.14.2\msvc2017\include\QtWidgets\QApplication \
+		D:\QT5\5.14.2\msvc2017\include\QtWidgets\qapplication.h \
+		D:\QT5\5.14.2\msvc2017\include\QtCore\qcoreapplication.h \
+		D:\QT5\5.14.2\msvc2017\include\QtCore\qeventloop.h \
+		D:\QT5\5.14.2\msvc2017\include\QtWidgets\qdesktopwidget.h \
+		D:\QT5\5.14.2\msvc2017\include\QtGui\qguiapplication.h \
+		D:\QT5\5.14.2\msvc2017\include\QtGui\qinputmethod.h \
+		D:\QT5\5.14.2\msvc2017\include\QtWidgets\QComboBox \
+		D:\QT5\5.14.2\msvc2017\include\QtWidgets\qcombobox.h \
 		D:\QT5\5.14.2\msvc2017\include\QtWidgets\qabstractitemdelegate.h \
 		D:\QT5\5.14.2\msvc2017\include\QtWidgets\qstyleoption.h \
 		D:\QT5\5.14.2\msvc2017\include\QtWidgets\qabstractspinbox.h \
@@ -803,6 +790,50 @@ debug\mainwindow.obj: ..\hf_tagaccess\mainwindow.cpp ..\hf_tagaccess\mainwindow.
 		D:\QT5\5.14.2\msvc2017\include\QtWidgets\qstyle.h \
 		D:\QT5\5.14.2\msvc2017\include\QtWidgets\qtabbar.h \
 		D:\QT5\5.14.2\msvc2017\include\QtWidgets\qrubberband.h \
+		D:\QT5\5.14.2\msvc2017\include\QtWidgets\qframe.h \
+		D:\QT5\5.14.2\msvc2017\include\QtCore\qabstractitemmodel.h \
+		D:\QT5\5.14.2\msvc2017\include\QtWidgets\QFrame \
+		D:\QT5\5.14.2\msvc2017\include\QtWidgets\QGroupBox \
+		D:\QT5\5.14.2\msvc2017\include\QtWidgets\qgroupbox.h \
+		D:\QT5\5.14.2\msvc2017\include\QtWidgets\QHBoxLayout \
+		D:\QT5\5.14.2\msvc2017\include\QtWidgets\qboxlayout.h \
+		D:\QT5\5.14.2\msvc2017\include\QtWidgets\qlayout.h \
+		D:\QT5\5.14.2\msvc2017\include\QtWidgets\qlayoutitem.h \
+		D:\QT5\5.14.2\msvc2017\include\QtWidgets\qgridlayout.h \
+		D:\QT5\5.14.2\msvc2017\include\QtWidgets\QHeaderView \
+		D:\QT5\5.14.2\msvc2017\include\QtWidgets\qheaderview.h \
+		D:\QT5\5.14.2\msvc2017\include\QtWidgets\qabstractitemview.h \
+		D:\QT5\5.14.2\msvc2017\include\QtWidgets\qabstractscrollarea.h \
+		D:\QT5\5.14.2\msvc2017\include\QtCore\qitemselectionmodel.h \
+		D:\QT5\5.14.2\msvc2017\include\QtWidgets\QLabel \
+		D:\QT5\5.14.2\msvc2017\include\QtWidgets\qlabel.h \
+		D:\QT5\5.14.2\msvc2017\include\QtWidgets\QLineEdit \
+		D:\QT5\5.14.2\msvc2017\include\QtWidgets\qlineedit.h \
+		D:\QT5\5.14.2\msvc2017\include\QtGui\qtextcursor.h \
+		D:\QT5\5.14.2\msvc2017\include\QtGui\qtextformat.h \
+		D:\QT5\5.14.2\msvc2017\include\QtGui\qpen.h \
+		D:\QT5\5.14.2\msvc2017\include\QtGui\qtextoption.h \
+		D:\QT5\5.14.2\msvc2017\include\QtWidgets\QListWidget \
+		D:\QT5\5.14.2\msvc2017\include\QtWidgets\qlistwidget.h \
+		D:\QT5\5.14.2\msvc2017\include\QtWidgets\qlistview.h \
+		D:\QT5\5.14.2\msvc2017\include\QtWidgets\QMenuBar \
+		D:\QT5\5.14.2\msvc2017\include\QtWidgets\qmenubar.h \
+		D:\QT5\5.14.2\msvc2017\include\QtWidgets\qmenu.h \
+		D:\QT5\5.14.2\msvc2017\include\QtWidgets\qaction.h \
+		D:\QT5\5.14.2\msvc2017\include\QtWidgets\qactiongroup.h \
+		D:\QT5\5.14.2\msvc2017\include\QtWidgets\QPushButton \
+		D:\QT5\5.14.2\msvc2017\include\QtWidgets\qpushbutton.h \
+		D:\QT5\5.14.2\msvc2017\include\QtWidgets\qabstractbutton.h \
+		D:\QT5\5.14.2\msvc2017\include\QtWidgets\QSpacerItem \
+		D:\QT5\5.14.2\msvc2017\include\QtWidgets\QStatusBar \
+		D:\QT5\5.14.2\msvc2017\include\QtWidgets\qstatusbar.h \
+		D:\QT5\5.14.2\msvc2017\include\QtWidgets\QTabWidget \
+		D:\QT5\5.14.2\msvc2017\include\QtWidgets\QTableWidget \
+		D:\QT5\5.14.2\msvc2017\include\QtWidgets\qtablewidget.h \
+		D:\QT5\5.14.2\msvc2017\include\QtWidgets\qtableview.h \
+		D:\QT5\5.14.2\msvc2017\include\QtWidgets\QVBoxLayout \
+		D:\QT5\5.14.2\msvc2017\include\QtWidgets\QWidget \
+		D:\QT5\5.14.2\msvc2017\include\QtWidgets\QListWidgetItem \
 		D:\QT5\5.14.2\msvc2017\include\QtWidgets\qmessagebox.h \
 		D:\QT5\5.14.2\msvc2017\include\QtWidgets\qdialog.h \
 		..\hf_tagaccess\gfunction.h \
@@ -810,8 +841,6 @@ debug\mainwindow.obj: ..\hf_tagaccess\mainwindow.cpp ..\hf_tagaccess\mainwindow.
 		D:\QT5\5.14.2\msvc2017\include\QtCore\qthread.h \
 		D:\QT5\5.14.2\msvc2017\include\QtCore\QDebug \
 		D:\QT5\5.14.2\msvc2017\include\QtCore\QCoreApplication \
-		D:\QT5\5.14.2\msvc2017\include\QtCore\qcoreapplication.h \
-		D:\QT5\5.14.2\msvc2017\include\QtCore\qeventloop.h \
 		D:\QT5\5.14.2\msvc2017\include\QtCore\QDir \
 		D:\QT5\5.14.2\msvc2017\include\QtCore\qdir.h \
 		D:\QT5\5.14.2\msvc2017\include\QtCore\qfileinfo.h

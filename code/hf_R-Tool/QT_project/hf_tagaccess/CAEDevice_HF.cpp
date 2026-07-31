@@ -150,14 +150,6 @@ err_t CAEDevice_HF::func_Inventory()
             qDebug() << "ISO15693 parse ret:" << rtn;
             if(rtn != NO_ERR)
             {
-                BYTE rawReport[256] = {0};
-                DWORD rawReportLen = sizeof(rawReport);
-                int rawRet = RDR_ParseTagDataReportRaw(dnhReport, rawReport, &rawReportLen);
-                qDebug() << "Raw report parse ret:" << rawRet
-                         << "length:" << rawReportLen
-                         << "data:" << QByteArray(reinterpret_cast<const char*>(rawReport),
-                                                    qMin(rawReportLen, static_cast<DWORD>(sizeof(rawReport)))).toHex(' ');
-
                 // 某些旧版 ISO15693 DLL 不支持 Ex 接口，回退到基础解析接口。
                 // 基础接口不返回 RSSI 和读次数，但仍能得到标签类型和 UID。
                 rtn = ISO15693_ParseTagDataReport(dnhReport,
@@ -179,32 +171,6 @@ err_t CAEDevice_HF::func_Inventory()
             {
                 // 解析成功，添加到标签集合
                 AddNewISO14443ATag(AIPtype,TagType,AntId ,uid, uidlen);
-            }
-            DWORD metaFlags = 0;
-            DWORD dataLen = sizeof(uid);
-            rtn = ISO14443B_ParseTagDataReport(dnhReport,&AIPtype,&TagType,&AntId,&metaFlags,uid,&dataLen);
-            qDebug() << "ISO14443B parse ret:" << rtn;
-            if(rtn == NO_ERR)
-            {
-                AddNewGenericTag(AIPtype,TagType,AntId,uid,dataLen);
-            }
-
-            BYTE chipId = 0;
-            dataLen = sizeof(uid);
-            rtn = STISO14443B_ParseTagDataReport(dnhReport,&AIPtype,&TagType,&AntId,&chipId,uid,&dataLen);
-            qDebug() << "STISO14443B parse ret:" << rtn;
-            if(rtn == NO_ERR)
-            {
-                AddNewGenericTag(AIPtype,TagType,AntId,uid,dataLen);
-            }
-
-            BYTE tagData[64] = {0};
-            dataLen = sizeof(tagData);
-            rtn = ISO18000p3m3_ParseTagDataReport(dnhReport,&AIPtype,&TagType,&AntId,&metaFlags,tagData,&dataLen);
-            qDebug() << "ISO18000p3m3 parse ret:" << rtn;
-            if(rtn == NO_ERR)
-            {
-                AddNewGenericTag(AIPtype,TagType,AntId,tagData,dataLen);
             }
             // 获取下一张标签的数据报告
             dnhReport = RDR_GetTagDataReport(hr,RFID_SEEK_NEXT);
@@ -370,50 +336,6 @@ void CAEDevice_HF::AddNewISO14443ATag(UINT32 apl_tid,UINT32 picc_tid,UINT32 ant_
     {
         // 已存在则计数+1
         pTag->m_counter++;
-        if(pTag->m_counter>=500000)
-        {
-            pTag->m_counter = 1;
-        }
-    }
-}
-
-void CAEDevice_HF::AddNewGenericTag(UINT32 apl_tid,UINT32 picc_tid,UINT32 ant_id,UINT8 *uid,UINT32 uidlen,USHORT rssi)
-{
-    if(uidlen == 0)
-        return;
-
-    CHAR c_uid[128];
-    memset(c_uid,0,sizeof(c_uid));
-    int safeLen = qMin(static_cast<int>(uidlen), static_cast<int>((sizeof(c_uid) - 1) / 2));
-    BytesToHexStr(uid,safeLen,c_uid);
-    QString suid = QString("%1").arg(c_uid);
-
-    UINT32 i;
-    CTag_HF* pTag;
-    for(i=0;i<m_tags_hf.size();i++)
-    {
-        pTag=(CTag_HF*)&m_tags_hf.at(i);
-        if(pTag->m_uid == suid && pTag->m_antNo == ant_id)
-        {
-            break;
-        }
-    }
-
-    if(i>=m_tags_hf.size())
-    {
-        CTag_HF newtag;
-        newtag.m_counter = 1;
-        newtag.m_uid = suid;
-        newtag.m_type = picc_tid;
-        newtag.m_antNo = ant_id;
-        newtag.m_AIP = apl_tid;
-        newtag.m_rssi = rssi;
-        m_tags_hf.push_back(newtag);
-    }
-    else
-    {
-        pTag->m_counter++;
-        pTag->m_rssi = rssi;
         if(pTag->m_counter>=500000)
         {
             pTag->m_counter = 1;

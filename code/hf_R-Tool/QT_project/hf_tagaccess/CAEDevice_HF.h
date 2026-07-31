@@ -4,10 +4,7 @@
 #include "./c++_lib/inc/rfidlib_reader.h"
 #include "./c++_lib/inc/rfidlib.h"
 #include "./c++_lib/inc/rfidlib_aip_iso14443A.h"
-#include "./c++_lib/inc/rfidlib_aip_iso14443b.h"
 #include "./c++_lib/inc/rfidlib_aip_iso15693.h"
-#include "./c++_lib/inc/rfidlib_aip_iso18000p3m3.h"
-#include "./c++_lib/inc/rfidlib_aip_st_iso14443b.h"
 #include <QObject>
 #include <QByteArray>
 #include "tag_hf.h"
@@ -56,7 +53,6 @@ public:
     void AddNewISO15693Tag(UINT32 apl_tid,UINT32 picc_tid,UINT32 ant_id,UINT8 dsfid,UINT8 *uid,USHORT rssi);
     // 添加一张新发现的 ISO14443A 标签到列表
     void AddNewISO14443ATag(UINT32 apl_tid,UINT32 picc_tid,UINT32 ant_id,UINT8 *uid,UINT8 uidlen);
-    void AddNewGenericTag(UINT32 apl_tid,UINT32 picc_tid,UINT32 ant_id,UINT8 *uid,UINT32 uidlen,USHORT rssi=0);
 
 public:
     vector<CTag_HF>  m_tags_hf;            // 本次盘点到的标签集合
