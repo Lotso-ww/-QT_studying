@@ -51,6 +51,7 @@ public:
 signals:
     // 盘点信号：发送给子线程的 CAEDevice_HF，触发盘点
     void signals_Inventory(void* hreader, QByteArray antennasSrc, int ant_cnt);
+    void signals_ScanOnce(void* hreader, QByteArray antennasSrc, int ant_cnt);
     void signals_updateComplited();    // 表格更新完成信号：通知子线程可以继续下一轮盘点
 
 private slots:
@@ -68,6 +69,9 @@ private slots:
     void on_btn_inventory_stop_clicked();     // "停止盘点"按钮槽
 
     void on_btn_inventory_clear_clicked();    // "清空列表"按钮槽
+
+    void on_btn_scan_mode_start_clicked();
+    void on_btn_scan_mode_clear_clicked();
 
     void on_btn_access_read_block_clicked();  // "读块"按钮槽
 
@@ -99,6 +103,7 @@ private:
     bool loaded=false;              // 表格是否已初始化(防止重复创建)
     QSize formSize;                 // 上次记录的表格尺寸(用于判断是否需要重建)
     bool running = false;           // 是否正在盘点中
+    bool scanRunning = false;       // 是否正在执行单次扫描
     RFID_TAG_HANDLE ht = nullptr;   // 当前已连接的标签句柄(用于读写操作)
 
     //BYTE air_type=AIR_ISO15693;
@@ -110,6 +115,8 @@ private:
     void setWidgetEnable(QWidget *m_wid,bool enable);  // 设置控件可用状态并立即刷新
     void get_selected_antennas(BYTE ants[], int &len);  // 获取用户选中的天线编号
     void slot_inventory_data_hf(int tag_count,vector<CTag_HF> tags,int use_time,int loop_count);  // 接收盘点数据并更新表格
+    void slot_scan_data_hf(int tag_count, vector<CTag_HF> tags, int use_time);
+    void slot_scan_finished(int iret);
     void getConnectString(char *&connStr);  // 根据界面选择生成连接字符串
     void bind_access_tags();        // 把盘点到的标签填充到"标签操作"下拉框
     void HF_TagConnect();            // 连接选中的HF标签(建立标签句柄)
@@ -118,6 +125,7 @@ private:
     bool ensureAccessReady(const QString &operation);
     bool parseHexInput(const QString &text, int expectedBytes, QByteArray &data, QString &error) const;
     void resetTagConnectionState();
+    void create_scan_mode_view();
     DWORD m_accessBlockSize = 4;     // ISO15693 常见块大小；读取系统信息后会更新
 };
 #endif // MAINWINDOW_H

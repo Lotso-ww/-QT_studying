@@ -1071,7 +1071,7 @@ Loop: 0</string>
         </widget>
         <widget class="QWidget" name="tab_scan_mode">
          <property name="enabled">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
          <attribute name="title">
           <string>ScanMode</string>
@@ -1114,13 +1114,6 @@ Loop: 0</string>
              <widget class="QPushButton" name="btn_scan_mode_start">
               <property name="text">
                <string>Start Scan</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="btn_scan_mode_stop">
-              <property name="text">
-               <string>Stop  Scan</string>
               </property>
              </widget>
             </item>

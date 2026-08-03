@@ -10,6 +10,7 @@
 #include <QDebug>
 #include <QCoreApplication>
 #include <QDir>
+#include <QHeaderView>
 #include <QRegularExpression>
 
 using namespace Qt;
@@ -114,6 +115,9 @@ MainWindow::MainWindow(QWidget *parent)
     {
         ui->cmb_com_name->setCurrentIndex(0) ;
     }
+
+    // 强制覆盖旧版 ui_mainwindow.h 中 ScanMode 页签的禁用状态。
+    ui->tab_scan_mode->setEnabled(true);
 
 }
 
@@ -230,8 +234,11 @@ void MainWindow::on_pushButton_clicked()
         connect(thread, &QThread::finished, device, &QObject::deleteLater);
         // 连接信号和槽：主界面 <-> 子线程设备对象
         connect(this,&MainWindow::signals_Inventory,device,&CAEDevice_HF::Inventory);              // 主界面发盘点信号->子线程盘点
+        connect(this,&MainWindow::signals_ScanOnce,device,&CAEDevice_HF::ScanOnce);
         connect(device,&CAEDevice_HF::sgnl_inventory_data_hf,this,&MainWindow::slot_inventory_data_hf); // 子线程盘点数据->主界面更新
         connect(device,&CAEDevice_HF::sgnl_inventory_end_loop,this,&MainWindow::slot_inventory_end_loop); // 子线程盘点结束->主界面
+        connect(device,&CAEDevice_HF::sgnl_scan_data_hf,this,&MainWindow::slot_scan_data_hf);
+        connect(device,&CAEDevice_HF::sgnl_scan_finished,this,&MainWindow::slot_scan_finished);
         connect(this,&MainWindow::signals_updateComplited,device,&CAEDevice_HF::onUpdateCompleted);   // 主界面更新完成->子线程唤醒
         thread->start();
     }
@@ -249,7 +256,7 @@ void MainWindow::on_pushButton_clicked()
 void MainWindow::on_pushButton_2_clicked()
 {
 
-    if(running)        // 正在盘点则不允许关闭
+    if(running || scanRunning)        // 正在盘点或扫描则不允许关闭
     {
         return;
     }
@@ -275,8 +282,11 @@ void MainWindow::on_pushButton_2_clicked()
         set_info(QString("Reader closed"));
         // 断开所有信号槽连接
         disconnect(this,&MainWindow::signals_Inventory,device,&CAEDevice_HF::Inventory);
+        disconnect(this,&MainWindow::signals_ScanOnce,device,&CAEDevice_HF::ScanOnce);
         disconnect(device,&CAEDevice_HF::sgnl_inventory_data_hf,this,&MainWindow::slot_inventory_data_hf);
         disconnect(device,&CAEDevice_HF::sgnl_inventory_end_loop,this,&MainWindow::slot_inventory_end_loop);
+        disconnect(device,&CAEDevice_HF::sgnl_scan_data_hf,this,&MainWindow::slot_scan_data_hf);
+        disconnect(device,&CAEDevice_HF::sgnl_scan_finished,this,&MainWindow::slot_scan_finished);
         disconnect(this,&MainWindow::signals_updateComplited,device,&CAEDevice_HF::onUpdateCompleted);
         thread->quit();
         thread->wait();
@@ -380,36 +390,39 @@ void MainWindow::create_inventory_view()
 {
     ui->tbw_inventory_tags->clear();
     QStringList strList;
-    BYTE* szRate;
-    int columns=6;
 
     // 表头: 天线号 | 空中协议 | 标签类型 | UID | 信号强度 | 读到次数
     strList<<tr("AntID")<<tr("Air Protocol")<<tr("Tag Type")<<tr("UID")<<tr("RSSI")<<tr("Read Count");
-    columns=strList.length();
-    szRate=new BYTE[columns]{1,1,1,2,1,1};  // 各列宽度比例: UID 列占2份，其余占1份
 
-    ui->tbw_inventory_tags->setColumnCount(columns);
+    ui->tbw_inventory_tags->setColumnCount(strList.length());
     ui->tbw_inventory_tags->setHorizontalHeaderLabels(strList);
-    int wid=ui->tbw_inventory_tags->size().width()-38;  // 表格总宽度(减去滚动条等)
     ui->tbw_inventory_tags->setRowCount(0);
-    // 按比例计算每列宽度
-    int szSum=0;
-    for(int i=0;i<columns;i++)
-    {
-        szSum +=szRate[i];
-    }
-    for(int i=0;i<columns;i++)
-    {
-        ui->tbw_inventory_tags->setColumnWidth(i,szRate[i]*wid/szSum);
-    }
-
-    delete[] szRate;
 
     // 表格行为设置：整行选中、单选、不可编辑
     ui->tbw_inventory_tags->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->tbw_inventory_tags->setSelectionMode(QAbstractItemView::SingleSelection);
     ui->tbw_inventory_tags->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    ui->tbw_inventory_tags->verticalHeader()->setVisible(true);
+    ui->tbw_inventory_tags->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    ui->tbw_inventory_tags->horizontalHeader()->setMinimumSectionSize(80);
 
+}
+
+void MainWindow::create_scan_mode_view()
+{
+    QStringList headers;
+    headers << tr("AntID") << tr("Air Protocol") << tr("Tag Type")
+            << tr("UID") << tr("RSSI") << tr("Read Count");
+    ui->tbw_scan_mode_tags->clear();
+    ui->tbw_scan_mode_tags->setColumnCount(headers.size());
+    ui->tbw_scan_mode_tags->setHorizontalHeaderLabels(headers);
+    ui->tbw_scan_mode_tags->setRowCount(0);
+    ui->tbw_scan_mode_tags->setSelectionBehavior(QAbstractItemView::SelectRows);
+    ui->tbw_scan_mode_tags->setSelectionMode(QAbstractItemView::SingleSelection);
+    ui->tbw_scan_mode_tags->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    ui->tbw_scan_mode_tags->verticalHeader()->setVisible(true);
+    ui->tbw_scan_mode_tags->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    ui->tbw_scan_mode_tags->horizontalHeader()->setMinimumSectionSize(80);
 }
 
 // 重绘事件：当窗口首次加载或尺寸变化时，重建盘点表格
@@ -421,6 +434,7 @@ void MainWindow::paintEvent(QPaintEvent *e)
         loaded =true;
         formSize = ui->tbw_inventory_tags->size();
         create_inventory_view();
+        create_scan_mode_view();
     }
 
 }
@@ -429,6 +443,8 @@ void MainWindow::paintEvent(QPaintEvent *e)
 void MainWindow::bind_access_tags()
 {
     ui->cmb_access_tags->clear();
+    ui->cmb_access_block_start->clear();
+    ui->cmb_access_block_count->clear();
     // 把每张标签的UID加入下拉框
     for(int i=0;i<m_tags_hf.size();i++)
     {
@@ -544,6 +560,12 @@ void MainWindow::slot_inventory_end_loop(int iret)
 void MainWindow::on_btn_inventory_start_clicked()
 {
 
+    if (scanRunning)
+    {
+        QMessageBox::warning(this, "Inventory", "A single scan is in progress.", QMessageBox::Ok);
+        return;
+    }
+
     setWidgetEnable(ui->btn_inventory_start,false);  // 禁用"开始"按钮(防止重复点击)
 
     // 获取选中的天线
@@ -624,6 +646,86 @@ void MainWindow::on_btn_inventory_clear_clicked()
 {
     ui->tbw_inventory_tags->clearContents();
     ui->tbw_inventory_tags->setRowCount(0);
+}
+
+void MainWindow::on_btn_scan_mode_start_clicked()
+{
+    if (running || scanRunning)
+    {
+        QMessageBox::warning(this, "Scan", "Another reader operation is in progress.", QMessageBox::Ok);
+        return;
+    }
+    if (hr == nullptr || device == nullptr)
+    {
+        QMessageBox::warning(this, "Scan", "Please open reader first!", QMessageBox::Ok);
+        return;
+    }
+
+    if (ht != nullptr)
+        HF_TagDisconnect();
+
+    int antCount = ui->lw_ants->count();
+    BYTE antennas[32] = {0};
+    get_selected_antennas(antennas, antCount);
+    if (antCount <= 0)
+    {
+        QMessageBox::warning(this, "Scan", "No Antenna Selected!", QMessageBox::Ok);
+        return;
+    }
+
+    ui->tbw_scan_mode_tags->clearContents();
+    ui->tbw_scan_mode_tags->setRowCount(0);
+    ui->lbl_scan_mode->setText("Tags: 0\nTime: 0 ms\nScan: running");
+    scanRunning = true;
+    ui->btn_scan_mode_start->setEnabled(false);
+    ui->btn_inventory_start->setEnabled(false);
+    emit signals_ScanOnce(hr, QByteArray(reinterpret_cast<const char*>(antennas), antCount), antCount);
+}
+
+void MainWindow::on_btn_scan_mode_clear_clicked()
+{
+    if (scanRunning)
+        return;
+    ui->tbw_scan_mode_tags->clearContents();
+    ui->tbw_scan_mode_tags->setRowCount(0);
+    ui->lbl_scan_mode->setText("Tags: 0\nTime: 0 ms\nScan: 0");
+}
+
+void MainWindow::slot_scan_data_hf(int tag_count, vector<CTag_HF> tags, int use_time)
+{
+    // 单次扫描结果就是当前可访问的标签集合。
+    m_tags_hf = tags;
+    bind_access_tags();
+    ui->tbw_scan_mode_tags->setRowCount(tag_count);
+    for (int i = 0; i < tag_count; ++i)
+    {
+        const CTag_HF &tag = tags.at(i);
+        const QString values[] = {
+            QString::number(tag.m_antNo), QString::number(tag.m_AIP),
+            QString::number(tag.m_type), tag.m_uid,
+            QString::number(tag.m_rssi), QString::number(tag.m_counter)
+        };
+        for (int column = 0; column < 6; ++column)
+        {
+            QTableWidgetItem *item = new QTableWidgetItem(values[column]);
+            item->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+            ui->tbw_scan_mode_tags->setItem(i, column, item);
+        }
+    }
+    ui->lbl_scan_mode->setText(QString("Tags: %1\nTime: %2 ms\nScan: complete")
+                               .arg(tag_count).arg(use_time));
+}
+
+void MainWindow::slot_scan_finished(int iret)
+{
+    scanRunning = false;
+    ui->btn_scan_mode_start->setEnabled(true);
+    ui->btn_inventory_start->setEnabled(true);
+    if (iret != NO_ERR)
+    {
+        ui->lbl_scan_mode->setText(QString("Scan failed: err=%1").arg(iret));
+        QMessageBox::warning(this, "Scan", QString("Scan failed: err=%1").arg(iret), QMessageBox::Ok);
+    }
 }
 
 // "读块"按钮：读取标签指定起始块和块数的数据

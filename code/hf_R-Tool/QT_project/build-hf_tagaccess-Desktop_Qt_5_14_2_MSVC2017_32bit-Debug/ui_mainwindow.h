@@ -117,7 +117,6 @@ public:
     QVBoxLayout *verticalLayout_9;
     QLabel *lbl_scan_mode;
     QPushButton *btn_scan_mode_start;
-    QPushButton *btn_scan_mode_stop;
     QPushButton *btn_scan_mode_clear;
     QMenuBar *menubar;
     QStatusBar *statusbar;
@@ -522,7 +521,7 @@ public:
         myTabs->addTab(tab_access_hf, QString());
         tab_scan_mode = new QWidget();
         tab_scan_mode->setObjectName(QString::fromUtf8("tab_scan_mode"));
-        tab_scan_mode->setEnabled(false);
+        tab_scan_mode->setEnabled(true);
         horizontalLayout_10 = new QHBoxLayout(tab_scan_mode);
         horizontalLayout_10->setObjectName(QString::fromUtf8("horizontalLayout_10"));
         horizontalLayout_9 = new QHBoxLayout();
@@ -549,11 +548,6 @@ public:
         btn_scan_mode_start->setObjectName(QString::fromUtf8("btn_scan_mode_start"));
 
         verticalLayout_9->addWidget(btn_scan_mode_start);
-
-        btn_scan_mode_stop = new QPushButton(tab_scan_mode);
-        btn_scan_mode_stop->setObjectName(QString::fromUtf8("btn_scan_mode_stop"));
-
-        verticalLayout_9->addWidget(btn_scan_mode_stop);
 
         btn_scan_mode_clear = new QPushButton(tab_scan_mode);
         btn_scan_mode_clear->setObjectName(QString::fromUtf8("btn_scan_mode_clear"));
@@ -667,7 +661,6 @@ public:
 "Time: 0 ms\n"
 "Loop: 0", nullptr));
         btn_scan_mode_start->setText(QCoreApplication::translate("MainWindow", "Start Scan", nullptr));
-        btn_scan_mode_stop->setText(QCoreApplication::translate("MainWindow", "Stop  Scan", nullptr));
         btn_scan_mode_clear->setText(QCoreApplication::translate("MainWindow", "Clear List", nullptr));
         myTabs->setTabText(myTabs->indexOf(tab_scan_mode), QCoreApplication::translate("MainWindow", "ScanMode", nullptr));
     } // retranslateUi

@@ -33,6 +33,8 @@ public slots:
     // 盘点槽函数：在子线程中被调用，执行循环盘点
     // hreader: 读写器句柄, antennas: 选中的天线数组, ant_cnt: 天线个数
     void Inventory(void* hreader, QByteArray antennasSrc, int ant_cnt) ;
+    // 单次扫描：只执行一轮盘点，用于箱单或单标签扫描。
+    void ScanOnce(void* hreader, QByteArray antennasSrc, int ant_cnt);
     // 盘点完成后的更新槽函数(由主界面更新完表格后触发，用于唤醒子线程继续下一轮)
     void onUpdateCompleted();
 
@@ -40,6 +42,8 @@ signals:
     void workFinished();                                                          // 工作完成信号(预留)
     void sgnl_inventory_data_hf(int tag_count,vector<CTag_HF> tags,int use_time,int loop_count); // 一次盘点完成信号：标签数、标签列表、耗时、轮数
     void sgnl_inventory_end_loop(int iret);                                       // 整个盘点循环结束信号(带错误码)
+    void sgnl_scan_data_hf(int tag_count, vector<CTag_HF> tags, int use_time);   // 单次扫描结果
+    void sgnl_scan_finished(int iret);                                             // 单次扫描结束信号
     void updateConfirmed();    // 内部信号，用于唤醒等待主界面更新的局部事件循环
 
 public:

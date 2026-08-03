@@ -96,6 +96,27 @@ void CAEDevice_HF::Inventory(void* hreader, QByteArray antennasSrc, int ant_cnt)
 
 }
 
+// 单次扫描：复用一次盘点逻辑，但不进入循环盘点。
+void CAEDevice_HF::ScanOnce(void* hreader, QByteArray antennasSrc, int ant_cnt)
+{
+    memset(antennas, 0, sizeof(antennas));
+    ant_count = static_cast<BYTE>(qMin(qMin(ant_cnt, antennasSrc.size()), static_cast<int>(sizeof(antennas))));
+    memcpy(antennas, reinterpret_cast<const BYTE*>(antennasSrc.constData()), ant_count);
+    hr = hreader;
+    m_tags_hf.clear();
+
+    QElapsedTimer timer;
+    timer.start();
+    const err_t iret = func_Inventory();
+    const int useTime = static_cast<int>(timer.elapsed());
+
+    if (hr != NULL)
+        RDR_ResetCommuImmeTimeout(hr);
+    if (iret == NO_ERR)
+        emit sgnl_scan_data_hf(static_cast<int>(m_tags_hf.size()), m_tags_hf, useTime);
+    emit sgnl_scan_finished(iret);
+}
+
 
 // 盘点完成后的更新槽函数
 // 由主界面更新完表格后发送 signals_updateComplited 信号触发
