@@ -841,7 +841,8 @@ release\mainwindow.obj: ..\hf_tagaccess\mainwindow.cpp ..\hf_tagaccess\mainwindo
 		D:\QT5\5.14.2\msvc2017\include\QtCore\QCoreApplication \
 		D:\QT5\5.14.2\msvc2017\include\QtCore\QDir \
 		D:\QT5\5.14.2\msvc2017\include\QtCore\qdir.h \
-		D:\QT5\5.14.2\msvc2017\include\QtCore\qfileinfo.h
+		D:\QT5\5.14.2\msvc2017\include\QtCore\qfileinfo.h \
+		D:\QT5\5.14.2\msvc2017\include\QtCore\QRegularExpression
 
 release\moc_CAEDevice_HF.obj: release\moc_CAEDevice_HF.cpp 
 

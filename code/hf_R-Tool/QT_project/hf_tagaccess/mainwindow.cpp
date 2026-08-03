@@ -10,6 +10,7 @@
 #include <QDebug>
 #include <QCoreApplication>
 #include <QDir>
+#include <QRegularExpression>
 
 using namespace Qt;
 // 把 TCHAR(宽字符)字符串转换为 QString
@@ -140,6 +141,14 @@ void MainWindow::bind_antennas()
 
 MainWindow::~MainWindow()
 {
+    // 读写器关闭会使标签句柄失效，必须先断开标签并清空本地状态。
+    if (ht != nullptr)
+        HF_TagDisconnect();
+    if (hr != nullptr)
+    {
+        RDR_Close(hr);
+        hr = nullptr;
+    }
     delete ui;
 }
 
@@ -244,11 +253,26 @@ void MainWindow::on_pushButton_2_clicked()
     {
         return;
     }
+    if (hr == nullptr)
+    {
+        resetTagConnectionState();
+        ui->pushButton->setEnabled(true);
+        ui->pushButton_2->setEnabled(false);
+        return;
+    }
+
+    // 标签句柄从属于读写器。关闭读写器前先释放它，避免下次打开继续使用旧句柄。
+    HF_TagDisconnect();
     int iret = RDR_Close(hr);   // 关闭读写器
     if(iret == NO_ERR){
         hr = nullptr;
+        resetTagConnectionState();
         ui->pushButton->setEnabled(true);    // 启用"打开"按钮
         ui->pushButton_2->setEnabled(false); // 禁用"关闭"按钮
+        m_tags_hf.clear();
+        ui->cmb_access_tags->clear();
+        m_accessBlockSize = 4;
+        set_info(QString("Reader closed"));
         // 断开所有信号槽连接
         disconnect(this,&MainWindow::signals_Inventory,device,&CAEDevice_HF::Inventory);
         disconnect(device,&CAEDevice_HF::sgnl_inventory_data_hf,this,&MainWindow::slot_inventory_data_hf);
@@ -259,6 +283,10 @@ void MainWindow::on_pushButton_2_clicked()
         delete thread;
         thread = nullptr;
         device = nullptr;
+    }
+    else
+    {
+        set_info(QString("Close reader failed! err=%1").arg(iret), false);
     }
 
 }
@@ -601,6 +629,8 @@ void MainWindow::on_btn_inventory_clear_clicked()
 // "读块"按钮：读取标签指定起始块和块数的数据
 void MainWindow::on_btn_access_read_block_clicked()
 {
+    if (!ensureAccessReady("Read block"))
+        return;
     bool read_secsta=false;   // 是否读取安全状态位(这里不读)
 
 
@@ -609,77 +639,125 @@ void MainWindow::on_btn_access_read_block_clicked()
     DWORD addr,num;
     addr=ui->cmb_access_block_start->currentIndex();  // 起始块地址
     num=ui->cmb_access_block_count->currentIndex()+1; // 读取块数(+1因为索引从0开始)
-    DWORD nSize=(read_secsta?num*5:num*4);             // 每块4字节(读安全状态则5字节)
+    DWORD nSize=(read_secsta ? num * (m_accessBlockSize + 1) : num * m_accessBlockSize);
     DWORD numOfBlks_Readed=0;
-    BYTE buffer[128*5] ;
-    memset(buffer,0,sizeof(buffer));
+    QByteArray buffer(static_cast<int>(nSize), 0);
     // 调用ISO15693读多块命令
-    int iret=ISO15693_ReadMultiBlocks(hr,ht,read_secsta,addr,num,&numOfBlks_Readed,buffer,nSize,&byts_read_out);
+    int iret=ISO15693_ReadMultiBlocks(hr,ht,read_secsta,addr,num,&numOfBlks_Readed,
+                                      reinterpret_cast<BYTE *>(buffer.data()),nSize,&byts_read_out);
+    if (iret != NO_ERR)
+    {
+        set_info(QString("Read Block Failed! err=%1").arg(iret), false);
+        return;
+    }
+    if (byts_read_out > static_cast<DWORD>(buffer.size()))
+    {
+        set_info(QString("Read Block Failed: invalid data length"), false);
+        return;
+    }
     // 把读出的字节数组转为十六进制字符串显示
     char* strs = new char[byts_read_out*2+1];
     memset(strs,0,byts_read_out*2+1);
-    BytesToHexStr(buffer,byts_read_out,strs);//字节数组转十六进制字符串
+    BytesToHexStr(reinterpret_cast<BYTE *>(buffer.data()),byts_read_out,strs);//字节数组转十六进制字符串
     ui->txt_access_block_data->setText(QString(strs));//char*转QString
     delete[] strs;
+    set_info(QString("Read Block Success: start=%1, blocks=%2, bytes=%3")
+             .arg(addr).arg(numOfBlks_Readed).arg(byts_read_out));
 
 }
 
 // 连接选中的HF标签(建立标签句柄，用于后续读写操作)
 void MainWindow::HF_TagConnect()
 {
-
-    SetAccessAntenna();   // 先设置访问天线
+    if (hr == nullptr)
+    {
+        set_info("Connect tag failed: reader is not open", false);
+        return;
+    }
     int index = ui->cmb_access_tags->currentIndex();  // 获取选中的标签索引
+    if (index < 0 || index >= static_cast<int>(m_tags_hf.size()))
+    {
+        set_info("Connect tag failed: no tag selected", false);
+        return;
+    }
+    if (!SetAccessAntenna())
+        return;
+    if (ht != nullptr)
+        HF_TagDisconnect();
     CHAR addr_mode = 1;   // 地址模式: 1=按UID寻址
 
     // 计算UID字节数(UID是十六进制字符串，每2个字符代表1个字节)
     int ulen=m_tags_hf[index].m_uid.length()>2?m_tags_hf[index].m_uid.length()/2:0;
-    BYTE byts[255];
-    memset(byts,0,ulen);
-    int blen=0;
+    if (ulen <= 0 || ulen > 255)
+    {
+        set_info("Connect tag failed: invalid UID", false);
+        return;
+    }
+    int blen=ulen;
     int iret = 0;
 
     // 把UID十六进制字符串转为字节数组
     BYTE* byt = new BYTE[ulen];
     memset(byt,0,ulen);
-     HexStrToBytes(m_tags_hf[index].m_uid.toUtf8().data(),byt,blen);
+    if (!HexStrToBytes(m_tags_hf[index].m_uid.toUtf8().constData(),byt,blen) || blen != ulen)
+    {
+        delete[] byt;
+        set_info("Connect tag failed: invalid UID format", false);
+        return;
+    }
 
      // 连接标签，获取标签句柄 ht
     ht=NULL;
     iret = ISO15693_Connect(hr,m_tags_hf[index].m_type,addr_mode,byt,&ht);
+    delete[] byt;
     if(iret ==ERR_OK)   // 连接成功
     {
         ui->btn_connect->setEnabled(false);  // 禁用"连接"按钮
+        set_info(QString("Connect tag success: %1").arg(m_tags_hf[index].m_uid));
+    }
+    else
+    {
+        ht = nullptr;
+        set_info(QString("Connect tag failed! err=%1").arg(iret), false);
     }
 }
 
 // 断开当前连接的HF标签
 void MainWindow::HF_TagDisconnect()
 {
-
-    if(ht == NULL) return;   // 没有连接的标签，直接返回
-    int iret=RDR_TagDisconnect(hr,ht);   // 断开标签连接
-    if(iret!= NO_ERR)
+    if(ht == NULL)
+    {
+        resetTagConnectionState();
         return;
-    ui->btn_connect->setEnabled(true);   // 重新启用"连接"按钮
+    }
+    int iret = (hr != nullptr) ? RDR_TagDisconnect(hr,ht) : NO_ERR;
+    resetTagConnectionState();
+    if (iret != NO_ERR)
+        set_info(QString("Disconnect tag failed! err=%1").arg(iret), false);
+    else
+        set_info("Disconnect tag success");
 }
 
 // 设置标签访问使用的天线(取用户选中的第一个天线)
-void MainWindow::SetAccessAntenna()
+bool MainWindow::SetAccessAntenna()
 {
     int ant_count=ui->lw_ants->count();
     BYTE ants[32];
     memset(ants,0,sizeof(ants));
     get_selected_antennas(ants,ant_count);
-    int iret;
     if(ant_count>0){
-        iret = RDR_SetAcessAntenna(hr,ants[0]);  // 设置访问天线为选中的第一个
+        int iret = RDR_SetAcessAntenna(hr,ants[0]);  // 设置访问天线为选中的第一个
+        if (iret == NO_ERR)
+            return true;
+        set_info(QString("Set access antenna failed! err=%1").arg(iret), false);
+        return false;
     }
     else
     {
         QMessageBox::warning(this,"Tag Connect","Please select antenna!",QMessageBox::Ok);
+        set_info("Set access antenna failed: no antenna selected", false);
     }
-
+    return false;
 }
 
 // "连接标签"按钮
@@ -697,29 +775,37 @@ void MainWindow::on_btn_Disconnect_clicked()
 // "写块"按钮：把输入的十六进制数据写入标签指定块
 void MainWindow::on_btn_access_write_block_clicked()
 {
+    if (!ensureAccessReady("Write block"))
+        return;
     int block_addr = ui->cmb_access_block_start->currentIndex();  // 起始块地址
     int block_num = ui->cmb_access_block_count->currentIndex()+1; // 写入块数
     QString qstrs=ui->txt_access_block_data->text().trimmed();    // 获取输入的十六进制数据
 
-    // 十六进制字符串转字节数组
-    int blen=qstrs.size()/2;
-    BYTE *data =new BYTE[blen];
-
-    HexStrToBytes(qstrs.toUtf8().data(),data,blen);
+    QByteArray data;
+    QString error;
+    const int expectedBytes = block_num * static_cast<int>(m_accessBlockSize);
+    if (!parseHexInput(qstrs, expectedBytes, data, error))
+    {
+        set_info(QString("Write Block Failed: %1").arg(error), false);
+        return;
+    }
     // 调用ISO15693写多块命令
-    int iret = ISO15693_WriteMultipleBlocks(hr,ht,block_addr,block_num,data,blen);
-    delete[] data;
+    int iret = ISO15693_WriteMultipleBlocks(hr,ht,block_addr,block_num,
+                                             reinterpret_cast<BYTE *>(data.data()),data.size());
 
     if(iret!=NO_ERR)
         set_info(QString("Write Block Failed! err=%1").arg(iret),false);
     else
-        set_info(QString("Write Block Success"));
+        set_info(QString("Write Block Success: start=%1, blocks=%2, bytes=%3")
+                 .arg(block_addr).arg(block_num).arg(data.size()));
 
 }
 
 // "打开EAS"按钮：启用标签的EAS(电子商品防盗)功能
 void MainWindow::on_btn_access_open_eas_clicked()
 {
+    if (!ensureAccessReady("Open EAS"))
+        return;
     int iret=NXPICODESLI_EableEAS(hr,ht);
     if(iret!=NO_ERR)
         set_info(QString("Open EAS Failed! err=%1").arg(iret),false);
@@ -730,6 +816,8 @@ void MainWindow::on_btn_access_open_eas_clicked()
 // "关闭EAS"按钮：禁用标签的EAS功能
 void MainWindow::on_btn_access_close_eas_clicked()
 {
+    if (!ensureAccessReady("Close EAS"))
+        return;
     int iret=NXPICODESLI_DisableEAS(hr,ht);
     if(iret!=NO_ERR)
         set_info(QString("Close EAS Failed! err=%1").arg(iret),false);
@@ -741,13 +829,15 @@ void MainWindow::on_btn_access_close_eas_clicked()
 // str: 要显示的文字, success: 是否成功(目前未区分颜色显示)
 void MainWindow::set_info(QString str,bool success)
 {
-
     ui->lbl_info->setText(str);
+    ui->lbl_info->setStyleSheet(success ? "color: #197a30;" : "color: #b42318;");
 }
 
 // "获取EAS状态"按钮：检查标签EAS是否已开启
 void MainWindow::on_btn_access_get_eas_clicked()
 {
+    if (!ensureAccessReady("Get EAS"))
+        return;
     BYTE eas_sta;   // EAS状态: 1=已开启, 0=已关闭
     int iret=NXPICODESLI_EASCheck(hr,ht,&eas_sta);
     if(iret!=NO_ERR)
@@ -766,8 +856,16 @@ void MainWindow::on_btn_access_get_eas_clicked()
 // "写AFI"按钮：写入AFI(应用族标识)值到标签
 void MainWindow::on_btn_access_write_afi_clicked()
 {
-    // 从输入框读取AFI值(按十六进制解析)
-    BYTE afi=(BYTE)ui->txt_access_afi->text().trimmed().toInt(NULL,16);
+    if (!ensureAccessReady("Write AFI"))
+        return;
+    QByteArray afiData;
+    QString error;
+    if (!parseHexInput(ui->txt_access_afi->text(), 1, afiData, error))
+    {
+        set_info(QString("Write AFI Failed: %1").arg(error), false);
+        return;
+    }
+    BYTE afi = static_cast<BYTE>(afiData.at(0));
     int iret = ISO15693_WriteAFI(hr,ht,(BYTE)afi);
     if(iret!=NO_ERR)
     {
@@ -782,6 +880,8 @@ void MainWindow::on_btn_access_write_afi_clicked()
 // "获取标签状态/系统信息"按钮：读取标签的系统信息(DSFID、AFI、块大小、块数等)
 void MainWindow::on_btn_access_get_status_clicked()
 {
+    if (!ensureAccessReady("Get status"))
+        return;
     BYTE dsfid;       // 数据存储格式标识
     BYTE afi;         // 应用族标识
     DWORD block_size; // 每块字节数
@@ -790,6 +890,11 @@ void MainWindow::on_btn_access_get_status_clicked()
     int iret = 0;
 
     int index = ui->cmb_access_tags->currentIndex();  // 选中的标签索引
+    if (index < 0 || index >= static_cast<int>(m_tags_hf.size()))
+    {
+        set_info("Get Status Failed: no tag selected", false);
+        return;
+    }
 
     // 把标签UID转为字节数组
     int ulen=m_tags_hf[index].m_uid.length()>2?m_tags_hf[index].m_uid.length()/2:0;
@@ -801,12 +906,63 @@ void MainWindow::on_btn_access_get_status_clicked()
 
     // 调用ISO15693获取系统信息命令
     iret=ISO15693_GetSystemInfo(hr,ht,uid,&dsfid,&afi,&block_size,&block_num,&ic_ref);
+    delete[] uid;
     if(iret == NO_ERR)
     {
         // 显示AFI值(2位十六进制，大写)
         ui->txt_access_afi->setText(QString("%1").arg((int)afi,2,16,QChar('0')).toUpper());
-        set_info(QString("Get Status Success"));
+        if (block_size > 0)
+            m_accessBlockSize = block_size;
+        set_info(QString("Get Status Success: AFI=%1, block size=%2 bytes, blocks=%3")
+                 .arg(afi, 2, 16, QChar('0')).toUpper().arg(block_size).arg(block_num));
     }
+    else
+        set_info(QString("Get Status Failed! err=%1").arg(iret), false);
 
 
+}
+
+bool MainWindow::ensureAccessReady(const QString &operation)
+{
+    if (hr == nullptr)
+    {
+        set_info(operation + " failed: reader is not open", false);
+        return false;
+    }
+    if (ht == nullptr)
+    {
+        set_info(operation + " failed: tag is not connected", false);
+        return false;
+    }
+    return true;
+}
+
+bool MainWindow::parseHexInput(const QString &text, int expectedBytes, QByteArray &data, QString &error) const
+{
+    QString normalized = text;
+    normalized.remove(QRegularExpression("\\s"));
+    if (normalized.isEmpty())
+    {
+        error = "data is empty";
+        return false;
+    }
+    if (normalized.size() % 2 != 0 || !QRegularExpression("^[0-9A-Fa-f]+$").match(normalized).hasMatch())
+    {
+        error = "enter an even number of hexadecimal characters (0-9, A-F)";
+        return false;
+    }
+    if (normalized.size() / 2 != expectedBytes)
+    {
+        error = QString("expected %1 bytes (%2 hex characters), got %3 bytes")
+                .arg(expectedBytes).arg(expectedBytes * 2).arg(normalized.size() / 2);
+        return false;
+    }
+    data = QByteArray::fromHex(normalized.toLatin1());
+    return true;
+}
+
+void MainWindow::resetTagConnectionState()
+{
+    ht = nullptr;
+    ui->btn_connect->setEnabled(true);
 }

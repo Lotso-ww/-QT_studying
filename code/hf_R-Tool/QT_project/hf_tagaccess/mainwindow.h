@@ -114,6 +114,10 @@ private:
     void bind_access_tags();        // 把盘点到的标签填充到"标签操作"下拉框
     void HF_TagConnect();            // 连接选中的HF标签(建立标签句柄)
     void HF_TagDisconnect();        // 断开当前连接的HF标签
-    void SetAccessAntenna();         // 设置标签访问使用的天线
+    bool SetAccessAntenna();         // 设置标签访问使用的天线
+    bool ensureAccessReady(const QString &operation);
+    bool parseHexInput(const QString &text, int expectedBytes, QByteArray &data, QString &error) const;
+    void resetTagConnectionState();
+    DWORD m_accessBlockSize = 4;     // ISO15693 常见块大小；读取系统信息后会更新
 };
 #endif // MAINWINDOW_H
