@@ -4,7 +4,7 @@
 #include "qstring.h"
 #include <QMetaType>
 #include <vector>
-#include "../c++_lib/inc/rfidlib.h"
+#include "c++_lib/inc/rfidlib.h"
 // 高频(HF)标签类，保存一张RFID标签的盘点信息
 class CTag_HF
 {

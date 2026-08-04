@@ -21,7 +21,15 @@ SOURCES += \
     CAEDevice_HF.cpp \
     gfunction.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    rfidbusinessworker.cpp \
+    rfiddeviceadapter.cpp \
+    rfidoperationrunner.cpp \
+    rfidlogdispatcher.cpp \
+    rfidlogger.cpp \
+    rfidretrypolicy.cpp \
+    rfidtagservice.cpp \
+    tagpayloadcodec.cpp
 
 HEADERS += \
     CAEDevice_HF.h \
@@ -74,6 +82,15 @@ HEADERS += \
     c++_lib/inc/rfidlib_reader.h \
     gfunction.h \
     mainwindow.h \
+    rfidbusinessworker.h \
+    rfiddeviceadapter.h \
+    rfidoperationrunner.h \
+    rfidlogdispatcher.h \
+    rfidlogger.h \
+    rfidretrypolicy.h \
+    rfidtagservice.h \
+    rfidtagtypes.h \
+    tagpayloadcodec.h \
     tag_hf.h
 
 FORMS += \

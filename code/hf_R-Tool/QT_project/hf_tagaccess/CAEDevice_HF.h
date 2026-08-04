@@ -8,6 +8,7 @@
 #include <QObject>
 #include <QByteArray>
 #include "tag_hf.h"
+#include "rfidtagtypes.h"
 
 using namespace std;
 
@@ -57,6 +58,19 @@ public:
     void AddNewISO15693Tag(UINT32 apl_tid,UINT32 picc_tid,UINT32 ant_id,UINT8 dsfid,UINT8 *uid,USHORT rssi);
     // 添加一张新发现的 ISO14443A 标签到列表
     void AddNewISO14443ATag(UINT32 apl_tid,UINT32 picc_tid,UINT32 ant_id,UINT8 *uid,UINT8 uidlen);
+
+    // ISO15693 business adapter methods. They keep SDK calls out of RfidTagService and MainWindow.
+    static RfidDeviceResult setAccessAntenna(RFID_READER_HANDLE reader, quint32 antenna);
+    static RfidDeviceResult connectIso15693(RFID_READER_HANDLE reader, quint32 tagType,
+                                             const QString &uid, RFID_TAG_HANDLE *tagHandle);
+    static RfidDeviceResult disconnectTag(RFID_READER_HANDLE reader, RFID_TAG_HANDLE *tagHandle);
+    static RfidDeviceResult getSystemInfo(RFID_READER_HANDLE reader, RFID_TAG_HANDLE tagHandle,
+                                          TagSystemInfo *systemInfo);
+    static RfidDeviceResult readBlocks(RFID_READER_HANDLE reader, RFID_TAG_HANDLE tagHandle,
+                                       int basicIndex, int blockCount, int blockSize, QByteArray *data);
+    static RfidDeviceResult writeBlocks(RFID_READER_HANDLE reader, RFID_TAG_HANDLE tagHandle,
+                                        int basicIndex, int blockCount, int blockSize,
+                                        const QByteArray &data);
 
 public:
     vector<CTag_HF>  m_tags_hf;            // 本次盘点到的标签集合

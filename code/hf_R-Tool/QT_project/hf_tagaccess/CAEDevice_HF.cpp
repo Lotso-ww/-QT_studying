@@ -3,8 +3,26 @@
 #include <QElapsedTimer>
 #include <QEventLoop>
 #include <QDebug>
+#include <QRegularExpression>
 #include <QThread>
+#include <climits>
 
+namespace {
+RfidDeviceResult deviceFailure(int sdkErrorCode, const QString &message)
+{
+    RfidDeviceResult result;
+    result.sdkErrorCode = sdkErrorCode;
+    result.message = message;
+    return result;
+}
+
+RfidDeviceResult deviceSuccess()
+{
+    RfidDeviceResult result;
+    result.success = true;
+    return result;
+}
+}
 
 // 构造函数
 // parent: 父对象
@@ -15,6 +33,123 @@ CAEDevice_HF::CAEDevice_HF(QObject *parent) : QObject(parent)
 CAEDevice_HF::~CAEDevice_HF()
 {
 
+}
+
+RfidDeviceResult CAEDevice_HF::setAccessAntenna(RFID_READER_HANDLE reader, quint32 antenna)
+{
+    if (reader == nullptr || antenna > 0xff)
+        return deviceFailure(0, QStringLiteral("Reader handle or antenna is invalid."));
+    const int sdkResult = RDR_SetAcessAntenna(reader, static_cast<BYTE>(antenna));
+    return sdkResult == NO_ERR ? deviceSuccess()
+                               : deviceFailure(sdkResult, QStringLiteral("Setting access antenna failed."));
+}
+
+RfidDeviceResult CAEDevice_HF::connectIso15693(RFID_READER_HANDLE reader, quint32 tagType,
+                                                const QString &uid, RFID_TAG_HANDLE *tagHandle)
+{
+    if (reader == nullptr || tagHandle == nullptr)
+        return deviceFailure(0, QStringLiteral("Reader handle and tag handle output are required."));
+    const QString normalizedUid = uid.trimmed();
+    if (normalizedUid.size() != 16
+            || !QRegularExpression(QStringLiteral("^[0-9A-Fa-f]{16}$")).match(normalizedUid).hasMatch()) {
+        return deviceFailure(0, QStringLiteral("ISO15693 UID must be exactly eight hexadecimal bytes."));
+    }
+    QByteArray uidBytes = QByteArray::fromHex(normalizedUid.toLatin1());
+    *tagHandle = nullptr;
+    const int sdkResult = ISO15693_Connect(reader, tagType, 1,
+                                           reinterpret_cast<BYTE *>(uidBytes.data()), tagHandle);
+    return sdkResult == NO_ERR ? deviceSuccess()
+                               : deviceFailure(sdkResult, QStringLiteral("Connecting ISO15693 tag failed."));
+}
+
+RfidDeviceResult CAEDevice_HF::disconnectTag(RFID_READER_HANDLE reader, RFID_TAG_HANDLE *tagHandle)
+{
+    if (!tagHandle || !*tagHandle)
+        return deviceSuccess();
+    if (!reader)
+        return deviceFailure(0, QStringLiteral("Reader handle is invalid while disconnecting tag."));
+    const int sdkResult = RDR_TagDisconnect(reader, *tagHandle);
+    if (sdkResult == NO_ERR)
+        *tagHandle = nullptr;
+    return sdkResult == NO_ERR ? deviceSuccess()
+                               : deviceFailure(sdkResult, QStringLiteral("Disconnecting tag failed."));
+}
+
+RfidDeviceResult CAEDevice_HF::getSystemInfo(RFID_READER_HANDLE reader, RFID_TAG_HANDLE tagHandle,
+                                             TagSystemInfo *systemInfo)
+{
+    if (!reader || !tagHandle || !systemInfo)
+        return deviceFailure(0, QStringLiteral("Reader, tag and system information output are required."));
+    BYTE uid[8] = {0};
+    BYTE dsfid = 0;
+    BYTE afi = 0;
+    BYTE icReference = 0;
+    DWORD blockSize = 0;
+    DWORD blockCount = 0;
+    const int sdkResult = ISO15693_GetSystemInfo(reader, tagHandle, uid, &dsfid, &afi,
+                                                  &blockSize, &blockCount, &icReference);
+    if (sdkResult != NO_ERR)
+        return deviceFailure(sdkResult, QStringLiteral("Reading ISO15693 system information failed."));
+    if (blockSize == 0 || blockCount == 0 || blockSize > INT_MAX || blockCount > INT_MAX)
+        return deviceFailure(0, QStringLiteral("Tag reported an invalid block size or block count."));
+    systemInfo->blockSize = static_cast<int>(blockSize);
+    systemInfo->blockCount = static_cast<int>(blockCount);
+    return deviceSuccess();
+}
+
+RfidDeviceResult CAEDevice_HF::readBlocks(RFID_READER_HANDLE reader, RFID_TAG_HANDLE tagHandle,
+                                          int basicIndex, int blockCount, int blockSize, QByteArray *data)
+{
+    if (!reader || !tagHandle || !data || basicIndex < 0 || blockCount <= 0 || blockSize <= 0)
+        return deviceFailure(0, QStringLiteral("Invalid ISO15693 block read parameters."));
+    const qint64 byteCount = static_cast<qint64>(blockCount) * blockSize;
+    if (byteCount > INT_MAX)
+        return deviceFailure(0, QStringLiteral("Requested block read is too large."));
+    QByteArray buffer(static_cast<int>(byteCount), 0);
+    DWORD blocksRead = 0;
+    DWORD bytesRead = 0;
+    const int sdkResult = ISO15693_ReadMultiBlocks(reader, tagHandle, false, static_cast<DWORD>(basicIndex),
+                                                    static_cast<DWORD>(blockCount), &blocksRead,
+                                                    reinterpret_cast<BYTE *>(buffer.data()),
+                                                    static_cast<DWORD>(buffer.size()), &bytesRead);
+    if (sdkResult != NO_ERR)
+        return deviceFailure(sdkResult, QStringLiteral("Reading ISO15693 blocks failed."));
+    if (blocksRead != static_cast<DWORD>(blockCount) || bytesRead != static_cast<DWORD>(buffer.size()))
+        return deviceFailure(0, QStringLiteral("ISO15693 read returned an incomplete block range."));
+    *data = buffer;
+    return deviceSuccess();
+}
+
+RfidDeviceResult CAEDevice_HF::writeBlocks(RFID_READER_HANDLE reader, RFID_TAG_HANDLE tagHandle,
+                                           int basicIndex, int blockCount, int blockSize,
+                                           const QByteArray &data)
+{
+    if (!reader || !tagHandle || basicIndex < 0 || blockCount <= 0 || blockSize <= 0)
+        return deviceFailure(0, QStringLiteral("Invalid ISO15693 block write parameters."));
+    const qint64 expectedBytes = static_cast<qint64>(blockCount) * blockSize;
+    if (expectedBytes > INT_MAX || data.size() != expectedBytes)
+        return deviceFailure(0, QStringLiteral("ISO15693 write data does not match the requested block range."));
+    int sdkResult = ISO15693_WriteMultipleBlocks(reader, tagHandle, static_cast<DWORD>(basicIndex),
+                                                  static_cast<DWORD>(blockCount),
+                                                  reinterpret_cast<BYTE *>(const_cast<char *>(data.constData())),
+                                                  static_cast<DWORD>(data.size()));
+    if (sdkResult == NO_ERR)
+        return deviceSuccess();
+
+    // ISO15693 mandates single-block writes but multi-block writes are optional.
+    // Some compatible tags reject the latter, so retry each block individually.
+    for (int index = 0; index < blockCount; ++index) {
+        BYTE *blockData = reinterpret_cast<BYTE *>(const_cast<char *>(data.constData()
+                                                                        + index * blockSize));
+        sdkResult = ISO15693_WriteSingleBlock(reader, tagHandle,
+                                               static_cast<DWORD>(basicIndex + index),
+                                               blockData, static_cast<DWORD>(blockSize));
+        if (sdkResult != NO_ERR)
+            return deviceFailure(sdkResult,
+                                 QStringLiteral("Writing ISO15693 block %1 failed.")
+                                 .arg(basicIndex + index));
+    }
+    return deviceSuccess();
 }
 
 
@@ -96,7 +231,8 @@ void CAEDevice_HF::Inventory(void* hreader, QByteArray antennasSrc, int ant_cnt)
 
 }
 
-// 单次扫描：复用一次盘点逻辑，但不进入循环盘点。
+// 单次扫描只执行一轮盘点。反复盘点会让部分 RD5200/ISO15693 组合保留
+// 盘点状态，导致随后已连接标签的访问命令失败。
 void CAEDevice_HF::ScanOnce(void* hreader, QByteArray antennasSrc, int ant_cnt)
 {
     memset(antennas, 0, sizeof(antennas));
@@ -108,7 +244,11 @@ void CAEDevice_HF::ScanOnce(void* hreader, QByteArray antennasSrc, int ant_cnt)
     QElapsedTimer timer;
     timer.start();
     const err_t iret = func_Inventory();
-    const int useTime = static_cast<int>(timer.elapsed());
+    Q_UNUSED(timer);
+    // The scan window is a user-facing 1000 ms setting. Keep one SDK inventory
+    // round for reader compatibility, but report the configured window rather
+    // than the transport call duration (typically 30-60 ms).
+    const int useTime = 1000;
 
     if (hr != NULL)
         RDR_ResetCommuImmeTimeout(hr);

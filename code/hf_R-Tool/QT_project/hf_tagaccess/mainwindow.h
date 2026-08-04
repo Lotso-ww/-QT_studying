@@ -8,6 +8,8 @@
 #include <vector>
 #include "tag_hf.h"
 #include "CAEDevice_HF.h"
+#include "rfidbusinessworker.h"
+#include "rfidlogdispatcher.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -95,11 +97,24 @@ private slots:
     void on_btn_access_get_status_clicked();  // "获取标签状态/系统信息"按钮槽
 
 private:
+    void on_business_read_clicked();
+    void on_business_write_clicked();
+    void on_business_cancel_clicked();
+    void on_business_completed(const RfidOperationResult &result);
+    void on_business_attempt_started(int attempt);
+    void on_business_retry_scheduled(int failedAttempt, int delayMs);
+    void on_business_device_stage(const QString &stage, const QString &message);
+
+private:
     bool loop=false;                // 盘点循环标志(主界面侧，未实际使用)
     QString RDType = QString("%1").arg(""); // 当前选中的读写器类型名称
     vector<CTag_HF> m_tags_hf;     // 盘点到的所有标签集合(累计，不重复)
     QThread *thread = nullptr;      // 子线程对象(运行盘点逻辑)
     CAEDevice_HF *device = nullptr; // 盘点设备对象(运行在子线程)
+    RfidBusinessWorker *businessWorker = nullptr;
+    RfidLogDispatcher *businessLogger = nullptr;
+    bool businessOperationRunning = false;
+    bool businessReadOperation = false;
     bool loaded=false;              // 表格是否已初始化(防止重复创建)
     QSize formSize;                 // 上次记录的表格尺寸(用于判断是否需要重建)
     bool running = false;           // 是否正在盘点中
@@ -126,6 +141,11 @@ private:
     bool parseHexInput(const QString &text, int expectedBytes, QByteArray &data, QString &error) const;
     void resetTagConnectionState();
     void create_scan_mode_view();
+    void create_business_view();
+    void update_business_tag_state();
+    bool selected_business_tag(InventoryObservation *tag) const;
+    void log_business(RfidLogLevel level, const QString &stage, int attempt,
+                      const QString &message, const QMap<QString, QString> &fields = {});
     DWORD m_accessBlockSize = 4;     // ISO15693 常见块大小；读取系统信息后会更新
 };
 #endif // MAINWINDOW_H

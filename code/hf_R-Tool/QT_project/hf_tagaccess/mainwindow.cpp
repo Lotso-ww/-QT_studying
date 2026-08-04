@@ -3,6 +3,8 @@
 #include "QListWidgetItem"
 #include "qmessagebox.h"
 #include "gfunction.h"
+#include "rfidtagservice.h"
+#include "tagpayloadcodec.h"
 #include "./c++_lib/inc/rfidlib.h"
 
 #include <QMetaType>
@@ -12,6 +14,22 @@
 #include <QDir>
 #include <QHeaderView>
 #include <QRegularExpression>
+#include <QDateTimeEdit>
+#include <QDialog>
+#include <QDialogButtonBox>
+#include <QComboBox>
+#include <QCheckBox>
+#include <QFormLayout>
+#include <QGroupBox>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QLineEdit>
+#include <QPlainTextEdit>
+#include <QPushButton>
+#include <QSpinBox>
+#include <QStandardPaths>
+#include <QTableWidget>
+#include <QVBoxLayout>
 
 using namespace Qt;
 // 把 TCHAR(宽字符)字符串转换为 QString
@@ -33,6 +51,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     qRegisterMetaType<std::vector<CTag_HF>>("vector<CTag_HF>");
     qRegisterMetaType<std::vector<CTag_HF>>("std::vector<CTag_HF>");
+    qRegisterMetaType<RfidOperationResult>("RfidOperationResult");
 
     int iret = -1;     // 操作返回值
     int drvCnt = 0;   // 已加载的驱动个数
@@ -118,7 +137,269 @@ MainWindow::MainWindow(QWidget *parent)
 
     // 强制覆盖旧版 ui_mainwindow.h 中 ScanMode 页签的禁用状态。
     ui->tab_scan_mode->setEnabled(true);
+    create_business_view();
+    businessLogger = new RfidLogDispatcher(this);
+    const QString logDirectory = QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation);
+    QDir().mkpath(logDirectory);
+    businessLogger->setFileLoggingEnabled(true, QDir(logDirectory).filePath(QStringLiteral("rfid-business.log")));
+    connect(businessLogger, &RfidLogDispatcher::fileWriteFailed, this, [](const QString &message) {
+        qWarning().noquote() << message;
+    });
+    log_business(RfidLogLevel::Info, QStringLiteral("INIT"), 0,
+                 QStringLiteral("Reader drivers loaded."),
+                 {{QStringLiteral("driverCount"), QString::number(drvCnt)}});
+    businessWorker = new RfidBusinessWorker(this);
+    connect(businessWorker, &RfidBusinessWorker::completed, this, &MainWindow::on_business_completed);
+    connect(businessWorker, &RfidBusinessWorker::attemptStarted,
+            this, &MainWindow::on_business_attempt_started);
+    connect(businessWorker, &RfidBusinessWorker::retryScheduled,
+            this, &MainWindow::on_business_retry_scheduled);
+    connect(businessWorker, &RfidBusinessWorker::deviceStage,
+            this, &MainWindow::on_business_device_stage);
+    update_business_tag_state();
+}
 
+void MainWindow::create_business_view()
+{
+    QGroupBox *group = new QGroupBox(QStringLiteral("Business data"), ui->fra_access_hf);
+    group->setGeometry(870, 78, 255, 116);
+    QVBoxLayout *layout = new QVBoxLayout(group);
+    QPushButton *readButton = new QPushButton(QStringLiteral("Read business data"), group);
+    readButton->setObjectName(QStringLiteral("btn_business_read"));
+    QPushButton *writeButton = new QPushButton(QStringLiteral("Write business data"), group);
+    writeButton->setObjectName(QStringLiteral("btn_business_write"));
+    layout->addWidget(readButton);
+    layout->addWidget(writeButton);
+    connect(readButton, &QPushButton::clicked, this, &MainWindow::on_business_read_clicked);
+    connect(writeButton, &QPushButton::clicked, this, &MainWindow::on_business_write_clicked);
+}
+
+void MainWindow::on_business_read_clicked()
+{
+    InventoryObservation tag;
+    if (!selected_business_tag(&tag))
+        return;
+    log_business(RfidLogLevel::Info, QStringLiteral("READ"), 0,
+                 QStringLiteral("Reading connected tag."),
+                 {{QStringLiteral("uid"), tag.uid}});
+    findChild<QPushButton *>(QStringLiteral("btn_business_read"))->setEnabled(false);
+    findChild<QPushButton *>(QStringLiteral("btn_business_write"))->setEnabled(false);
+    RfidBusinessWorker *worker = businessWorker;
+    void *reader = hr;
+    void *connectedTag = ht;
+    businessOperationRunning = true;
+    businessReadOperation = true;
+    ui->pushButton_2->setEnabled(false);
+    QMetaObject::invokeMethod(worker, [worker, reader, connectedTag, tag]() {
+        worker->read(reader, connectedTag, tag);
+    }, Qt::QueuedConnection);
+}
+
+void MainWindow::on_business_write_clicked()
+{
+    QDialog dialog(this);
+    dialog.setWindowTitle(QStringLiteral("Write business data"));
+    QFormLayout *form = new QFormLayout(&dialog);
+    QSpinBox *dishNumber = new QSpinBox(&dialog);
+    dishNumber->setRange(0, 255);
+    QDateTimeEdit *inseminationTime = new QDateTimeEdit(QDateTime::currentDateTime(), &dialog);
+    inseminationTime->setDisplayFormat(QStringLiteral("yyyy-MM-dd HH:mm"));
+    QLineEdit *femaleName = new QLineEdit(&dialog);
+    QLineEdit *medicalRecord = new QLineEdit(&dialog);
+    form->addRow(QStringLiteral("Dish number"), dishNumber);
+    form->addRow(QStringLiteral("Insemination time"), inseminationTime);
+    form->addRow(QStringLiteral("Female name"), femaleName);
+    form->addRow(QStringLiteral("Medical record"), medicalRecord);
+    QDialogButtonBox *buttons = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, &dialog);
+    form->addRow(buttons);
+    connect(buttons, &QDialogButtonBox::accepted, &dialog, &QDialog::accept);
+    connect(buttons, &QDialogButtonBox::rejected, &dialog, &QDialog::reject);
+    if (dialog.exec() != QDialog::Accepted)
+        return;
+
+    TagPayload payload;
+    payload.dishNumber = static_cast<quint8>(dishNumber->value());
+    payload.inseminationTime = inseminationTime->dateTime();
+    payload.femaleName = femaleName->text();
+    payload.medicalRecordNumber = medicalRecord->text().toLatin1();
+    QByteArray raw;
+    QString error;
+    if (!TagPayloadCodec::encode(payload, &raw, &error)) {
+        QMessageBox::warning(this, QStringLiteral("Write business data"), error, QMessageBox::Ok);
+        return;
+    }
+    InventoryObservation tag;
+    if (!selected_business_tag(&tag))
+        return;
+    log_business(RfidLogLevel::Info, QStringLiteral("WRITE"), 0,
+                 QStringLiteral("Payload encoded."),
+                 {{QStringLiteral("uid"), tag.uid},
+                  {QStringLiteral("name"), payload.femaleName},
+                  {QStringLiteral("medicalRecord"), QString::fromLatin1(payload.medicalRecordNumber)},
+                  {QStringLiteral("payloadHex"), TagPayloadCodec::toHex(raw)}});
+    if (QMessageBox::question(this, QStringLiteral("Confirm write"),
+                              QStringLiteral("Write this data to the connected tag and verify it afterwards?"),
+                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No) != QMessageBox::Yes) {
+        return;
+    }
+    findChild<QPushButton *>(QStringLiteral("btn_business_read"))->setEnabled(false);
+    findChild<QPushButton *>(QStringLiteral("btn_business_write"))->setEnabled(false);
+    RfidBusinessWorker *worker = businessWorker;
+    void *reader = hr;
+    void *connectedTag = ht;
+    businessOperationRunning = true;
+    businessReadOperation = false;
+    ui->pushButton_2->setEnabled(false);
+    QMetaObject::invokeMethod(worker, [worker, reader, connectedTag, tag, payload]() {
+        worker->write(reader, connectedTag, tag, payload);
+    }, Qt::QueuedConnection);
+}
+
+void MainWindow::on_business_cancel_clicked()
+{
+    if (businessWorker) {
+        RfidBusinessWorker *worker = businessWorker;
+        QMetaObject::invokeMethod(worker, [worker]() { worker->cancel(); }, Qt::QueuedConnection);
+    }
+    log_business(RfidLogLevel::Warn, QStringLiteral("CANCEL"), 0,
+                 QStringLiteral("Cancellation requested."));
+}
+
+bool MainWindow::selected_business_tag(InventoryObservation *tag) const
+{
+    if (!tag)
+        return false;
+    if (hr == nullptr || ht == nullptr || m_tags_hf.size() != 1) {
+        const_cast<MainWindow *>(this)->set_info(QStringLiteral("Connect exactly one ISO15693 tag before business access."), false);
+        return false;
+    }
+    const CTag_HF &item = m_tags_hf.front();
+    tag->uid = item.m_uid;
+    tag->tagType = item.m_type;
+    tag->antenna = item.m_antNo;
+    return true;
+}
+
+void MainWindow::on_business_completed(const RfidOperationResult &result)
+{
+    businessOperationRunning = false;
+    const bool rawDataOnly = businessReadOperation && result.success && !result.payloadDecoded
+            && !result.rawData.isEmpty();
+    const RfidLogLevel level = result.success ? RfidLogLevel::Info : RfidLogLevel::Error;
+    QMap<QString, QString> fields;
+    fields.insert(QStringLiteral("sdkError"), QString::number(result.sdkErrorCode));
+    if (!result.rawData.isEmpty())
+        fields.insert(QStringLiteral("payloadHex"), TagPayloadCodec::toHex(result.rawData));
+    if (result.success) {
+        fields.insert(QStringLiteral("name"), result.payload.femaleName);
+        fields.insert(QStringLiteral("medicalRecord"), QString::fromLatin1(result.payload.medicalRecordNumber));
+    }
+    log_business(level, result.success ? QStringLiteral("COMPLETE") : QStringLiteral("FAILED"),
+                 result.attemptCount, result.message, fields);
+    ui->pushButton_2->setEnabled(hr != nullptr);
+    update_business_tag_state();
+
+    if (businessReadOperation && result.success && result.payloadDecoded) {
+        QDialog dialog(this);
+        dialog.setWindowTitle(QStringLiteral("Business data"));
+        dialog.setMinimumWidth(520);
+        QVBoxLayout *layout = new QVBoxLayout(&dialog);
+        QTableWidget *table = new QTableWidget(5, 2, &dialog);
+        table->setHorizontalHeaderLabels({QStringLiteral("Field"), QStringLiteral("Value")});
+        table->verticalHeader()->setVisible(false);
+        table->horizontalHeader()->setStretchLastSection(true);
+        table->horizontalHeader()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
+        table->setEditTriggers(QAbstractItemView::NoEditTriggers);
+        table->setSelectionMode(QAbstractItemView::NoSelection);
+        table->setFocusPolicy(Qt::NoFocus);
+
+        const QList<QPair<QString, QString>> rows = {
+            {QStringLiteral("Format version"), QStringLiteral("0x%1").arg(result.payload.formatVersion, 2, 16,
+                                                                  QLatin1Char('0')).toUpper()},
+            {QStringLiteral("Dish number"), QString::number(result.payload.dishNumber)},
+            {QStringLiteral("Insemination time"), result.payload.inseminationTime.toString(QStringLiteral("yyyy-MM-dd HH:mm"))},
+            {QStringLiteral("Female name"), result.payload.femaleName},
+            {QStringLiteral("Medical record"), QString::fromLatin1(result.payload.medicalRecordNumber)}
+        };
+        for (int row = 0; row < rows.size(); ++row) {
+            table->setItem(row, 0, new QTableWidgetItem(rows.at(row).first));
+            table->setItem(row, 1, new QTableWidgetItem(rows.at(row).second));
+        }
+        table->resizeRowsToContents();
+        layout->addWidget(table);
+
+        QLabel *rawLabel = new QLabel(QStringLiteral("Raw HEX"), &dialog);
+        QPlainTextEdit *rawHex = new QPlainTextEdit(&dialog);
+        rawHex->setReadOnly(true);
+        rawHex->setPlainText(TagPayloadCodec::toHex(result.rawData));
+        rawHex->setFixedHeight(64);
+        layout->addWidget(rawLabel);
+        layout->addWidget(rawHex);
+
+        QDialogButtonBox *buttons = new QDialogButtonBox(QDialogButtonBox::Close, &dialog);
+        connect(buttons, &QDialogButtonBox::rejected, &dialog, &QDialog::reject);
+        connect(buttons, &QDialogButtonBox::accepted, &dialog, &QDialog::accept);
+        layout->addWidget(buttons);
+        dialog.exec();
+        return;
+    }
+
+    QMessageBox message(this);
+    message.setWindowTitle(businessReadOperation ? QStringLiteral("Business data")
+                                                  : QStringLiteral("Write business data"));
+    message.setIcon(result.success ? QMessageBox::Information : QMessageBox::Warning);
+    if (rawDataOnly) {
+        const QString version = result.rawData.isEmpty()
+                ? QStringLiteral("unknown")
+                : QStringLiteral("0x%1").arg(static_cast<quint8>(result.rawData.at(0)), 2, 16,
+                                               QLatin1Char('0')).toUpper();
+        message.setText(QStringLiteral("Tag data was read successfully as raw data. Its format version is %1 and "
+                                       "does not match the business-data layout used when writing. The tag was not changed.\n\n"
+                                       "Details: %2\n\nSee Raw HEX below.")
+                        .arg(version, result.message));
+    } else {
+        message.setText(result.success ? QStringLiteral("Tag data was written and verified.") : result.message);
+    }
+    if (!result.rawData.isEmpty())
+        message.setDetailedText(QStringLiteral("Raw HEX:\n%1").arg(TagPayloadCodec::toHex(result.rawData)));
+    message.exec();
+}
+
+void MainWindow::on_business_attempt_started(int attempt)
+{
+    log_business(RfidLogLevel::Info, QStringLiteral("ATTEMPT"), attempt,
+                 QStringLiteral("Business operation started."));
+}
+
+void MainWindow::on_business_retry_scheduled(int failedAttempt, int delayMs)
+{
+    log_business(RfidLogLevel::Warn, QStringLiteral("RETRY"), failedAttempt,
+                 QStringLiteral("Retry scheduled."),
+                 {{QStringLiteral("delayMs"), QString::number(delayMs)}});
+}
+
+void MainWindow::on_business_device_stage(const QString &stage, const QString &message)
+{
+    log_business(RfidLogLevel::Info, stage, 0, message);
+}
+
+void MainWindow::log_business(RfidLogLevel level, const QString &stage, int attempt,
+                              const QString &message, const QMap<QString, QString> &fields)
+{
+    if (businessLogger)
+        businessLogger->log(level, stage, attempt, message, fields);
+}
+
+void MainWindow::update_business_tag_state()
+{
+    QPushButton *readButton = findChild<QPushButton *>(QStringLiteral("btn_business_read"));
+    QPushButton *writeButton = findChild<QPushButton *>(QStringLiteral("btn_business_write"));
+    if (!readButton || !writeButton)
+        return;
+    const bool canOperate = hr != nullptr && ht != nullptr && !running && !scanRunning
+            && !businessOperationRunning && m_tags_hf.size() == 1;
+    readButton->setEnabled(canOperate);
+    writeButton->setEnabled(canOperate);
 }
 
 // 获取天线数量，填充天线列表框(用 QListWidgetItem + 复选框表示)
@@ -145,6 +426,12 @@ void MainWindow::bind_antennas()
 
 MainWindow::~MainWindow()
 {
+    if (businessWorker)
+        businessWorker->requestCancel();
+    if (thread) {
+        thread->quit();
+        thread->wait();
+    }
     // 读写器关闭会使标签句柄失效，必须先断开标签并清空本地状态。
     if (ht != nullptr)
         HF_TagDisconnect();
@@ -223,6 +510,10 @@ void MainWindow::on_pushButton_clicked()
             qDebug() << "Reader antennaCount:" << antennaCount
                      << "detectedAntennaCount:" << detectedAntCount;
         }
+        log_business(RfidLogLevel::Info, QStringLiteral("INIT"), 1,
+                     QStringLiteral("Reader opened successfully."),
+                     {{QStringLiteral("antennaCount"), QString::number(antennaCount)},
+                      {QStringLiteral("probeResult"), QString::number(detectRet)}});
         ui->pushButton_2->setEnabled(true);  // 启用"关闭"按钮
         ui->pushButton->setEnabled(false);   // 禁用"打开"按钮
         bind_antennas();                     // 填充天线列表
@@ -232,6 +523,7 @@ void MainWindow::on_pushButton_clicked()
         device = new CAEDevice_HF();
         device->moveToThread(thread);
         connect(thread, &QThread::finished, device, &QObject::deleteLater);
+
         // 连接信号和槽：主界面 <-> 子线程设备对象
         connect(this,&MainWindow::signals_Inventory,device,&CAEDevice_HF::Inventory);              // 主界面发盘点信号->子线程盘点
         connect(this,&MainWindow::signals_ScanOnce,device,&CAEDevice_HF::ScanOnce);
@@ -245,6 +537,9 @@ void MainWindow::on_pushButton_clicked()
     else
     {
         set_info(QString("Open reader failed! err=%1").arg(iret), false);
+        log_business(RfidLogLevel::Error, QStringLiteral("INIT"), 1,
+                     QStringLiteral("Reader open failed."),
+                     {{QStringLiteral("sdkError"), QString::number(iret)}});
         QMessageBox::warning(this, "Reader", QString("Open reader failed! err=%1").arg(iret), QMessageBox::Ok);
     }
 
@@ -256,7 +551,7 @@ void MainWindow::on_pushButton_clicked()
 void MainWindow::on_pushButton_2_clicked()
 {
 
-    if(running || scanRunning)        // 正在盘点或扫描则不允许关闭
+    if(running || scanRunning || businessOperationRunning)        // 正在盘点、扫描或业务读写则不允许关闭
     {
         return;
     }
@@ -280,6 +575,8 @@ void MainWindow::on_pushButton_2_clicked()
         ui->cmb_access_tags->clear();
         m_accessBlockSize = 4;
         set_info(QString("Reader closed"));
+        log_business(RfidLogLevel::Info, QStringLiteral("CLOSE"), 0,
+                     QStringLiteral("Reader closed."));
         // 断开所有信号槽连接
         disconnect(this,&MainWindow::signals_Inventory,device,&CAEDevice_HF::Inventory);
         disconnect(this,&MainWindow::signals_ScanOnce,device,&CAEDevice_HF::ScanOnce);
@@ -297,6 +594,9 @@ void MainWindow::on_pushButton_2_clicked()
     else
     {
         set_info(QString("Close reader failed! err=%1").arg(iret), false);
+        log_business(RfidLogLevel::Error, QStringLiteral("CLOSE"), 0,
+                     QStringLiteral("Reader close failed."),
+                     {{QStringLiteral("sdkError"), QString::number(iret)}});
     }
 
 }
@@ -586,12 +886,20 @@ void MainWindow::on_btn_inventory_start_clicked()
         return;
     }
 
+    // A tag handle belongs to the same reader session as inventory. Release it before
+    // starting a new inventory, then use only the freshly discovered tag list.
+    if (ht != nullptr)
+        HF_TagDisconnect();
+    m_tags_hf.clear();
+    bind_access_tags();
+
     // 清空表格内容
     ui->tbw_inventory_tags->clearContents();
     ui->tbw_inventory_tags->setRowCount(0);
 
 
     running =true;
+    update_business_tag_state();
     // 发送盘点信号给子线程，触发盘点
     QByteArray antennasData(reinterpret_cast<const char*>(ants), ant_count);
     qDebug() << "Start inventory, ant_count:" << ant_count << "ants:" << antennasData.toHex(' ');
@@ -677,6 +985,7 @@ void MainWindow::on_btn_scan_mode_start_clicked()
     ui->tbw_scan_mode_tags->setRowCount(0);
     ui->lbl_scan_mode->setText("Tags: 0\nTime: 0 ms\nScan: running");
     scanRunning = true;
+    update_business_tag_state();
     ui->btn_scan_mode_start->setEnabled(false);
     ui->btn_inventory_start->setEnabled(false);
     emit signals_ScanOnce(hr, QByteArray(reinterpret_cast<const char*>(antennas), antCount), antCount);
@@ -714,6 +1023,7 @@ void MainWindow::slot_scan_data_hf(int tag_count, vector<CTag_HF> tags, int use_
     }
     ui->lbl_scan_mode->setText(QString("Tags: %1\nTime: %2 ms\nScan: complete")
                                .arg(tag_count).arg(use_time));
+    update_business_tag_state();
 }
 
 void MainWindow::slot_scan_finished(int iret)
@@ -721,10 +1031,19 @@ void MainWindow::slot_scan_finished(int iret)
     scanRunning = false;
     ui->btn_scan_mode_start->setEnabled(true);
     ui->btn_inventory_start->setEnabled(true);
+    update_business_tag_state();
     if (iret != NO_ERR)
     {
         ui->lbl_scan_mode->setText(QString("Scan failed: err=%1").arg(iret));
         QMessageBox::warning(this, "Scan", QString("Scan failed: err=%1").arg(iret), QMessageBox::Ok);
+        return;
+    }
+    if (m_tags_hf.size() > 1)
+    {
+        QMessageBox::warning(this, QStringLiteral("Business tag"),
+                             QStringLiteral("More than one ISO15693 tag was detected. "
+                                            "Leave only one tag in range and scan again."),
+                             QMessageBox::Ok);
     }
 }
 
@@ -749,7 +1068,15 @@ void MainWindow::on_btn_access_read_block_clicked()
                                       reinterpret_cast<BYTE *>(buffer.data()),nSize,&byts_read_out);
     if (iret != NO_ERR)
     {
-        set_info(QString("Read Block Failed! err=%1").arg(iret), false);
+        const int lastError = RDR_GetReaderLastReturnError(hr);
+        qWarning() << "ISO15693_ReadMultiBlocks failed"
+                   << "sdkResult:" << iret
+                   << "lastError:" << lastError
+                   << "start:" << addr
+                   << "count:" << num
+                   << "blockSize:" << m_accessBlockSize
+                   << "uid:" << ui->cmb_access_tags->currentText();
+        set_info(QString("Read Block Failed! err=%1 lastError=%2").arg(iret).arg(lastError), false);
         return;
     }
     if (byts_read_out > static_cast<DWORD>(buffer.size()))
@@ -774,6 +1101,23 @@ void MainWindow::HF_TagConnect()
     if (hr == nullptr)
     {
         set_info("Connect tag failed: reader is not open", false);
+        return;
+    }
+    if (running || scanRunning || businessOperationRunning)
+    {
+        set_info("Connect tag failed: stop inventory and wait for it to finish first", false);
+        QMessageBox::warning(this, QStringLiteral("Tag access"),
+                             QStringLiteral("The reader is busy with inventory. Stop inventory, wait until it has stopped, then connect the tag."),
+                             QMessageBox::Ok);
+        return;
+    }
+    if (m_tags_hf.size() != 1)
+    {
+        const QString message = m_tags_hf.empty()
+                ? QStringLiteral("No ISO15693 tag was found. Scan again with one tag in range.")
+                : QStringLiteral("More than one ISO15693 tag was found. Leave only one tag in range and scan again.");
+        set_info(QStringLiteral("Connect tag failed: exactly one tag is required"), false);
+        QMessageBox::warning(this, QStringLiteral("Tag access"), message, QMessageBox::Ok);
         return;
     }
     int index = ui->cmb_access_tags->currentIndex();  // 获取选中的标签索引
@@ -822,6 +1166,7 @@ void MainWindow::HF_TagConnect()
         ht = nullptr;
         set_info(QString("Connect tag failed! err=%1").arg(iret), false);
     }
+    update_business_tag_state();
 }
 
 // 断开当前连接的HF标签
@@ -830,6 +1175,7 @@ void MainWindow::HF_TagDisconnect()
     if(ht == NULL)
     {
         resetTagConnectionState();
+        update_business_tag_state();
         return;
     }
     int iret = (hr != nullptr) ? RDR_TagDisconnect(hr,ht) : NO_ERR;
@@ -838,6 +1184,7 @@ void MainWindow::HF_TagDisconnect()
         set_info(QString("Disconnect tag failed! err=%1").arg(iret), false);
     else
         set_info("Disconnect tag success");
+    update_business_tag_state();
 }
 
 // 设置标签访问使用的天线(取用户选中的第一个天线)
@@ -1026,6 +1373,14 @@ void MainWindow::on_btn_access_get_status_clicked()
 
 bool MainWindow::ensureAccessReady(const QString &operation)
 {
+    if (running || scanRunning || businessOperationRunning)
+    {
+        set_info(operation + " failed: reader is busy with inventory", false);
+        QMessageBox::warning(this, QStringLiteral("Tag access"),
+                             QStringLiteral("Stop inventory and wait until it has finished before accessing a tag."),
+                             QMessageBox::Ok);
+        return false;
+    }
     if (hr == nullptr)
     {
         set_info(operation + " failed: reader is not open", false);
@@ -1034,6 +1389,15 @@ bool MainWindow::ensureAccessReady(const QString &operation)
     if (ht == nullptr)
     {
         set_info(operation + " failed: tag is not connected", false);
+        return false;
+    }
+    if (m_tags_hf.size() != 1)
+    {
+        const QString message = m_tags_hf.empty()
+                ? QStringLiteral("No ISO15693 tag is available. Scan again with one tag in range.")
+                : QStringLiteral("More than one ISO15693 tag was found. Leave only one tag in range and scan again.");
+        set_info(operation + " failed: exactly one tag is required", false);
+        QMessageBox::warning(this, QStringLiteral("Tag access"), message, QMessageBox::Ok);
         return false;
     }
     return true;
