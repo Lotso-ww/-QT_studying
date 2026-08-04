@@ -97,6 +97,12 @@ private slots:
     void on_btn_access_get_status_clicked();  // "获取标签状态/系统信息"按钮槽
 
 private:
+    enum class AccessTagSource {
+        None,
+        Inventory,
+        ScanMode,
+    };
+
     void on_business_read_clicked();
     void on_business_write_clicked();
     void on_business_cancel_clicked();
@@ -115,6 +121,7 @@ private:
     RfidLogDispatcher *businessLogger = nullptr;
     bool businessOperationRunning = false;
     bool businessReadOperation = false;
+    AccessTagSource accessTagSource = AccessTagSource::None;
     bool loaded=false;              // 表格是否已初始化(防止重复创建)
     QSize formSize;                 // 上次记录的表格尺寸(用于判断是否需要重建)
     bool running = false;           // 是否正在盘点中

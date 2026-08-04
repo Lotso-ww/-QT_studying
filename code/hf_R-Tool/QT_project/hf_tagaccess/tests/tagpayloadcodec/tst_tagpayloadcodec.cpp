@@ -56,6 +56,10 @@ void TagPayloadCodecTest::encodesAndDecodesPayload()
     QCOMPARE(decoded.inseminationTime, input.inseminationTime);
     QCOMPARE(decoded.femaleName, input.femaleName);
     QCOMPARE(decoded.medicalRecordNumber, input.medicalRecordNumber);
+
+    input.formatVersion = 0x05;
+    QVERIFY2(TagPayloadCodec::encode(input, &encoded, &error), qPrintable(error));
+    QCOMPARE(static_cast<quint8>(encoded.at(0)), quint8(0x05));
 }
 
 void TagPayloadCodecTest::rejectsInvalidInput()

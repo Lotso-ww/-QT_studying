@@ -130,10 +130,6 @@ bool TagPayloadCodec::encode(const TagPayload &payload, QByteArray *encoded, QSt
         setError(error, QStringLiteral("Output buffer is required."));
         return false;
     }
-    if (payload.formatVersion != FormatVersion) {
-        setError(error, QStringLiteral("Unsupported payload format version."));
-        return false;
-    }
     QByteArray time;
     QByteArray name;
     if (!encodeBcdTime(payload.inseminationTime, &time, error)
