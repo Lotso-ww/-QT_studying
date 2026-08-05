@@ -1,4 +1,5 @@
 #include <QtTest>
+#include <stdexcept>
 
 #include "rfidoperationrunner.h"
 
@@ -11,6 +12,7 @@ private slots:
     void retriesAsynchronously();
     void stopsAfterThirdAttempt();
     void canCancelPendingRetry();
+    void convertsThrownExceptionToRetryableFailure();
 };
 
 void RfidOperationRunnerTest::initTestCase()
@@ -82,6 +84,24 @@ void RfidOperationRunnerTest::canCancelPendingRetry()
     QCOMPARE(calls, 1);
     const RfidOperationResult result = qvariant_cast<RfidOperationResult>(finishedSpy.at(0).at(0));
     QCOMPARE(static_cast<int>(result.errorKind), static_cast<int>(RfidErrorKind::Cancelled));
+}
+
+void RfidOperationRunnerTest::convertsThrownExceptionToRetryableFailure()
+{
+    RfidOperationRunner runner;
+    QSignalSpy finishedSpy(&runner, &RfidOperationRunner::finished);
+    int calls = 0;
+    runner.start([&calls]() -> RfidOperationResult {
+        ++calls;
+        throw std::runtime_error("test exception");
+    });
+
+    QTRY_COMPARE(finishedSpy.count(), 1);
+    QCOMPARE(calls, 3);
+    const RfidOperationResult result = qvariant_cast<RfidOperationResult>(finishedSpy.at(0).at(0));
+    QVERIFY(!result.success);
+    QCOMPARE(static_cast<int>(result.errorKind), static_cast<int>(RfidErrorKind::ReadFailed));
+    QVERIFY(result.message.contains(QStringLiteral("test exception")));
 }
 
 QTEST_GUILESS_MAIN(RfidOperationRunnerTest)

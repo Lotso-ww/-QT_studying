@@ -7,6 +7,9 @@ class TagPayloadCodec
 {
 public:
     static const quint8 FormatVersion = 0x01;
+    // Byte 1 stores the full payload size, including the version and length
+    // fields themselves. The two leading fields occupy HeaderFieldLength bytes.
+    static const int HeaderFieldLength = 2;
     static const int HeaderLength = 16;
     static const int NameLength = 8;
     static const int MaxMedicalRecordLength = 64;

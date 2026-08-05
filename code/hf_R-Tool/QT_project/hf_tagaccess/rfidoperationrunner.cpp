@@ -3,6 +3,7 @@
 #include "rfidretrypolicy.h"
 
 #include <QTimer>
+#include <exception>
 
 RfidOperationRunner::RfidOperationRunner(QObject *parent)
     : QObject(parent)
@@ -49,7 +50,17 @@ void RfidOperationRunner::executeAttempt()
 
     ++m_attempt;
     emit attemptStarted(m_attempt);
-    RfidOperationResult result = m_operation();
+    RfidOperationResult result;
+    try {
+        result = m_operation();
+    } catch (const std::exception &exception) {
+        result.errorKind = RfidErrorKind::ReadFailed;
+        result.message = QStringLiteral("Unexpected internal exception: %1")
+                .arg(QString::fromLocal8Bit(exception.what()));
+    } catch (...) {
+        result.errorKind = RfidErrorKind::ReadFailed;
+        result.message = QStringLiteral("Unexpected non-standard internal exception.");
+    }
     result.attemptCount = m_attempt;
     if (result.success || !m_retryEnabled
             || !RfidRetryPolicy::shouldRetry(result.errorKind, m_attempt)) {

@@ -5,6 +5,7 @@
 #include "gfunction.h"
 #include "rfidtagservice.h"
 #include "tagpayloadcodec.h"
+#include "rfidretrypolicy.h"
 #include "./c++_lib/inc/rfidlib.h"
 
 #include <QMetaType>
@@ -354,8 +355,7 @@ void MainWindow::on_business_completed(const RfidOperationResult &result)
         table->setFocusPolicy(Qt::NoFocus);
 
         const QList<QPair<QString, QString>> rows = {
-            {QStringLiteral("格式版本号"), QStringLiteral("0x%1").arg(result.payload.formatVersion, 2, 16,
-                                                                  QLatin1Char('0')).toUpper()},
+            {QStringLiteral("格式版本号"), QString::number(result.payload.formatVersion)},
             {QStringLiteral("皿序号"), QString::number(result.payload.dishNumber)},
             {QStringLiteral("授精时间"), result.payload.inseminationTime.toString(QStringLiteral("yyyy-MM-dd HH:mm"))},
             {QStringLiteral("女方姓名"), result.payload.femaleName},
@@ -421,6 +421,22 @@ void MainWindow::on_business_retry_scheduled(int failedAttempt, int delayMs)
 void MainWindow::on_business_device_stage(const QString &stage, const QString &message)
 {
     log_business(RfidLogLevel::Info, stage, 0, message);
+}
+
+void MainWindow::on_stable_scan_uid_changed(const QString &previousUids,
+                                            const QString &currentUids, int elapsedMs)
+{
+    QString message;
+    if (previousUids.isEmpty())
+        message = QStringLiteral("Tag UID appeared in the stability window.");
+    else if (currentUids.isEmpty())
+        message = QStringLiteral("Tag UID disappeared from the stability window.");
+    else
+        message = QStringLiteral("Tag UID set changed in the stability window.");
+    log_business(RfidLogLevel::Info, QStringLiteral("SCAN_CHANGE"), 0, message,
+                 {{QStringLiteral("elapsedMs"), QString::number(elapsedMs)},
+                  {QStringLiteral("previousUids"), previousUids.isEmpty() ? QStringLiteral("NONE") : previousUids},
+                  {QStringLiteral("currentUids"), currentUids.isEmpty() ? QStringLiteral("NONE") : currentUids}});
 }
 
 void MainWindow::log_business(RfidLogLevel level, const QString &stage, int attempt,
@@ -511,17 +527,62 @@ void MainWindow::on_pushButton_clicked()
     char connChar[255];
     char *pConn=connChar;
     getConnectString(pConn);
-    wchar_t* conn = ANSIToUnicode(pConn);   // 转为宽字符
-     LPCTSTR pconnStr =reinterpret_cast<LPCTSTR>(connStr.utf16());
     qDebug() << "RDR_Open conn:" << pConn;
-    int iret = RDR_Open(conn,&hr) ;          // 打开读写器
-    free(conn);
+    int iret = -1;
+    int openAttempt = 0;
+    for (; openAttempt < RfidRetryPolicy::MaxAttempts; ++openAttempt)
+    {
+        hr = nullptr;
+        wchar_t* conn = ANSIToUnicode(pConn);
+        iret = RDR_Open(conn, &hr);
+        free(conn);
+        if (iret == NO_ERR)
+            break;
+
+        const int attempt = openAttempt + 1;
+        log_business(RfidLogLevel::Warn, QStringLiteral("INIT"), attempt,
+                     QStringLiteral("Reader open attempt failed."),
+                     {{QStringLiteral("sdkError"), QString::number(iret)}});
+        if (RfidRetryPolicy::shouldRetry(RfidErrorKind::ReaderNotReady, attempt)) {
+            const int delayMs = RfidRetryPolicy::delayBeforeRetryMs(attempt);
+            log_business(RfidLogLevel::Warn, QStringLiteral("RETRY"), attempt,
+                         QStringLiteral("Reader initialization retry scheduled."),
+                         {{QStringLiteral("delayMs"), QString::number(delayMs)}});
+            qApp->processEvents();
+            QThread::msleep(static_cast<unsigned long>(delayMs));
+        }
+    }
+    const int completedOpenAttempts = qMin(openAttempt + 1, RfidRetryPolicy::MaxAttempts);
     if(iret == 0 ){                          // 参数和通信句柄打开成功
         // RDR_Open 可能只打开了 COM 句柄，并不保证读写器已经在线。
         // 通过需要设备回应的接口验证真实硬件连接。
         DWORD detectedAntCount = 0;
-        int detectRet = RDR_DetectAntennaCount(hr, &detectedAntCount);
+        int detectRet = -1;
         int lastError = RDR_GetReaderLastReturnError(hr);
+        int probeAttempt = 0;
+        for (; probeAttempt < RfidRetryPolicy::MaxAttempts; ++probeAttempt)
+        {
+            detectedAntCount = 0;
+            detectRet = RDR_DetectAntennaCount(hr, &detectedAntCount);
+            lastError = RDR_GetReaderLastReturnError(hr);
+            if (detectRet == NO_ERR || detectRet == -ERR_NOSYS)
+                break;
+
+            const int attempt = probeAttempt + 1;
+            log_business(RfidLogLevel::Warn, QStringLiteral("INIT_PROBE"), attempt,
+                         QStringLiteral("Reader online probe failed."),
+                         {{QStringLiteral("sdkError"), QString::number(detectRet)},
+                          {QStringLiteral("lastError"), QString::number(lastError)}});
+            if (RfidRetryPolicy::shouldRetry(RfidErrorKind::ReaderNotReady, attempt)) {
+                const int delayMs = RfidRetryPolicy::delayBeforeRetryMs(attempt);
+                log_business(RfidLogLevel::Warn, QStringLiteral("RETRY"), attempt,
+                             QStringLiteral("Reader online probe retry scheduled."),
+                             {{QStringLiteral("delayMs"), QString::number(delayMs)}});
+                qApp->processEvents();
+                QThread::msleep(static_cast<unsigned long>(delayMs));
+            }
+        }
+        const int completedProbeAttempts = qMin(probeAttempt + 1, RfidRetryPolicy::MaxAttempts);
         qDebug() << "RDR_DetectAntennaCount ret:" << detectRet
                  << "lastError:" << lastError
                  << "count:" << detectedAntCount;
@@ -551,10 +612,11 @@ void MainWindow::on_pushButton_clicked()
             qDebug() << "Reader antennaCount:" << antennaCount
                      << "detectedAntennaCount:" << detectedAntCount;
         }
-        log_business(RfidLogLevel::Info, QStringLiteral("INIT"), 1,
+        log_business(RfidLogLevel::Info, QStringLiteral("INIT"), completedOpenAttempts,
                      QStringLiteral("Reader opened successfully."),
                      {{QStringLiteral("antennaCount"), QString::number(antennaCount)},
-                      {QStringLiteral("probeResult"), QString::number(detectRet)}});
+                      {QStringLiteral("probeResult"), QString::number(detectRet)},
+                      {QStringLiteral("probeAttempts"), QString::number(completedProbeAttempts)}});
         ui->pushButton_2->setEnabled(true);  // 启用"关闭"按钮
         ui->pushButton->setEnabled(false);   // 禁用"打开"按钮
         bind_antennas();                     // 填充天线列表
@@ -573,15 +635,17 @@ void MainWindow::on_pushButton_clicked()
         connect(device,&CAEDevice_HF::sgnl_inventory_end_loop,this,&MainWindow::slot_inventory_end_loop); // 子线程盘点结束->主界面
         connect(device,&CAEDevice_HF::sgnl_scan_data_hf,this,&MainWindow::slot_scan_data_hf);
         connect(device,&CAEDevice_HF::sgnl_scan_finished,this,&MainWindow::slot_scan_finished);
+        connect(device,&CAEDevice_HF::sgnl_stable_scan_uid_changed,this,&MainWindow::on_stable_scan_uid_changed);
         connect(this,&MainWindow::signals_updateComplited,device,&CAEDevice_HF::onUpdateCompleted);   // 主界面更新完成->子线程唤醒
         thread->start();
     }
     else
     {
         set_info(QString("Open reader failed! err=%1").arg(iret), false);
-        log_business(RfidLogLevel::Error, QStringLiteral("INIT"), 1,
-                     QStringLiteral("Reader open failed."),
-                     {{QStringLiteral("sdkError"), QString::number(iret)}});
+        log_business(RfidLogLevel::Error, QStringLiteral("INIT"), completedOpenAttempts,
+                     QStringLiteral("Reader open failed after all initialization attempts."),
+                     {{QStringLiteral("sdkError"), QString::number(iret)},
+                      {QStringLiteral("maxAttempts"), QString::number(RfidRetryPolicy::MaxAttempts)}});
         QMessageBox::warning(this, "Reader", QString("Open reader failed! err=%1").arg(iret), QMessageBox::Ok);
     }
 
@@ -601,6 +665,14 @@ void MainWindow::on_pushButton_2_clicked()
     {
         resetTagConnectionState();
         accessTagSource = AccessTagSource::None;
+        m_tags_hf.clear();
+        businessScanStable = false;
+        ui->tbw_inventory_tags->clearContents();
+        ui->tbw_inventory_tags->setRowCount(0);
+        ui->tbw_scan_mode_tags->clearContents();
+        ui->tbw_scan_mode_tags->setRowCount(0);
+        ui->lbl_scan_mode->setText(QStringLiteral("标签数：0\n稳定窗口：1000 ms\n业务扫描：未开始"));
+        bind_access_tags();
         ui->pushButton->setEnabled(true);
         ui->pushButton_2->setEnabled(false);
         return;
@@ -616,7 +688,13 @@ void MainWindow::on_pushButton_2_clicked()
         ui->pushButton_2->setEnabled(false); // 禁用"关闭"按钮
         m_tags_hf.clear();
         accessTagSource = AccessTagSource::None;
-        ui->cmb_access_tags->clear();
+        businessScanStable = false;
+        ui->tbw_inventory_tags->clearContents();
+        ui->tbw_inventory_tags->setRowCount(0);
+        ui->tbw_scan_mode_tags->clearContents();
+        ui->tbw_scan_mode_tags->setRowCount(0);
+        ui->lbl_scan_mode->setText(QStringLiteral("标签数：0\n稳定窗口：1000 ms\n业务扫描：未开始"));
+        bind_access_tags();
         m_accessBlockSize = 4;
         set_info(QString("Reader closed"));
         log_business(RfidLogLevel::Info, QStringLiteral("CLOSE"), 0,
@@ -629,6 +707,7 @@ void MainWindow::on_pushButton_2_clicked()
         disconnect(device,&CAEDevice_HF::sgnl_inventory_end_loop,this,&MainWindow::slot_inventory_end_loop);
         disconnect(device,&CAEDevice_HF::sgnl_scan_data_hf,this,&MainWindow::slot_scan_data_hf);
         disconnect(device,&CAEDevice_HF::sgnl_scan_finished,this,&MainWindow::slot_scan_finished);
+        disconnect(device,&CAEDevice_HF::sgnl_stable_scan_uid_changed,this,&MainWindow::on_stable_scan_uid_changed);
         disconnect(this,&MainWindow::signals_updateComplited,device,&CAEDevice_HF::onUpdateCompleted);
         thread->quit();
         thread->wait();
@@ -875,7 +954,8 @@ void MainWindow::slot_inventory_data_hf(int tag_count,vector<CTag_HF> tags,int u
 
 
     // 更新底部统计信息：标签数、耗时、轮数
-    ui->lbl_inventory->setText(QString("Tags: %1  \nTime: %2 ms\nLoop: %3").arg(sum_count).arg(use_time).arg(loop_count));
+    ui->lbl_inventory->setText(QStringLiteral("Tags: %1\nTime: %2 ms\nLoop: %3")
+                               .arg(sum_count).arg(use_time).arg(loop_count));
 
     // 通过队列连接通知子线程：主界面已更新完成，可以继续下一轮盘点
     QMetaObject::invokeMethod(this, [this]() {
@@ -897,6 +977,10 @@ void MainWindow::slot_inventory_end_loop(int iret)
 
     }
     running =false;
+    ui->btn_inventory_stop->setEnabled(true);
+    // 标签列表保留给普通块访问使用；耗时和轮次只代表正在进行的盘点。
+    ui->lbl_inventory->setText(QStringLiteral("Tags: %1\nTime: --\nStatus: Stopped")
+                               .arg(m_tags_hf.size()));
     setWidgetEnable(ui->btn_inventory_start,true);  // 重新启用"开始盘点"按钮
     bind_access_tags();                              // 把标签填入"标签操作"下拉框
     update_business_tag_state();
@@ -947,6 +1031,8 @@ void MainWindow::on_btn_inventory_start_clicked()
 
 
     running =true;
+    ui->btn_inventory_stop->setEnabled(true);
+    ui->lbl_inventory->setText(QStringLiteral("Tags: 0\nTime: --\nStatus: Running"));
     update_business_tag_state();
     // 发送盘点信号给子线程，触发盘点
     QByteArray antennasData(reinterpret_cast<const char*>(ants), ant_count);
@@ -992,7 +1078,10 @@ void MainWindow::on_cmb_usb_opentype_currentIndexChanged(int index)
 // "停止盘点"按钮：调用设备的 End_Inventory 停止盘点循环
 void MainWindow::on_btn_inventory_stop_clicked()
 {
-    if(device){
+    if (running && device) {
+        ui->btn_inventory_stop->setEnabled(false);
+        ui->lbl_inventory->setText(QStringLiteral("Tags: %1\nTime: --\nStatus: Stopping")
+                                   .arg(m_tags_hf.size()));
         device->End_Inventory();
     }
 }
@@ -1037,6 +1126,9 @@ void MainWindow::on_btn_scan_mode_start_clicked()
     ui->tbw_scan_mode_tags->clearContents();
     ui->tbw_scan_mode_tags->setRowCount(0);
     ui->lbl_scan_mode->setText(QStringLiteral("标签数：0\n稳定窗口：1000 ms\n业务扫描：进行中"));
+    log_business(RfidLogLevel::Info, QStringLiteral("SCAN"), 0,
+                 QStringLiteral("Stable business scan started."),
+                 {{QStringLiteral("windowMs"), QStringLiteral("1000")}});
     scanRunning = true;
     update_business_tag_state();
     ui->btn_scan_mode_start->setEnabled(false);
@@ -1095,6 +1187,12 @@ void MainWindow::slot_scan_finished(int iret)
     ui->btn_scan_mode_start->setEnabled(true);
     ui->btn_inventory_start->setEnabled(true);
     businessScanStable = (iret == StableScanSuccess);
+    log_business(iret == StableScanSuccess ? RfidLogLevel::Info : RfidLogLevel::Warn,
+                 QStringLiteral("SCAN"), 0,
+                 iret == StableScanSuccess ? QStringLiteral("Stable business scan completed.")
+                                          : QStringLiteral("Stable business scan did not meet the acceptance condition."),
+                 {{QStringLiteral("resultCode"), QString::number(iret)},
+                  {QStringLiteral("uniqueTagCount"), QString::number(m_tags_hf.size())}});
     if (iret == StableScanSuccess)
     {
         ui->lbl_scan_mode->setText(QStringLiteral("标签数：1\n稳定窗口：1000 ms\n业务扫描：标签稳定，可连接后读写业务数据"));

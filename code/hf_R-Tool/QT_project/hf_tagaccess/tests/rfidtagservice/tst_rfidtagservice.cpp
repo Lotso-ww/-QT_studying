@@ -26,6 +26,8 @@ public:
     TagSystemInfo systemInfo;
     QByteArray storage;
     bool corruptAfterWrite = false;
+    bool reportWriteFailureAfterStoring = false;
+    int readCallCount = 0;
 
     RfidDeviceResult setAccessAntenna(quint32) override { return success(); }
     RfidDeviceResult connectIso15693(quint32, const QString &) override { return success(); }
@@ -37,6 +39,7 @@ public:
     }
     RfidDeviceResult readBlocks(int basicIndex, int blockCount, int blockSize, QByteArray *data) override
     {
+        ++readCallCount;
         const int offset = basicIndex * blockSize;
         const int size = blockCount * blockSize;
         if (offset < 0 || size <= 0 || storage.size() < offset + size)
@@ -51,6 +54,8 @@ public:
         storage.replace(0, data.size(), data);
         if (corruptAfterWrite && storage.size() > TagPayloadCodec::HeaderLength)
             storage[TagPayloadCodec::HeaderLength] = 'X';
+        if (reportWriteFailureAfterStoring)
+            return failure();
         return success();
     }
 
@@ -81,8 +86,11 @@ private slots:
     void rejectsInsufficientCapacity();
     void requiresInitializedReader();
     void readsUnrecognizedFormatAsRawData();
+    void readsLegacyContentLengthPayload();
+    void readsOnlyBusinessPayloadBlocks();
     void writesAndVerifiesPayload();
     void writesToBlankTag();
+    void confirmsWriteAfterTransportFailure();
     void detectsVerificationMismatch();
 };
 
@@ -179,6 +187,48 @@ void RfidTagServiceTest::readsUnrecognizedFormatAsRawData()
     QCOMPARE(result.rawData, device.storage);
 }
 
+void RfidTagServiceTest::readsLegacyContentLengthPayload()
+{
+    InventoryObservation tag;
+    tag.uid = QStringLiteral("E004010203040506");
+    tag.tagType = 100;
+    tag.antenna = 1;
+    FakeDeviceAdapter device;
+    device.storage.fill('\0');
+    const QByteArray legacy = QByteArray::fromHex("011801230131174320202020D5C5C8FD32363738343533313031");
+    device.storage.replace(0, legacy.size(), legacy);
+
+    const RfidOperationResult result = RfidTagService::readPayload(&device, tag);
+    QVERIFY2(result.success, qPrintable(result.message));
+    QVERIFY(result.payloadDecoded);
+    QCOMPARE(result.payload.medicalRecordNumber, QByteArray("2678453101"));
+}
+
+void RfidTagServiceTest::readsOnlyBusinessPayloadBlocks()
+{
+    InventoryObservation tag;
+    tag.uid = QStringLiteral("E004010203040506");
+    tag.tagType = 100;
+    tag.antenna = 1;
+    FakeDeviceAdapter device;
+    device.storage.fill('\0');
+
+    TagPayload payload;
+    payload.dishNumber = 1;
+    payload.inseminationTime = QDateTime(QDate(2026, 8, 5), QTime(11, 7));
+    payload.femaleName = QStringLiteral("苏燕");
+    payload.medicalRecordNumber = "11103";
+    QByteArray encoded;
+    QVERIFY(TagPayloadCodec::encode(payload, &encoded));
+    device.storage.replace(0, encoded.size(), encoded);
+    device.readCallCount = 0;
+
+    const RfidOperationResult result = RfidTagService::readPayload(&device, tag);
+    QVERIFY2(result.success, qPrintable(result.message));
+    QCOMPARE(result.rawData, encoded);
+    QCOMPARE(device.readCallCount, 2);
+}
+
 void RfidTagServiceTest::writesAndVerifiesPayload()
 {
     InventoryObservation tag;
@@ -210,6 +260,25 @@ void RfidTagServiceTest::writesToBlankTag()
     payload.medicalRecordNumber = "NEW-001";
     FakeDeviceAdapter device;
     device.storage.fill('\0');
+
+    const RfidOperationResult result = RfidTagService::writePayload(&device, tag, payload);
+    QVERIFY2(result.success, qPrintable(result.message));
+    QCOMPARE(result.payload.medicalRecordNumber, payload.medicalRecordNumber);
+}
+
+void RfidTagServiceTest::confirmsWriteAfterTransportFailure()
+{
+    InventoryObservation tag;
+    tag.uid = QStringLiteral("E004010203040506");
+    tag.tagType = 100;
+    tag.antenna = 1;
+    TagPayload payload;
+    payload.dishNumber = 3;
+    payload.inseminationTime = QDateTime(QDate(2024, 3, 1), QTime(9, 15));
+    payload.femaleName = QStringLiteral("A");
+    payload.medicalRecordNumber = "SAFE-001";
+    FakeDeviceAdapter device;
+    device.reportWriteFailureAfterStoring = true;
 
     const RfidOperationResult result = RfidTagService::writePayload(&device, tag, payload);
     QVERIFY2(result.success, qPrintable(result.message));

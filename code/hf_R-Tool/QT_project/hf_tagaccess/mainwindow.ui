@@ -618,7 +618,7 @@
                 <rect>
                  <x>10</x>
                  <y>20</y>
-                 <width>100</width>
+                 <width>135</width>
                  <height>81</height>
                 </rect>
                </property>
@@ -630,7 +630,7 @@
                </property>
                <property name="maximumSize">
                 <size>
-                 <width>100</width>
+                 <width>135</width>
                  <height>81</height>
                 </size>
                </property>
@@ -646,6 +646,9 @@ Loop: 0</string>
                </property>
                <property name="alignment">
                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+               </property>
+               <property name="wordWrap">
+                <bool>true</bool>
                </property>
               </widget>
               <widget class="QPushButton" name="btn_inventory_start">

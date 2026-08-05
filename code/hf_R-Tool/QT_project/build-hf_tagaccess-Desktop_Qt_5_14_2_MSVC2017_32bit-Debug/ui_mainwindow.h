@@ -381,14 +381,15 @@ public:
         groupBox_5->setEnabled(true);
         lbl_inventory = new QLabel(groupBox_5);
         lbl_inventory->setObjectName(QString::fromUtf8("lbl_inventory"));
-        lbl_inventory->setGeometry(QRect(10, 20, 100, 81));
+        lbl_inventory->setGeometry(QRect(10, 20, 135, 81));
         sizePolicy2.setHeightForWidth(lbl_inventory->sizePolicy().hasHeightForWidth());
         lbl_inventory->setSizePolicy(sizePolicy2);
-        lbl_inventory->setMaximumSize(QSize(100, 81));
+        lbl_inventory->setMaximumSize(QSize(135, 81));
         QFont font;
         font.setPointSize(12);
         lbl_inventory->setFont(font);
         lbl_inventory->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
+        lbl_inventory->setWordWrap(true);
         btn_inventory_start = new QPushButton(groupBox_5);
         btn_inventory_start->setObjectName(QString::fromUtf8("btn_inventory_start"));
         btn_inventory_start->setGeometry(QRect(10, 110, 135, 35));

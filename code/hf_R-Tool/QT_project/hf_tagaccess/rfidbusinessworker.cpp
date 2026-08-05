@@ -58,7 +58,7 @@ void RfidBusinessWorker::write(void *reader, void *connectedTag, const Inventory
         const RfidOperationResult result = RfidTagService::writePayload(&device, tag, payload);
         emit deviceStage(QStringLiteral("TAG_SESSION"), QStringLiteral("Business access finished; tag session remains connected."));
         return result;
-    }, false));
+    }));
 }
 
 void RfidBusinessWorker::cancel()

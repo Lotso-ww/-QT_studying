@@ -7,6 +7,7 @@
 #include "./c++_lib/inc/rfidlib_aip_iso15693.h"
 #include <QObject>
 #include <QByteArray>
+#include <atomic>
 #include "tag_hf.h"
 #include "rfidtagtypes.h"
 
@@ -54,6 +55,7 @@ signals:
     void sgnl_inventory_end_loop(int iret);                                       // 整个盘点循环结束信号(带错误码)
     void sgnl_scan_data_hf(int tag_count, vector<CTag_HF> tags, int use_time);   // 单次扫描结果
     void sgnl_scan_finished(int iret);                                             // 单次扫描结束信号
+    void sgnl_stable_scan_uid_changed(QString previousUids, QString currentUids, int elapsedMs);
     void updateConfirmed();    // 内部信号，用于唤醒等待主界面更新的局部事件循环
 
 public:
@@ -63,6 +65,7 @@ public:
     err_t Start_Inventory();      // 启动盘点(预留)
     err_t End_Inventory();        // 停止盘点：把 loop 置为 false，退出盘点循环
     err_t func_Inventory();       // 执行一次盘点操作(核心盘点函数)
+    err_t func_Inventory(BYTE inventoryType);
     // 添加一张新发现的 ISO15693 标签到列表
     void AddNewISO15693Tag(UINT32 apl_tid,UINT32 picc_tid,UINT32 ant_id,UINT8 dsfid,UINT8 *uid,USHORT rssi);
     // 添加一张新发现的 ISO14443A 标签到列表
@@ -83,12 +86,16 @@ public:
 
 public:
     vector<CTag_HF>  m_tags_hf;            // 本次盘点到的标签集合
-    bool loop;                             // 盘点循环控制标志：true=继续盘点, false=停止
+    std::atomic_bool loop {false};         // 盘点循环控制标志：true=继续盘点, false=停止
     BYTE antennas[64]={0};                  // 参与盘点的天线编号数组
     BYTE ant_count=64;                      // 参与盘点的天线个数
     RFID_READER_HANDLE hr=NULL;             // 读写器句柄(由主界面传入)
 
 private:
+    // 盘点结束后清理 SDK 可能保留的报告/标签会话状态，避免随后访问失败。
+    void recoverAfterInventory();
+    err_t runInventoryRound(bool firstRound);
+
     bool waitSgl;          // 是否正在等待主界面更新完成的标志
 
 };

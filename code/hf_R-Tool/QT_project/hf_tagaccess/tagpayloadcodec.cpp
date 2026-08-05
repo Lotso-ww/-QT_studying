@@ -137,15 +137,16 @@ bool TagPayloadCodec::encode(const TagPayload &payload, QByteArray *encoded, QSt
             || !validateMedicalRecord(payload.medicalRecordNumber, error))
         return false;
 
-    const int contentLength = 1 + time.size() + name.size() + payload.medicalRecordNumber.size();
-    if (contentLength > 255) {
-        setError(error, QStringLiteral("Payload content exceeds the protocol length limit."));
+    const int totalPayloadLength = HeaderFieldLength + 1 + time.size() + name.size()
+            + payload.medicalRecordNumber.size();
+    if (totalPayloadLength > 255) {
+        setError(error, QStringLiteral("Payload exceeds the protocol length limit."));
         return false;
     }
     QByteArray result;
-    result.reserve(2 + contentLength);
+    result.reserve(totalPayloadLength);
     result.append(char(payload.formatVersion));
-    result.append(char(contentLength));
+    result.append(char(totalPayloadLength));
     result.append(char(payload.dishNumber));
     result.append(time);
     result.append(name);
@@ -161,18 +162,23 @@ bool TagPayloadCodec::decode(const QByteArray &raw, TagPayload *payload, QString
         return false;
     }
     const quint8 version = static_cast<quint8>(raw.at(0));
-    const int contentLength = static_cast<quint8>(raw.at(1));
-    if (contentLength < HeaderLength - 2 || raw.size() < contentLength + 2) {
-        setError(error, QStringLiteral("Payload content length is invalid or truncated."));
+    const int lengthField = static_cast<quint8>(raw.at(1));
+    const bool usesWholePayloadLength = raw.size() == lengthField;
+    const bool usesLegacyContentLength = raw.size() == lengthField + HeaderFieldLength;
+    if ((!usesWholePayloadLength && !usesLegacyContentLength)
+            || (usesWholePayloadLength && lengthField < HeaderLength)
+            || (usesLegacyContentLength && lengthField < HeaderLength - HeaderFieldLength)) {
+        setError(error, QStringLiteral("Payload length is invalid or truncated."));
         return false;
     }
+    const int totalPayloadLength = usesWholePayloadLength ? lengthField : raw.size();
     TagPayload result;
     result.formatVersion = version;
     result.dishNumber = static_cast<quint8>(raw.at(2));
     if (!decodeBcdTime(raw.mid(3, 5), &result.inseminationTime, error)
             || !decodeName(raw.mid(8, NameLength), &result.femaleName, error))
         return false;
-    result.medicalRecordNumber = raw.mid(HeaderLength, contentLength - (HeaderLength - 2));
+    result.medicalRecordNumber = raw.mid(HeaderLength, totalPayloadLength - HeaderLength);
     if (!validateMedicalRecord(result.medicalRecordNumber, error))
         return false;
     *payload = result;

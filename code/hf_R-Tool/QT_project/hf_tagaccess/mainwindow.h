@@ -111,6 +111,7 @@ private:
     void on_business_attempt_started(int attempt);
     void on_business_retry_scheduled(int failedAttempt, int delayMs);
     void on_business_device_stage(const QString &stage, const QString &message);
+    void on_stable_scan_uid_changed(const QString &previousUids, const QString &currentUids, int elapsedMs);
 
 private:
     bool loop=false;                // 盘点循环标志(主界面侧，未实际使用)

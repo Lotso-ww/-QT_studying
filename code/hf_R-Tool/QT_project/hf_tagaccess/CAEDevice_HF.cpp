@@ -5,7 +5,9 @@
 #include <QEventLoop>
 #include <QDebug>
 #include <QRegularExpression>
+#include <QStringList>
 #include <QThread>
+#include <exception>
 #include <climits>
 
 namespace {
@@ -23,6 +25,17 @@ RfidDeviceResult deviceSuccess()
     result.success = true;
     return result;
 }
+
+QString uidList(const vector<CTag_HF> &tags)
+{
+    QStringList uids;
+    for (const CTag_HF &tag : tags) {
+        if (!tag.m_uid.isEmpty() && !uids.contains(tag.m_uid))
+            uids.append(tag.m_uid);
+    }
+    uids.sort();
+    return uids.join(QStringLiteral(","));
+}
 }
 
 // 构造函数
@@ -34,6 +47,35 @@ CAEDevice_HF::CAEDevice_HF(QObject *parent) : QObject(parent)
 CAEDevice_HF::~CAEDevice_HF()
 {
 
+}
+
+void CAEDevice_HF::recoverAfterInventory()
+{
+    if (!hr)
+        return;
+
+    // Inventory 本身不会返回业务标签句柄，但 RD5200 驱动可能仍保留
+    // 上一轮报告/通信上下文。显式断开并恢复即时超时后，下一条 Connect
+    // 命令可以在标签仍位于天线范围内时正常执行。
+    const err_t disconnectResult = RDR_DisconnectAllTags(hr);
+    const err_t timeoutResult = RDR_ResetCommuImmeTimeout(hr);
+    qDebug() << "Inventory recovery: disconnectAll=" << disconnectResult
+             << "resetTimeout=" << timeoutResult;
+    QThread::msleep(150);
+}
+
+err_t CAEDevice_HF::runInventoryRound(bool firstRound)
+{
+    const err_t firstResult = func_Inventory(firstRound ? AI_TYPE_NEW : AI_TYPE_CONTINUE);
+    if (firstRound || (firstResult == NO_ERR && !m_tags_hf.empty()))
+        return firstResult;
+
+    // 部分 RD5200 驱动对 continue 模式会返回成功但不产生报告。立即以
+    // 初始化模式补一次，兼容旧行为且不让固定放置的标签被误判为离场。
+    qDebug() << "Inventory continue round produced no usable tag; retrying with AI_TYPE_NEW"
+             << "result:" << firstResult;
+    m_tags_hf.clear();
+    return func_Inventory(AI_TYPE_NEW);
 }
 
 RfidDeviceResult CAEDevice_HF::setAccessAntenna(RFID_READER_HANDLE reader, quint32 antenna)
@@ -164,7 +206,7 @@ err_t CAEDevice_HF::Start_Inventory()
 // 原理: 把循环标志 loop 置为 false，Inventory 中的 while 循环就会自然退出
 err_t CAEDevice_HF::End_Inventory()
 {
-    loop=false;
+    loop.store(false);
     return ERR_OK;
 }
 
@@ -187,19 +229,21 @@ void CAEDevice_HF::Inventory(void* hreader, QByteArray antennasSrc, int ant_cnt)
              << "ants:" << antennasSrc.toHex(' ');
 
     int loop_count=0;            // 盘点轮数计数
+    bool firstRound = true;
     m_tags_hf.clear();           // 清空标签集合
-    loop = true;                 // 设置循环标志为true，开始盘点循环
+    loop.store(true);            // 设置循环标志为true，开始盘点循环
     QElapsedTimer timer;         // 计时器，用于统计每轮盘点耗时
     waitSgl =false;              // 初始不等待信号
 
 
     // 盘点主循环：每次循环执行一轮盘点，直到 loop 被置为 false(用户点停止)
-    while(loop)
+    while(loop.load())
     {
         timer.start();           // 开始计时
         m_tags_hf.clear();       // 清空上一轮的标签，准备本轮盘点
 
-        iret = func_Inventory(); // 执行一次盘点
+        iret = runInventoryRound(firstRound);
+        firstRound = false;
         qint64 sec = timer.elapsed();  // 获取本轮盘点耗时(毫秒)
 
         if(iret == NO_ERR)
@@ -223,10 +267,9 @@ void CAEDevice_HF::Inventory(void* hreader, QByteArray antennasSrc, int ant_cnt)
 
     }
 
-    // 盘点循环结束后，复位读写器通信超时状态
-    if(hr != NULL)
-        RDR_ResetCommuImmeTimeout(hr);
-    loop=false;
+    // 盘点循环结束后，复位读写器通信超时并清理残留标签状态。
+    recoverAfterInventory();
+    loop.store(false);
     // 发送盘点结束信号给主界面(带错误码)
     emit sgnl_inventory_end_loop(iret);
 
@@ -251,8 +294,7 @@ void CAEDevice_HF::ScanOnce(void* hreader, QByteArray antennasSrc, int ant_cnt)
     // than the transport call duration (typically 30-60 ms).
     const int useTime = 1000;
 
-    if (hr != NULL)
-        RDR_ResetCommuImmeTimeout(hr);
+    recoverAfterInventory();
     if (iret == NO_ERR)
         emit sgnl_scan_data_hf(static_cast<int>(m_tags_hf.size()), m_tags_hf, useTime);
     emit sgnl_scan_finished(iret);
@@ -275,13 +317,23 @@ void CAEDevice_HF::ScanStableBusinessTag(void* hreader, QByteArray antennasSrc, 
     QElapsedTimer timer;
     timer.start();
     err_t iret = NO_ERR;
+    QString previousUids;
+    bool firstRound = true;
 
     while (timer.elapsed() < ScanWindowMs)
     {
         m_tags_hf.clear();
-        iret = func_Inventory();
+        iret = runInventoryRound(firstRound);
+        firstRound = false;
         if (iret != NO_ERR)
             break;
+
+        const QString currentUids = uidList(m_tags_hf);
+        if (currentUids != previousUids) {
+            emit sgnl_stable_scan_uid_changed(previousUids, currentUids,
+                                               static_cast<int>(timer.elapsed()));
+            previousUids = currentUids;
+        }
 
         for (const CTag_HF &tag : m_tags_hf)
         {
@@ -344,9 +396,8 @@ void CAEDevice_HF::ScanStableBusinessTag(void* hreader, QByteArray antennasSrc, 
         }
     }
 
-    if (hr != NULL)
-        RDR_ResetCommuImmeTimeout(hr);
-    QThread::msleep(RecoveryDelayMs);
+    Q_UNUSED(RecoveryDelayMs);
+    recoverAfterInventory();
     emit sgnl_scan_data_hf(static_cast<int>(m_tags_hf.size()), m_tags_hf, ScanWindowMs);
     emit sgnl_scan_finished(result);
 }
@@ -364,12 +415,20 @@ void CAEDevice_HF::onUpdateCompleted() {
 // 返回: 错误码，NO_ERR 表示成功
 err_t CAEDevice_HF::func_Inventory()
 {
+    return func_Inventory(AI_TYPE_NEW);
+}
+
+err_t CAEDevice_HF::func_Inventory(BYTE inventoryType)
+{
+    RFID_DN_HANDLE dnInvenParamList = RFID_HANDLE_NULL;
+    try {
     err_t iret;
-    BYTE newAI= AI_TYPE_NEW;   // 盘点类型：只读新进入的标签(每次都从新开始)
+    // 首轮初始化射频场；连续轮次保持同一盘点会话，避免固定标签因反复
+    // 重置射频场而间歇性漏读。
+    BYTE newAI = inventoryType;
 
     // RFID_DN_HANDLE dnInvenParamList= RFID_HANDLE_NULL;
     // 创建盘点参数列表，用于指定要盘点的协议类型
-    RFID_DN_HANDLE dnInvenParamList= RFID_HANDLE_NULL;
     dnInvenParamList = RDR_CreateInvenParamSpecList();
     if(dnInvenParamList)
     {
@@ -440,6 +499,16 @@ err_t CAEDevice_HF::func_Inventory()
         DNODE_Destroy(dnInvenParamList);
     }
     return iret;
+    } catch (const std::exception &exception) {
+        if (dnInvenParamList)
+            DNODE_Destroy(dnInvenParamList);
+        qWarning() << "Inventory exception:" << exception.what();
+    } catch (...) {
+        if (dnInvenParamList)
+            DNODE_Destroy(dnInvenParamList);
+        qWarning() << "Inventory received a non-standard exception.";
+    }
+    return -1;
 }
 
 

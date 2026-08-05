@@ -9,6 +9,7 @@ class TagPayloadCodecTest : public QObject
 private slots:
     void encodesSpecifiedBcdTime();
     void encodesAndDecodesPayload();
+    void decodesLegacyContentLengthPayload();
     void rejectsInvalidInput();
     void rejectsMalformedPayload();
     void padsToBlockSize();
@@ -39,7 +40,7 @@ void TagPayloadCodecTest::encodesAndDecodesPayload()
     QByteArray encoded;
     QString error;
     QVERIFY2(TagPayloadCodec::encode(input, &encoded, &error), qPrintable(error));
-    QCOMPARE(encoded, QByteArray::fromHex("011801230131174320202020D5C5C8FD32363738343533313031"));
+    QCOMPARE(encoded, QByteArray::fromHex("011A01230131174320202020D5C5C8FD32363738343533313031"));
 
     TagPayload decoded;
     QVERIFY2(TagPayloadCodec::decode(encoded, &decoded, &error), qPrintable(error));
@@ -60,6 +61,16 @@ void TagPayloadCodecTest::encodesAndDecodesPayload()
     input.formatVersion = 0x05;
     QVERIFY2(TagPayloadCodec::encode(input, &encoded, &error), qPrintable(error));
     QCOMPARE(static_cast<quint8>(encoded.at(0)), quint8(0x05));
+}
+
+void TagPayloadCodecTest::decodesLegacyContentLengthPayload()
+{
+    TagPayload decoded;
+    QString error;
+    const QByteArray legacy = QByteArray::fromHex("011801230131174320202020D5C5C8FD32363738343533313031");
+
+    QVERIFY2(TagPayloadCodec::decode(legacy, &decoded, &error), qPrintable(error));
+    QCOMPARE(decoded.medicalRecordNumber, QByteArray("2678453101"));
 }
 
 void TagPayloadCodecTest::rejectsInvalidInput()
@@ -87,15 +98,15 @@ void TagPayloadCodecTest::rejectsInvalidInput()
 void TagPayloadCodecTest::rejectsMalformedPayload()
 {
     TagPayload output;
-    QByteArray malformed = QByteArray::fromHex("011801230131174320202020D5C5C8FD32363738343533313031");
+    QByteArray malformed = QByteArray::fromHex("011A01230131174320202020D5C5C8FD32363738343533313031");
 
     malformed[1] = char(0x19);
     QVERIFY(!TagPayloadCodec::decode(malformed, &output));
 
-    malformed = QByteArray::fromHex("01180123FA31174320202020D5C5C8FD32363738343533313031");
+    malformed = QByteArray::fromHex("011A0123FA31174320202020D5C5C8FD32363738343533313031");
     QVERIFY(!TagPayloadCodec::decode(malformed, &output));
 
-    malformed = QByteArray::fromHex("011801230131174320202020D5C5C8FD32363738");
+    malformed = QByteArray::fromHex("011A01230131174320202020D5C5C8FD32363738");
     QVERIFY(!TagPayloadCodec::decode(malformed, &output));
 }
 

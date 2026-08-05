@@ -22,8 +22,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_CAEDevice_HF_t {
-    QByteArrayData data[21];
-    char stringdata0[270];
+    QByteArrayData data[25];
+    char stringdata0[334];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -45,14 +45,18 @@ QT_MOC_LITERAL(9, 101, 23), // "sgnl_inventory_end_loop"
 QT_MOC_LITERAL(10, 125, 4), // "iret"
 QT_MOC_LITERAL(11, 130, 17), // "sgnl_scan_data_hf"
 QT_MOC_LITERAL(12, 148, 18), // "sgnl_scan_finished"
-QT_MOC_LITERAL(13, 167, 15), // "updateConfirmed"
-QT_MOC_LITERAL(14, 183, 9), // "Inventory"
-QT_MOC_LITERAL(15, 193, 7), // "hreader"
-QT_MOC_LITERAL(16, 201, 11), // "antennasSrc"
-QT_MOC_LITERAL(17, 213, 7), // "ant_cnt"
-QT_MOC_LITERAL(18, 221, 8), // "ScanOnce"
-QT_MOC_LITERAL(19, 230, 21), // "ScanStableBusinessTag"
-QT_MOC_LITERAL(20, 252, 17) // "onUpdateCompleted"
+QT_MOC_LITERAL(13, 167, 28), // "sgnl_stable_scan_uid_changed"
+QT_MOC_LITERAL(14, 196, 12), // "previousUids"
+QT_MOC_LITERAL(15, 209, 11), // "currentUids"
+QT_MOC_LITERAL(16, 221, 9), // "elapsedMs"
+QT_MOC_LITERAL(17, 231, 15), // "updateConfirmed"
+QT_MOC_LITERAL(18, 247, 9), // "Inventory"
+QT_MOC_LITERAL(19, 257, 7), // "hreader"
+QT_MOC_LITERAL(20, 265, 11), // "antennasSrc"
+QT_MOC_LITERAL(21, 277, 7), // "ant_cnt"
+QT_MOC_LITERAL(22, 285, 8), // "ScanOnce"
+QT_MOC_LITERAL(23, 294, 21), // "ScanStableBusinessTag"
+QT_MOC_LITERAL(24, 316, 17) // "onUpdateCompleted"
 
     },
     "CAEDevice_HF\0workFinished\0\0"
@@ -60,9 +64,11 @@ QT_MOC_LITERAL(20, 252, 17) // "onUpdateCompleted"
     "vector<CTag_HF>\0tags\0use_time\0loop_count\0"
     "sgnl_inventory_end_loop\0iret\0"
     "sgnl_scan_data_hf\0sgnl_scan_finished\0"
-    "updateConfirmed\0Inventory\0hreader\0"
-    "antennasSrc\0ant_cnt\0ScanOnce\0"
-    "ScanStableBusinessTag\0onUpdateCompleted"
+    "sgnl_stable_scan_uid_changed\0previousUids\0"
+    "currentUids\0elapsedMs\0updateConfirmed\0"
+    "Inventory\0hreader\0antennasSrc\0ant_cnt\0"
+    "ScanOnce\0ScanStableBusinessTag\0"
+    "onUpdateCompleted"
 };
 #undef QT_MOC_LITERAL
 
@@ -72,26 +78,27 @@ static const uint qt_meta_data_CAEDevice_HF[] = {
        8,       // revision
        0,       // classname
        0,    0, // classinfo
-      10,   14, // methods
+      11,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
-       6,       // signalCount
+       7,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    0,   64,    2, 0x06 /* Public */,
-       3,    4,   65,    2, 0x06 /* Public */,
-       9,    1,   74,    2, 0x06 /* Public */,
-      11,    3,   77,    2, 0x06 /* Public */,
-      12,    1,   84,    2, 0x06 /* Public */,
-      13,    0,   87,    2, 0x06 /* Public */,
+       1,    0,   69,    2, 0x06 /* Public */,
+       3,    4,   70,    2, 0x06 /* Public */,
+       9,    1,   79,    2, 0x06 /* Public */,
+      11,    3,   82,    2, 0x06 /* Public */,
+      12,    1,   89,    2, 0x06 /* Public */,
+      13,    3,   92,    2, 0x06 /* Public */,
+      17,    0,   99,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-      14,    3,   88,    2, 0x0a /* Public */,
-      18,    3,   95,    2, 0x0a /* Public */,
-      19,    3,  102,    2, 0x0a /* Public */,
-      20,    0,  109,    2, 0x0a /* Public */,
+      18,    3,  100,    2, 0x0a /* Public */,
+      22,    3,  107,    2, 0x0a /* Public */,
+      23,    3,  114,    2, 0x0a /* Public */,
+      24,    0,  121,    2, 0x0a /* Public */,
 
  // signals: parameters
     QMetaType::Void,
@@ -99,12 +106,13 @@ static const uint qt_meta_data_CAEDevice_HF[] = {
     QMetaType::Void, QMetaType::Int,   10,
     QMetaType::Void, QMetaType::Int, 0x80000000 | 5, QMetaType::Int,    4,    6,    7,
     QMetaType::Void, QMetaType::Int,   10,
+    QMetaType::Void, QMetaType::QString, QMetaType::QString, QMetaType::Int,   14,   15,   16,
     QMetaType::Void,
 
  // slots: parameters
-    QMetaType::Void, QMetaType::VoidStar, QMetaType::QByteArray, QMetaType::Int,   15,   16,   17,
-    QMetaType::Void, QMetaType::VoidStar, QMetaType::QByteArray, QMetaType::Int,   15,   16,   17,
-    QMetaType::Void, QMetaType::VoidStar, QMetaType::QByteArray, QMetaType::Int,   15,   16,   17,
+    QMetaType::Void, QMetaType::VoidStar, QMetaType::QByteArray, QMetaType::Int,   19,   20,   21,
+    QMetaType::Void, QMetaType::VoidStar, QMetaType::QByteArray, QMetaType::Int,   19,   20,   21,
+    QMetaType::Void, QMetaType::VoidStar, QMetaType::QByteArray, QMetaType::Int,   19,   20,   21,
     QMetaType::Void,
 
        0        // eod
@@ -121,11 +129,12 @@ void CAEDevice_HF::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id
         case 2: _t->sgnl_inventory_end_loop((*reinterpret_cast< int(*)>(_a[1]))); break;
         case 3: _t->sgnl_scan_data_hf((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< vector<CTag_HF>(*)>(_a[2])),(*reinterpret_cast< int(*)>(_a[3]))); break;
         case 4: _t->sgnl_scan_finished((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 5: _t->updateConfirmed(); break;
-        case 6: _t->Inventory((*reinterpret_cast< void*(*)>(_a[1])),(*reinterpret_cast< QByteArray(*)>(_a[2])),(*reinterpret_cast< int(*)>(_a[3]))); break;
-        case 7: _t->ScanOnce((*reinterpret_cast< void*(*)>(_a[1])),(*reinterpret_cast< QByteArray(*)>(_a[2])),(*reinterpret_cast< int(*)>(_a[3]))); break;
-        case 8: _t->ScanStableBusinessTag((*reinterpret_cast< void*(*)>(_a[1])),(*reinterpret_cast< QByteArray(*)>(_a[2])),(*reinterpret_cast< int(*)>(_a[3]))); break;
-        case 9: _t->onUpdateCompleted(); break;
+        case 5: _t->sgnl_stable_scan_uid_changed((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QString(*)>(_a[2])),(*reinterpret_cast< int(*)>(_a[3]))); break;
+        case 6: _t->updateConfirmed(); break;
+        case 7: _t->Inventory((*reinterpret_cast< void*(*)>(_a[1])),(*reinterpret_cast< QByteArray(*)>(_a[2])),(*reinterpret_cast< int(*)>(_a[3]))); break;
+        case 8: _t->ScanOnce((*reinterpret_cast< void*(*)>(_a[1])),(*reinterpret_cast< QByteArray(*)>(_a[2])),(*reinterpret_cast< int(*)>(_a[3]))); break;
+        case 9: _t->ScanStableBusinessTag((*reinterpret_cast< void*(*)>(_a[1])),(*reinterpret_cast< QByteArray(*)>(_a[2])),(*reinterpret_cast< int(*)>(_a[3]))); break;
+        case 10: _t->onUpdateCompleted(); break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
@@ -166,9 +175,16 @@ void CAEDevice_HF::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id
             }
         }
         {
+            using _t = void (CAEDevice_HF::*)(QString , QString , int );
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&CAEDevice_HF::sgnl_stable_scan_uid_changed)) {
+                *result = 5;
+                return;
+            }
+        }
+        {
             using _t = void (CAEDevice_HF::*)();
             if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&CAEDevice_HF::updateConfirmed)) {
-                *result = 5;
+                *result = 6;
                 return;
             }
         }
@@ -204,13 +220,13 @@ int CAEDevice_HF::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 10)
+        if (_id < 11)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 10;
+        _id -= 11;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 10)
+        if (_id < 11)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 10;
+        _id -= 11;
     }
     return _id;
 }
@@ -250,9 +266,16 @@ void CAEDevice_HF::sgnl_scan_finished(int _t1)
 }
 
 // SIGNAL 5
+void CAEDevice_HF::sgnl_stable_scan_uid_changed(QString _t1, QString _t2, int _t3)
+{
+    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t1))), const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t2))), const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t3))) };
+    QMetaObject::activate(this, &staticMetaObject, 5, _a);
+}
+
+// SIGNAL 6
 void CAEDevice_HF::updateConfirmed()
 {
-    QMetaObject::activate(this, &staticMetaObject, 5, nullptr);
+    QMetaObject::activate(this, &staticMetaObject, 6, nullptr);
 }
 QT_WARNING_POP
 QT_END_MOC_NAMESPACE

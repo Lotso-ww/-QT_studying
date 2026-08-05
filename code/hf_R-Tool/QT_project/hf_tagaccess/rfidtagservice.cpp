@@ -35,6 +35,24 @@ int blocksForBytes(int byteCount, int blockSize)
     return (byteCount + blockSize - 1) / blockSize;
 }
 
+bool isMedicalRecordCharacter(char value)
+{
+    return (value >= 'A' && value <= 'Z') || (value >= 'a' && value <= 'z')
+            || (value >= '0' && value <= '9') || value == '_' || value == '-';
+}
+
+bool hasLegacyMedicalRecordTail(const QByteArray &raw, int wholePayloadLength)
+{
+    const int tailLength = TagPayloadCodec::HeaderFieldLength;
+    if (wholePayloadLength < 0 || raw.size() < wholePayloadLength + tailLength)
+        return false;
+    for (int index = 0; index < tailLength; ++index) {
+        if (!isMedicalRecordCharacter(raw.at(wholePayloadLength + index)))
+            return false;
+    }
+    return true;
+}
+
 RfidOperationResult rawDataReadResult(const QByteArray &raw, const QString &reason)
 {
     RfidOperationResult result;
@@ -166,17 +184,57 @@ RfidOperationResult RfidTagService::readPayload(RfidDeviceAdapter *device, const
         return deviceFailureResult(deviceResult, RfidErrorKind::ReadFailed);
     }
 
+    const qint64 capacity = static_cast<qint64>(systemInfo.blockSize) * systemInfo.blockCount;
+    auto readRange = [&](int basicIndex, int blockCount, QByteArray *data) {
+        return device->readBlocks(basicIndex, blockCount, systemInfo.blockSize, data);
+    };
+
+    // The length byte is in block 0. Reading the entire tag block by block made
+    // a normal business read (and the write verification that follows it) slow
+    // enough for a stationary tag session to time out on some RD5200 readers.
     QByteArray raw;
-    for (int block = 0; block < systemInfo.blockCount; ++block) {
-        QByteArray blockData;
-        deviceResult = device->readBlocks(block, 1, systemInfo.blockSize, &blockData);
+    deviceResult = readRange(0, 1, &raw);
+    if (!deviceResult.success) {
+        device->disconnectTag();
+        return deviceFailureResult(deviceResult, RfidErrorKind::ReadFailed);
+    }
+
+    const int lengthField = raw.size() > 1 ? static_cast<quint8>(raw.at(1)) : 0;
+    const int wholePayloadLength = lengthField;
+    const int legacyPayloadLength = lengthField + TagPayloadCodec::HeaderFieldLength;
+    const bool wholeLengthPossible = wholePayloadLength >= TagPayloadCodec::HeaderLength
+            && wholePayloadLength <= capacity;
+    const bool legacyLengthPossible = lengthField >= TagPayloadCodec::HeaderLength
+            - TagPayloadCodec::HeaderFieldLength && legacyPayloadLength <= capacity;
+
+    if (wholeLengthPossible || legacyLengthPossible) {
+        const int longestCandidate = qMax(wholeLengthPossible ? wholePayloadLength : 0,
+                                          legacyLengthPossible ? legacyPayloadLength : 0);
+        const int blocksToRead = blocksForBytes(longestCandidate, systemInfo.blockSize);
+        if (blocksToRead > 1) {
+            QByteArray remainingData;
+            deviceResult = readRange(1, blocksToRead - 1, &remainingData);
+            if (!deviceResult.success) {
+                device->disconnectTag();
+                RfidOperationResult failure = deviceFailureResult(deviceResult, RfidErrorKind::ReadFailed);
+                failure.rawData = raw;
+                return failure;
+            }
+            raw.append(remainingData);
+        }
+    } else {
+        // Preserve the existing raw-data fallback for tags that do not use the
+        // business format, while avoiding that expensive full read for valid data.
+        QByteArray remainingData;
+        if (systemInfo.blockCount > 1)
+            deviceResult = readRange(1, systemInfo.blockCount - 1, &remainingData);
         if (!deviceResult.success) {
             device->disconnectTag();
             RfidOperationResult failure = deviceFailureResult(deviceResult, RfidErrorKind::ReadFailed);
             failure.rawData = raw;
             return failure;
         }
-        raw.append(blockData);
+        raw.append(remainingData);
     }
 
     if (raw == QByteArray(raw.size(), '\0')) {
@@ -188,10 +246,11 @@ RfidOperationResult RfidTagService::readPayload(RfidDeviceAdapter *device, const
         return result;
     }
 
-    const int contentLength = raw.size() > 1 ? static_cast<quint8>(raw.at(1)) : 0;
-    const int totalPayloadLength = contentLength + 2;
-    const qint64 capacity = static_cast<qint64>(systemInfo.blockSize) * systemInfo.blockCount;
-    if (contentLength < TagPayloadCodec::HeaderLength - 2 || totalPayloadLength > capacity) {
+    const bool legacyLengthHasRemainingRecordBytes = legacyPayloadLength <= raw.size()
+            && hasLegacyMedicalRecordTail(raw, wholePayloadLength);
+    const int totalPayloadLength = legacyLengthHasRemainingRecordBytes
+            ? legacyPayloadLength : wholePayloadLength;
+    if (totalPayloadLength < TagPayloadCodec::HeaderLength || totalPayloadLength > capacity) {
         device->disconnectTag();
         return rawDataReadResult(raw,
                                  QStringLiteral("The stored length does not match the current business format."));
@@ -241,26 +300,48 @@ RfidOperationResult RfidTagService::writePayload(RfidDeviceAdapter *device, cons
         device->disconnectTag();
         return deviceFailureResult(deviceResult, RfidErrorKind::ReadFailed);
     }
+    // Clear the two bytes immediately after the declared payload whenever the
+    // tag has room. Older firmware stored a content-only length and those stale
+    // bytes could otherwise make a new full-length payload look like the legacy
+    // layout during verification.
+    QByteArray dataToWrite = encoded;
+    const qint64 paddedCapacity = static_cast<qint64>(systemInfo.blockSize) * systemInfo.blockCount;
+    if (dataToWrite.size() + TagPayloadCodec::HeaderFieldLength <= paddedCapacity)
+        dataToWrite.append(QByteArray(TagPayloadCodec::HeaderFieldLength, '\0'));
+
     BlockWritePlan plan;
     RfidOperationResult failure;
-    if (!createWritePlan(encoded, systemInfo, &plan, &failure)) {
+    if (!createWritePlan(dataToWrite, systemInfo, &plan, &failure)) {
         device->disconnectTag();
         return failure;
     }
     deviceResult = device->writeBlocks(0, plan.blockCount, systemInfo.blockSize, plan.paddedData);
     device->disconnectTag();
-    if (!deviceResult.success)
+    if (!deviceResult.success) {
+        // A transport error can arrive after the reader has committed the write.
+        // Read the tag once before reporting failure so a retry never blindly
+        // writes the same payload over a successfully completed operation.
+        RfidOperationResult confirmation = readPayload(device, tag);
+        if (confirmation.success && confirmation.rawData.startsWith(encoded)) {
+            confirmation.rawData = encoded;
+            confirmation.payload = payload;
+            confirmation.message = QStringLiteral("Tag payload was written and confirmed after a write transport error.");
+            return confirmation;
+        }
         return deviceFailureResult(deviceResult, RfidErrorKind::WriteFailed);
+    }
 
     RfidOperationResult verification = readPayload(device, tag);
     if (!verification.success)
         return verification;
-    if (verification.rawData != encoded) {
+    if (!verification.rawData.startsWith(encoded)) {
         verification.success = false;
         verification.errorKind = RfidErrorKind::VerifyFailed;
-        verification.message = QStringLiteral("Written payload does not match the verification read.");
+        verification.message = QStringLiteral("Written payload does not match the verification read. expected=%1 actual=%2")
+                .arg(TagPayloadCodec::toHex(encoded), TagPayloadCodec::toHex(verification.rawData));
         return verification;
     }
+    verification.rawData = encoded;
     verification.payload = payload;
     verification.message = QStringLiteral("Tag payload written and verified successfully.");
     return verification;
