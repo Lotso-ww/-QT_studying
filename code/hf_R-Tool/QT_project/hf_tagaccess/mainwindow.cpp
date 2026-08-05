@@ -303,6 +303,12 @@ bool MainWindow::selected_business_tag(InventoryObservation *tag) const
                                  QStringLiteral("请先在“业务扫描”中扫描标签。持续盘点结果仅用于 Access 的块读写。"));
         return false;
     }
+    if (!businessScanStable) {
+        const_cast<MainWindow *>(this)->set_info(QStringLiteral("Business access requires a stable scan result."), false);
+        QMessageBox::information(const_cast<MainWindow *>(this), QStringLiteral("业务数据"),
+                                 QStringLiteral("请先完成业务扫描：同一标签须在 1000ms 内稳定出现至少 2 次。"));
+        return false;
+    }
     if (hr == nullptr || ht == nullptr || m_tags_hf.size() != 1) {
         const_cast<MainWindow *>(this)->set_info(QStringLiteral("Connect the single Business Scan tag before business access."), false);
         return false;
@@ -432,7 +438,7 @@ void MainWindow::update_business_tag_state()
         return;
     const bool canOperate = hr != nullptr && ht != nullptr && !running && !scanRunning
             && !businessOperationRunning && accessTagSource == AccessTagSource::ScanMode
-            && m_tags_hf.size() == 1;
+            && businessScanStable && m_tags_hf.size() == 1;
     readButton->setEnabled(canOperate);
     writeButton->setEnabled(canOperate);
 }
@@ -562,6 +568,7 @@ void MainWindow::on_pushButton_clicked()
         // 连接信号和槽：主界面 <-> 子线程设备对象
         connect(this,&MainWindow::signals_Inventory,device,&CAEDevice_HF::Inventory);              // 主界面发盘点信号->子线程盘点
         connect(this,&MainWindow::signals_ScanOnce,device,&CAEDevice_HF::ScanOnce);
+        connect(this,&MainWindow::signals_ScanStableBusinessTag,device,&CAEDevice_HF::ScanStableBusinessTag);
         connect(device,&CAEDevice_HF::sgnl_inventory_data_hf,this,&MainWindow::slot_inventory_data_hf); // 子线程盘点数据->主界面更新
         connect(device,&CAEDevice_HF::sgnl_inventory_end_loop,this,&MainWindow::slot_inventory_end_loop); // 子线程盘点结束->主界面
         connect(device,&CAEDevice_HF::sgnl_scan_data_hf,this,&MainWindow::slot_scan_data_hf);
@@ -617,6 +624,7 @@ void MainWindow::on_pushButton_2_clicked()
         // 断开所有信号槽连接
         disconnect(this,&MainWindow::signals_Inventory,device,&CAEDevice_HF::Inventory);
         disconnect(this,&MainWindow::signals_ScanOnce,device,&CAEDevice_HF::ScanOnce);
+        disconnect(this,&MainWindow::signals_ScanStableBusinessTag,device,&CAEDevice_HF::ScanStableBusinessTag);
         disconnect(device,&CAEDevice_HF::sgnl_inventory_data_hf,this,&MainWindow::slot_inventory_data_hf);
         disconnect(device,&CAEDevice_HF::sgnl_inventory_end_loop,this,&MainWindow::slot_inventory_end_loop);
         disconnect(device,&CAEDevice_HF::sgnl_scan_data_hf,this,&MainWindow::slot_scan_data_hf);
@@ -930,6 +938,7 @@ void MainWindow::on_btn_inventory_start_clicked()
         HF_TagDisconnect();
     m_tags_hf.clear();
     accessTagSource = AccessTagSource::Inventory;
+    businessScanStable = false;
     bind_access_tags();
 
     // 清空表格内容
@@ -1013,6 +1022,7 @@ void MainWindow::on_btn_scan_mode_start_clicked()
 
     m_tags_hf.clear();
     accessTagSource = AccessTagSource::ScanMode;
+    businessScanStable = false;
     bind_access_tags();
 
     int antCount = ui->lw_ants->count();
@@ -1026,12 +1036,12 @@ void MainWindow::on_btn_scan_mode_start_clicked()
 
     ui->tbw_scan_mode_tags->clearContents();
     ui->tbw_scan_mode_tags->setRowCount(0);
-    ui->lbl_scan_mode->setText("Tags: 0\nTime: 0 ms\nScan: running");
+    ui->lbl_scan_mode->setText(QStringLiteral("标签数：0\n稳定窗口：1000 ms\n业务扫描：进行中"));
     scanRunning = true;
     update_business_tag_state();
     ui->btn_scan_mode_start->setEnabled(false);
     ui->btn_inventory_start->setEnabled(false);
-    emit signals_ScanOnce(hr, QByteArray(reinterpret_cast<const char*>(antennas), antCount), antCount);
+    emit signals_ScanStableBusinessTag(hr, QByteArray(reinterpret_cast<const char*>(antennas), antCount), antCount);
 }
 
 void MainWindow::on_btn_scan_mode_clear_clicked()
@@ -1040,12 +1050,13 @@ void MainWindow::on_btn_scan_mode_clear_clicked()
         return;
     ui->tbw_scan_mode_tags->clearContents();
     ui->tbw_scan_mode_tags->setRowCount(0);
-    ui->lbl_scan_mode->setText("Tags: 0\nTime: 0 ms\nScan: 0");
+    ui->lbl_scan_mode->setText(QStringLiteral("标签数：0\n稳定窗口：1000 ms\n业务扫描：未开始"));
     if (accessTagSource == AccessTagSource::ScanMode) {
         if (ht != nullptr)
             const_cast<MainWindow *>(this)->HF_TagDisconnect();
         m_tags_hf.clear();
         accessTagSource = AccessTagSource::None;
+        businessScanStable = false;
         bind_access_tags();
         update_business_tag_state();
     }
@@ -1073,7 +1084,7 @@ void MainWindow::slot_scan_data_hf(int tag_count, vector<CTag_HF> tags, int use_
             ui->tbw_scan_mode_tags->setItem(i, column, item);
         }
     }
-    ui->lbl_scan_mode->setText(QString("Tags: %1\nTime: %2 ms\nScan: complete")
+    ui->lbl_scan_mode->setText(QStringLiteral("标签数：%1\n稳定窗口：%2 ms\n业务扫描：正在判定")
                                .arg(tag_count).arg(use_time));
     update_business_tag_state();
 }
@@ -1083,13 +1094,37 @@ void MainWindow::slot_scan_finished(int iret)
     scanRunning = false;
     ui->btn_scan_mode_start->setEnabled(true);
     ui->btn_inventory_start->setEnabled(true);
-    update_business_tag_state();
-    if (iret != NO_ERR)
+    businessScanStable = (iret == StableScanSuccess);
+    if (iret == StableScanSuccess)
     {
-        ui->lbl_scan_mode->setText(QString("Scan failed: err=%1").arg(iret));
-        QMessageBox::warning(this, "Scan", QString("Scan failed: err=%1").arg(iret), QMessageBox::Ok);
-        return;
+        ui->lbl_scan_mode->setText(QStringLiteral("标签数：1\n稳定窗口：1000 ms\n业务扫描：标签稳定，可连接后读写业务数据"));
     }
+    else
+    {
+        QString message;
+        switch (iret)
+        {
+        case StableScanNoTag:
+            message = QStringLiteral("1000ms 内未发现 ISO15693 标签。");
+            break;
+        case StableScanNotUnique:
+            message = QStringLiteral("1000ms 内发现多张标签，业务读写已禁用。");
+            break;
+        case StableScanNotEnoughObservations:
+            message = QStringLiteral("标签出现次数不足 2 次，未达到稳定条件。");
+            break;
+        case StableScanInconsistent:
+            message = QStringLiteral("标签的天线或协议观察结果不一致，未达到稳定条件。");
+            break;
+        default:
+            message = QStringLiteral("业务扫描失败，错误码：%1").arg(iret);
+            break;
+        }
+        ui->lbl_scan_mode->setText(QStringLiteral("标签数：%1\n稳定窗口：1000 ms\n业务扫描：%2")
+                                   .arg(m_tags_hf.size()).arg(message));
+        QMessageBox::warning(this, QStringLiteral("业务扫描"), message, QMessageBox::Ok);
+    }
+    update_business_tag_state();
 }
 
 // "读块"按钮：读取标签指定起始块和块数的数据

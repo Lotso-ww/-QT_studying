@@ -1,5 +1,6 @@
 ﻿#include "CAEDevice_HF.h"
 #include "gfunction.h"
+#include "rfidtagservice.h"
 #include <QElapsedTimer>
 #include <QEventLoop>
 #include <QDebug>
@@ -255,6 +256,99 @@ void CAEDevice_HF::ScanOnce(void* hreader, QByteArray antennasSrc, int ant_cnt)
     if (iret == NO_ERR)
         emit sgnl_scan_data_hf(static_cast<int>(m_tags_hf.size()), m_tags_hf, useTime);
     emit sgnl_scan_finished(iret);
+}
+
+void CAEDevice_HF::ScanStableBusinessTag(void* hreader, QByteArray antennasSrc, int ant_cnt)
+{
+    static const int ScanWindowMs = 1000;
+    static const int InterRoundDelayMs = 80;
+    static const int RecoveryDelayMs = 150;
+
+    memset(antennas, 0, sizeof(antennas));
+    ant_count = static_cast<BYTE>(qMin(qMin(ant_cnt, antennasSrc.size()), static_cast<int>(sizeof(antennas))));
+    memcpy(antennas, reinterpret_cast<const BYTE*>(antennasSrc.constData()), ant_count);
+    hr = hreader;
+    m_tags_hf.clear();
+
+    QVector<InventoryObservation> observations;
+    vector<CTag_HF> collectedTags;
+    QElapsedTimer timer;
+    timer.start();
+    err_t iret = NO_ERR;
+
+    while (timer.elapsed() < ScanWindowMs)
+    {
+        m_tags_hf.clear();
+        iret = func_Inventory();
+        if (iret != NO_ERR)
+            break;
+
+        for (const CTag_HF &tag : m_tags_hf)
+        {
+            InventoryObservation observation;
+            observation.uid = tag.m_uid;
+            observation.airProtocol = tag.m_AIP;
+            observation.tagType = tag.m_type;
+            observation.antenna = tag.m_antNo;
+            observation.rssi = tag.m_rssi;
+            observations.append(observation);
+
+            bool found = false;
+            for (CTag_HF &collected : collectedTags)
+            {
+                if (collected.m_uid == tag.m_uid && collected.m_AIP == tag.m_AIP
+                        && collected.m_antNo == tag.m_antNo)
+                {
+                    ++collected.m_counter;
+                    collected.m_rssi = tag.m_rssi;
+                    found = true;
+                    break;
+                }
+            }
+            if (!found)
+            {
+                CTag_HF collected = tag;
+                collected.m_counter = 1;
+                collectedTags.push_back(collected);
+            }
+        }
+
+        const int remainingMs = ScanWindowMs - static_cast<int>(timer.elapsed());
+        if (remainingMs > 0)
+            QThread::msleep(static_cast<unsigned long>(qMin(InterRoundDelayMs, remainingMs)));
+    }
+
+    m_tags_hf = collectedTags;
+    err_t result = iret;
+    if (result == NO_ERR)
+    {
+        const StableInventoryResult stable = RfidTagService::evaluateInventoryWindow(observations);
+        switch (stable.state)
+        {
+        case TagStabilityState::TagStable:
+            result = StableScanSuccess;
+            break;
+        case TagStabilityState::TagNotUnique:
+            result = StableScanNotUnique;
+            break;
+        case TagStabilityState::TagDetected:
+            result = stable.appearanceCount > 0 ? StableScanNotEnoughObservations
+                                                : StableScanInconsistent;
+            break;
+        case TagStabilityState::TagTimeout:
+            result = StableScanNoTag;
+            break;
+        case TagStabilityState::DeviceError:
+            result = StableScanInconsistent;
+            break;
+        }
+    }
+
+    if (hr != NULL)
+        RDR_ResetCommuImmeTimeout(hr);
+    QThread::msleep(RecoveryDelayMs);
+    emit sgnl_scan_data_hf(static_cast<int>(m_tags_hf.size()), m_tags_hf, ScanWindowMs);
+    emit sgnl_scan_finished(result);
 }
 
 

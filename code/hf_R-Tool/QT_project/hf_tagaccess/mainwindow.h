@@ -54,6 +54,7 @@ signals:
     // 盘点信号：发送给子线程的 CAEDevice_HF，触发盘点
     void signals_Inventory(void* hreader, QByteArray antennasSrc, int ant_cnt);
     void signals_ScanOnce(void* hreader, QByteArray antennasSrc, int ant_cnt);
+    void signals_ScanStableBusinessTag(void* hreader, QByteArray antennasSrc, int ant_cnt);
     void signals_updateComplited();    // 表格更新完成信号：通知子线程可以继续下一轮盘点
 
 private slots:
@@ -121,6 +122,7 @@ private:
     RfidLogDispatcher *businessLogger = nullptr;
     bool businessOperationRunning = false;
     bool businessReadOperation = false;
+    bool businessScanStable = false;
     AccessTagSource accessTagSource = AccessTagSource::None;
     bool loaded=false;              // 表格是否已初始化(防止重复创建)
     QSize formSize;                 // 上次记录的表格尺寸(用于判断是否需要重建)

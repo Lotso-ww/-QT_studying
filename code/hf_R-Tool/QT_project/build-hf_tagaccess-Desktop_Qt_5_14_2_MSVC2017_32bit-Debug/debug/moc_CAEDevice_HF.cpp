@@ -22,8 +22,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_CAEDevice_HF_t {
-    QByteArrayData data[20];
-    char stringdata0[248];
+    QByteArrayData data[21];
+    char stringdata0[270];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -51,7 +51,8 @@ QT_MOC_LITERAL(15, 193, 7), // "hreader"
 QT_MOC_LITERAL(16, 201, 11), // "antennasSrc"
 QT_MOC_LITERAL(17, 213, 7), // "ant_cnt"
 QT_MOC_LITERAL(18, 221, 8), // "ScanOnce"
-QT_MOC_LITERAL(19, 230, 17) // "onUpdateCompleted"
+QT_MOC_LITERAL(19, 230, 21), // "ScanStableBusinessTag"
+QT_MOC_LITERAL(20, 252, 17) // "onUpdateCompleted"
 
     },
     "CAEDevice_HF\0workFinished\0\0"
@@ -61,7 +62,7 @@ QT_MOC_LITERAL(19, 230, 17) // "onUpdateCompleted"
     "sgnl_scan_data_hf\0sgnl_scan_finished\0"
     "updateConfirmed\0Inventory\0hreader\0"
     "antennasSrc\0ant_cnt\0ScanOnce\0"
-    "onUpdateCompleted"
+    "ScanStableBusinessTag\0onUpdateCompleted"
 };
 #undef QT_MOC_LITERAL
 
@@ -71,7 +72,7 @@ static const uint qt_meta_data_CAEDevice_HF[] = {
        8,       // revision
        0,       // classname
        0,    0, // classinfo
-       9,   14, // methods
+      10,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -79,17 +80,18 @@ static const uint qt_meta_data_CAEDevice_HF[] = {
        6,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    0,   59,    2, 0x06 /* Public */,
-       3,    4,   60,    2, 0x06 /* Public */,
-       9,    1,   69,    2, 0x06 /* Public */,
-      11,    3,   72,    2, 0x06 /* Public */,
-      12,    1,   79,    2, 0x06 /* Public */,
-      13,    0,   82,    2, 0x06 /* Public */,
+       1,    0,   64,    2, 0x06 /* Public */,
+       3,    4,   65,    2, 0x06 /* Public */,
+       9,    1,   74,    2, 0x06 /* Public */,
+      11,    3,   77,    2, 0x06 /* Public */,
+      12,    1,   84,    2, 0x06 /* Public */,
+      13,    0,   87,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-      14,    3,   83,    2, 0x0a /* Public */,
-      18,    3,   90,    2, 0x0a /* Public */,
-      19,    0,   97,    2, 0x0a /* Public */,
+      14,    3,   88,    2, 0x0a /* Public */,
+      18,    3,   95,    2, 0x0a /* Public */,
+      19,    3,  102,    2, 0x0a /* Public */,
+      20,    0,  109,    2, 0x0a /* Public */,
 
  // signals: parameters
     QMetaType::Void,
@@ -100,6 +102,7 @@ static const uint qt_meta_data_CAEDevice_HF[] = {
     QMetaType::Void,
 
  // slots: parameters
+    QMetaType::Void, QMetaType::VoidStar, QMetaType::QByteArray, QMetaType::Int,   15,   16,   17,
     QMetaType::Void, QMetaType::VoidStar, QMetaType::QByteArray, QMetaType::Int,   15,   16,   17,
     QMetaType::Void, QMetaType::VoidStar, QMetaType::QByteArray, QMetaType::Int,   15,   16,   17,
     QMetaType::Void,
@@ -121,7 +124,8 @@ void CAEDevice_HF::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id
         case 5: _t->updateConfirmed(); break;
         case 6: _t->Inventory((*reinterpret_cast< void*(*)>(_a[1])),(*reinterpret_cast< QByteArray(*)>(_a[2])),(*reinterpret_cast< int(*)>(_a[3]))); break;
         case 7: _t->ScanOnce((*reinterpret_cast< void*(*)>(_a[1])),(*reinterpret_cast< QByteArray(*)>(_a[2])),(*reinterpret_cast< int(*)>(_a[3]))); break;
-        case 8: _t->onUpdateCompleted(); break;
+        case 8: _t->ScanStableBusinessTag((*reinterpret_cast< void*(*)>(_a[1])),(*reinterpret_cast< QByteArray(*)>(_a[2])),(*reinterpret_cast< int(*)>(_a[3]))); break;
+        case 9: _t->onUpdateCompleted(); break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
@@ -200,13 +204,13 @@ int CAEDevice_HF::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 9)
+        if (_id < 10)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 9;
+        _id -= 10;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 9)
+        if (_id < 10)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 9;
+        _id -= 10;
     }
     return _id;
 }

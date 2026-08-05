@@ -23,6 +23,13 @@ using namespace std;
 #define AIR_SONY_FELICA         (1<<6)  // Sony Felica 协议
 #define AIR_NFC_FORUM_TYPE1     (1<<7)  // NFC Forum Type1 标签
 
+enum StableScanResult {
+    StableScanSuccess = NO_ERR,
+    StableScanNoTag = -10001,
+    StableScanNotUnique = -10002,
+    StableScanInconsistent = -10003,
+    StableScanNotEnoughObservations = -10004,
+};
 
 // 高频(HF)读写器设备控制类
 // 运行在子线程中，负责执行标签盘点的循环逻辑
@@ -36,6 +43,8 @@ public slots:
     void Inventory(void* hreader, QByteArray antennasSrc, int ant_cnt) ;
     // 单次扫描：只执行一轮盘点，用于箱单或单标签扫描。
     void ScanOnce(void* hreader, QByteArray antennasSrc, int ant_cnt);
+    // 业务扫描：在固定窗口内重复盘点，确认唯一且稳定的 ISO15693 标签。
+    void ScanStableBusinessTag(void* hreader, QByteArray antennasSrc, int ant_cnt);
     // 盘点完成后的更新槽函数(由主界面更新完表格后触发，用于唤醒子线程继续下一轮)
     void onUpdateCompleted();
 
